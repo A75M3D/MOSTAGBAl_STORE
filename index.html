@@ -966,6 +966,51 @@
             font-size: 1.2rem;
             margin-bottom: 30px;
         }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--glass-bg);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -1016,7 +1061,7 @@
             <div class="hero-content">
                 <h1>اكتشف أحدث تشكيلات الطرح</h1>
                 <p>جودة عالية وتصاميم أنيقة تناسب كل المناسبات مع خدمة التوصيل لجميع أنحاء المملكة</p>
-                <button class="btn btn-primary">تسوق الآن</button>
+                <button class="btn btn-primary" id="shopNowBtn">تسوق الآن</button>
             </div>
         </div>
     </section>
@@ -1026,12 +1071,16 @@
         <h2 class="section-title">منتجاتنا المميزة</h2>
         
         <div class="filters">
-            <button class="filter-btn active">الكل</button>
-            <button class="filter-btn">طرح كلاسيكي</button>
-            <button class="filter-btn">طرح مطرز</button>
-            <button class="filter-btn">طرح شيفون</button>
-            <button class="filter-btn">طرح صيفي</button>
-            <button class="filter-btn">عروض خاصة</button>
+            <button class="filter-btn active" data-category="all">الكل</button>
+            <button class="filter-btn" data-category="طرح كلاسيكي">طرح كلاسيكي</button>
+            <button class="filter-btn" data-category="طرح مطرز">طرح مطرز</button>
+            <button class="filter-btn" data-category="طرح شيفون">طرح شيفون</button>
+            <button class="filter-btn" data-category="طرح صيفي">طرح صيفي</button>
+            <button class="filter-btn" data-category="عروض خاصة">عروض خاصة</button>
+        </div>
+        
+        <div class="loading" id="productsLoading">
+            <div class="loading-spinner"></div>
         </div>
         
         <div class="products-grid" id="productsGrid">
@@ -1078,6 +1127,9 @@
 
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <!-- Footer -->
     <footer>
@@ -1133,11 +1185,16 @@
     </footer>
 
     <script>
-        // المنتجات سيتم تحميلها من localStorage المشترك
-        let products = JSON.parse(localStorage.getItem('tarhiSharedProducts')) || [];
-        
+        // 🔧 إعدادات Supabase - غير هذه القيم بمعلومات مشروعك
+        const SUPABASE_URL = 'https://nvwabjwlzzelzkizblss.supabase.co'; // غير برابط مشروعك
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52d2FiandsenplbHpraXpibHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNDU1NDQsImV4cCI6MjA3NTkyMTU0NH0.AI9-rockiprdgbImyOoQCQ2p4wmI3MTJ6Fa-AX5_Nno'; // غير بالمفتاح العام لمشروعك
+
+        // تهيئة Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Cart state
         let cart = [];
+        let products = [];
         
         // DOM Elements
         const themeToggle = document.getElementById('themeToggle');
@@ -1152,6 +1209,10 @@
         const whatsappOrder = document.getElementById('whatsappOrder');
         const productsGrid = document.getElementById('productsGrid');
         const emptyState = document.getElementById('emptyState');
+        const productsLoading = document.getElementById('productsLoading');
+        const shopNowBtn = document.getElementById('shopNowBtn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const toast = document.getElementById('toast');
 
         // Theme Management
         themeToggle.addEventListener('click', () => {
@@ -1162,11 +1223,38 @@
             if (document.body.classList.contains('dark-theme')) {
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
             } else {
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
             }
         });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            themeToggle.querySelector('i').classList.remove('fa-moon');
+            themeToggle.querySelector('i').classList.add('fa-sun');
+        }
+        
+        // Toast notification function
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (isError) {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
         
         // Cart Management
         cartButton.addEventListener('click', () => {
@@ -1199,6 +1287,7 @@
             }
             
             updateCartUI();
+            saveCartToLocalStorage();
             
             // Show confirmation animation
             const button = event.target.closest('.add-to-cart');
@@ -1233,7 +1322,7 @@
                     const cartItemElement = document.createElement('div');
                     cartItemElement.className = 'cart-item';
                     cartItemElement.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <img src="${item.image_url || item.image}" alt="${item.name}" class="cart-item-image">
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
                             <div class="cart-item-price">${item.price} ر.س</div>
@@ -1284,6 +1373,7 @@
             if (item) {
                 item.quantity += 1;
                 updateCartUI();
+                saveCartToLocalStorage();
             }
         }
         
@@ -1297,18 +1387,34 @@
                     return;
                 }
                 updateCartUI();
+                saveCartToLocalStorage();
             }
         }
         
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
             updateCartUI();
+            saveCartToLocalStorage();
+        }
+        
+        // Save cart to localStorage
+        function saveCartToLocalStorage() {
+            localStorage.setItem('tarhiCart', JSON.stringify(cart));
+        }
+        
+        // Load cart from localStorage
+        function loadCartFromLocalStorage() {
+            const savedCart = localStorage.getItem('tarhiCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
         }
         
         // WhatsApp order function
         whatsappOrder.addEventListener('click', () => {
             if (cart.length === 0) {
-                alert('سلة التسوق فارغة');
+                showToast('سلة التسوق فارغة', true);
                 return;
             }
             
@@ -1321,71 +1427,96 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             message += `\nالمجموع: ${total.toFixed(2)} ر.س`;
             
-            const phoneNumber = '966123456789'; // Replace with your WhatsApp number
+            const phoneNumber = '966123456789'; // غير برقم الواتساب الحقيقي
             const encodedMessage = encodeURIComponent(message);
             const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
             
             window.open(url, '_blank');
         });
         
-        // Load products
-        function loadProducts() {
+        // Load products from Supabase
+        async function loadProducts(category = 'all') {
+            productsLoading.style.display = 'flex';
             productsGrid.innerHTML = '';
-            
-            // تحميل المنتجات من localStorage المشترك
-            const sharedProducts = JSON.parse(localStorage.getItem('tarhiSharedProducts')) || [];
-            
-            if (sharedProducts.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
-            
             emptyState.style.display = 'none';
             
-            sharedProducts.forEach((product, index) => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.style.animationDelay = `${(index + 1) * 0.1}s`;
+            try {
+                let query = supabase
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                // Filter by category if needed
+                if (category !== 'all') {
+                    query = query.eq('category', category);
+                }
+
+                const { data, error } = await query;
+
+                if (error) throw error;
                 
-                productCard.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
-                    <div class="product-content">
-                        <div class="product-category">${product.category}</div>
-                        <h3 class="product-title">${product.name}</h3>
-                        
-                        <div class="product-colors">
-                            ${product.colors.map(color => 
-                                `<div class="color-dot" style="background-color: ${getColorHex(color)}" title="${color}"></div>`
-                            ).join('')}
-                        </div>
-                        
-                        <div class="product-price">
-                            <span class="current-price">${product.price} ر.س</span>
-                            ${product.originalPrice ? `<span class="original-price">${product.originalPrice} ر.س</span>` : ''}
-                        </div>
-                        
-                        <div class="product-actions">
-                            <button class="add-to-cart" data-id="${product.id}">
-                                <i class="fas fa-shopping-cart"></i>
-                                أضف إلى السلة
-                            </button>
-                            <button class="action-btn"><i class="far fa-heart"></i></button>
-                            <button class="action-btn"><i class="far fa-eye"></i></button>
-                        </div>
-                    </div>
-                `;
+                products = data || [];
                 
-                productsGrid.appendChild(productCard);
-            });
-            
-            // Add event listeners to add to cart buttons
-            document.querySelectorAll('.add-to-cart').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = parseInt(btn.getAttribute('data-id'));
-                    const product = sharedProducts.find(p => p.id === id);
-                    addToCart(product);
-                });
-            });
+                if (products.length === 0) {
+                    emptyState.style.display = 'block';
+                    productsGrid.innerHTML = '';
+                } else {
+                    emptyState.style.display = 'none';
+                    
+                    products.forEach((product, index) => {
+                        const productCard = document.createElement('div');
+                        productCard.className = 'product-card';
+                        productCard.style.animationDelay = `${(index + 1) * 0.1}s`;
+                        
+                        productCard.innerHTML = `
+                            <img src="${product.image_url || product.image}" alt="${product.name}" class="product-image">
+                            <div class="product-content">
+                                <div class="product-category">${product.category}</div>
+                                <h3 class="product-title">${product.name}</h3>
+                                
+                                <div class="product-colors">
+                                    ${(product.colors || []).map(color => 
+                                        `<div class="color-dot" style="background-color: ${getColorHex(color)}" title="${color}"></div>`
+                                    ).join('')}
+                                </div>
+                                
+                                <div class="product-price">
+                                    <span class="current-price">${product.price} ر.س</span>
+                                    ${product.original_price ? `<span class="original-price">${product.original_price} ر.س</span>` : ''}
+                                </div>
+                                
+                                <div class="product-actions">
+                                    <button class="add-to-cart" data-id="${product.id}">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        أضف إلى السلة
+                                    </button>
+                                    <button class="action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        productsGrid.appendChild(productCard);
+                    });
+                    
+                    // Add event listeners to add to cart buttons
+                    document.querySelectorAll('.add-to-cart').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = parseInt(btn.getAttribute('data-id'));
+                            const product = products.find(p => p.id === id);
+                            if (product) {
+                                addToCart(product);
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('حدث خطأ في تحميل المنتجات', true);
+                emptyState.style.display = 'block';
+            } finally {
+                productsLoading.style.display = 'none';
+            }
         }
         
         // Helper function to convert color names to hex
@@ -1412,10 +1543,31 @@
             return colorMap[colorName] || '#CCCCCC';
         }
         
+        // Filter products by category
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Get the category from data attribute
+                const category = this.getAttribute('data-category');
+                // Load products for this category
+                loadProducts(category);
+            });
+        });
+        
+        // Shop now button scroll to products
+        shopNowBtn.addEventListener('click', () => {
+            document.querySelector('.products-grid').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             loadProducts();
-            updateCartUI();
+            loadCartFromLocalStorage();
         });
     </script>
 </body>
