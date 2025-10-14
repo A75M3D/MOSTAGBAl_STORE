@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المنتجات - طرحـي</title>
+    <title>إدارة المنتجات - متجر المستقبل </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -548,7 +548,7 @@
             </div>
 
             <div style="margin-top: 20px; font-size: 0.8rem; color: #6b7280;">
-                كلمة المرور الافتراضية: <strong>admin123</strong>
+                كلمة المرور الافتراضية: <strong>******</strong>
             </div>
         </div>
     </div>
@@ -559,7 +559,7 @@
         <header>
             <div class="container">
                 <div class="header-content">
-                    <div class="logo">طرحـي</div>
+                    <div class="logo">Future STORE</div>
                     
                     <nav class="nav-links">
                         <a href="index.html">
@@ -719,7 +719,7 @@
         const connectionStatus = document.getElementById('connectionStatus');
 
         // كلمة المرور
-        const correctPassword = "admin123";
+        const correctPassword = "admin123Max";
 
         // تحقق إذا كان المستخدم مسجل دخول
         if (localStorage.getItem('adminLoggedIn') === 'true') {
@@ -816,10 +816,10 @@
         // Update preview on form changes
         function updatePreview() {
             previewName.textContent = productName.value || 'اسم المنتج';
-            previewPrice.textContent = (productPrice.value || '0') + ' ر.س';
+            previewPrice.textContent = (productPrice.value || '0') + 'ج.س';
             
             if (originalPrice.value) {
-                previewOriginalPrice.textContent = originalPrice.value + ' ر.س';
+                previewOriginalPrice.textContent = originalPrice.value + 'ج.س';
                 previewOriginalPrice.style.display = 'inline';
             } else {
                 previewOriginalPrice.style.display = 'none';
