@@ -1071,7 +1071,7 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Cart Sidebar */
+        /* Cart Sidebar - التحديثات هنا */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -1126,6 +1126,7 @@
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
+            max-height: calc(100vh - 300px); /* تحديد ارتفاع أقصى للعناصر */
         }
 
         .cart-item {
@@ -1232,12 +1233,19 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--text);
+            margin-top: auto; /* دفع المجموع للأعلى */
         }
 
         .cart-actions {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            margin-top: 30px; /* إضافة مسافة 3 سم فوق الأزرار */
+            position: sticky;
+            bottom: 0;
+            background: var(--glass-bg);
+            padding: 15px 0;
+            border-top: 1px solid var(--glass-border);
         }
 
         .whatsapp-btn {
@@ -1667,6 +1675,10 @@
                 height: 40px;
                 font-size: 18px;
             }
+
+            .cart-actions {
+                margin-top: 20px; /* تقليل المسافة في الشاشات الصغيرة */
+            }
         }
 
         /* Hidden elements */
@@ -1698,7 +1710,7 @@
                 
                 <nav class="nav-links">
                     <a href="#" class="active">الرئيسية</a>
-                    <a href="ad.html">إدارة المنتجات</a>
+                    <a href="latest-products.html">إدارة المنتجات</a>
                     <a href="#">التصنيفات</a>
                     <a href="#">من نحن</a>
                     <a href="#">اتصل بنا</a>
@@ -2160,7 +2172,7 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             message += `\nالمجموع: ${total.toFixed(2)} ر.س`;
             
-            const phoneNumber = '0924299798'; // غير برقم الواتساب الحقيقي
+            const phoneNumber = '966123456789'; // غير برقم الواتساب الحقيقي
             const encodedMessage = encodeURIComponent(message);
             const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
             
