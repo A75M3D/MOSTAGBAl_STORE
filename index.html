@@ -7,6 +7,133 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* شاشة التحميل فقط */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #loadingScreen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #00c6ff, #ff2d75);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7), 0 0 40px rgba(0, 198, 255, 0.5), 0 0 60px rgba(0, 198, 255, 0.3);
+            position: relative;
+            margin-bottom: 30px;
+            animation: logoPulse 2s infinite alternate, textFlow 8s linear infinite;
+        }
+
+        @keyframes logoPulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(0, 198, 255, 0.7), 0 0 40px rgba(0, 198, 255, 0.5), 0 0 60px rgba(0, 198, 255, 0.3);
+            }
+            100% {
+                transform: scale(1.05);
+                text-shadow: 0 0 30px rgba(0, 198, 255, 0.9), 0 0 50px rgba(0, 198, 255, 0.7), 0 0 70px rgba(0, 198, 255, 0.5);
+            }
+        }
+
+        @keyframes textFlow {
+            0% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .loading-logo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, transparent, rgba(0, 198, 255, 0.1), transparent);
+            z-index: -1;
+            border-radius: 15px;
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .loading-subtitle {
+            color: #b3b3b3;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            animation: fadeInOut 2s infinite alternate;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00c6ff;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #00c6ff, #ff2d75);
+            border-radius: 2px;
+            transition: width 5s linear;
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
+        }
+
+        /* إخفاء المحتوى الرئيسي أثناء التحميل */
+        .main-content {
+            display: none;
+        }
+
+        .main-content.loaded {
+            display: block;
+        }
+
+        /* الأنماط الأصلية بالكامل - بدون أي تغيير */
         :root {
             --primary: #00c6ff;
             --primary-dark: #0072ff;
@@ -131,15 +258,6 @@
             50% { transform: translateY(-5px); }
         }
 
-        @keyframes textFlow {
-            0% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         .logo::before {
             content: '';
             position: absolute;
@@ -151,11 +269,6 @@
             z-index: -1;
             border-radius: 10px;
             animation: shine 3s infinite linear;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .nav-links {
@@ -1071,7 +1184,7 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Cart Sidebar - التحديثات هنا */
+        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -1126,7 +1239,7 @@
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 20px;
-            max-height: calc(100vh - 300px); /* تحديد ارتفاع أقصى للعناصر */
+            max-height: calc(100vh - 300px);
         }
 
         .cart-item {
@@ -1233,14 +1346,14 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--text);
-            margin-top: auto; /* دفع المجموع للأعلى */
+            margin-top: auto;
         }
 
         .cart-actions {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 30px; /* إضافة مسافة 3 سم فوق الأزرار */
+            margin-top: 30px;
             position: sticky;
             bottom: 0;
             background: var(--glass-bg);
@@ -1677,7 +1790,7 @@
             }
 
             .cart-actions {
-                margin-top: 20px; /* تقليل المسافة في الشاشات الصغيرة */
+                margin-top: 20px;
             }
         }
 
@@ -1688,219 +1801,233 @@
     </style>
 </head>
 <body class="dark-theme">
-    <!-- Particle Background -->
-    <div class="particles" id="particles"></div>
-
-    <!-- Floating Background Elements -->
-    <div class="floating-elements">
-        <div class="floating-element" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
-        <div class="floating-element" style="width: 150px; height: 150px; top: 60%; left: 80%;"></div>
-        <div class="floating-element" style="width: 80px; height: 80px; top: 30%; left: 60%;"></div>
-        <div class="floating-element" style="width: 120px; height: 120px; top: 80%; left: 20%;"></div>
-        <div class="floating-element" style="width: 90px; height: 90px; top: 40%; left: 30%;"></div>
-    </div>
-
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo-container">
-                    <div class="logo">متجر المستقبل</div>
-                </div>
-                
-                <nav class="nav-links">
-                    <a href="#" class="active">الرئيسية</a>
-                    <a href="https://mostagb-al-store.vercel.app/ad.html">إدارة المنتجات</a>
-                    <a href="#">التصنيفات</a>
-                    <a href="#">من نحن</a>
-                    <a href="#">اتصل بنا</a>
-                </nav>
-                
-                <div class="header-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="icon-btn">
-                        <i class="fas fa-heart"></i>
-                        <span class="badge">3</span>
-                    </button>
-                    <button class="icon-btn" id="cartButton">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge" id="cartCount">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-animation">
-            <div class="floating-shapes">
-                <div class="shape"></div>
-                <div class="shape"></div>
-                <div class="shape"></div>
-                <div class="shape"></div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="hero-content">
-                <h1>متجر المستقبل</h1>
-                <p>تجربة تسوق فريدة من نوعها مع أحدث التقنيات والتصاميم المستقبلية. اكتشف عالمًا من المنتجات المبتكرة والعروض الحصرية.</p>
-                <button class="btn btn-primary" id="shopNowBtn">استكشف المنتجات</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3D Carousel Section -->
-    <section class="carousel-section">
-        <div class="container">
-            <h2 class="section-title">عروض خاصة</h2>
-            
-            <div class="carousel-container">
-                <div class="carousel" id="carousel">
-                    <!-- سيتم إضافة العروض الخاصة هنا -->
-                </div>
-                
-                <div class="carousel-nav">
-                    <button class="carousel-nav-btn" id="prevBtn">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <button class="carousel-nav-btn" id="nextBtn">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="carousel-indicators" id="carouselIndicators">
-                <!-- سيتم إضافة المؤشرات هنا -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Products Section -->
-    <section class="container">
-        <h2 class="section-title">منتجاتنا المميزة</h2>
-        
-        <div class="filters">
-            <button class="filter-btn active" data-category="all">الكل</button>
-            <button class="filter-btn" data-category="سيارات">سيارات</button>
-            <button class="filter-btn" data-category="بدل">بدل</button>
-            <button class="filter-btn" data-category="فساتين">فساتين</button>
-            <button class="filter-btn" data-category="طرح">طرح</button>
-            <button class="filter-btn" data-category="سبورتات">سبورتات</button>
-            <button class="filter-btn" data-category="عروض خاصة">عروض خاصة</button>
-        </div>
-        
-        <div class="loading" id="productsLoading">
-            <div class="loading-spinner"></div>
-        </div>
-        
-        <div class="products-grid" id="productsGrid">
-            <!-- Products will be loaded here by JavaScript -->
-        </div>
-
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <i class="fas fa-box-open"></i>
-            <p>لا توجد منتجات متاحة حالياً</p>
-            <p>يرجى زيارة صفحة إدارة المنتجات لإضافة منتجات جديدة</p>
-            <a href="ad.html" class="btn btn-primary" style="margin-top: 20px;">
-                <i class="fas fa-cog"></i>
-                الانتقال إلى إدارة المنتجات
-            </a>
-        </div>
-    </section>
-
-    <!-- Cart Sidebar -->
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h2 class="cart-title">سلة التسوق</h2>
-            <button class="close-cart" id="closeCart">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="cart-items" id="cartItems">
-            <!-- Cart items will be added here -->
-        </div>
-        
-        <div class="cart-total">
-            <span>المجموع:</span>
-            <span id="cartTotal">0 ر.س</span>
-        </div>
-        
-        <div class="cart-actions">
-            <button class="btn btn-primary" id="continueShopping">مواصلة التسوق</button>
-            <button class="whatsapp-btn" id="whatsappOrder">
-                <i class="fab fa-whatsapp"></i>
-                طلب عبر واتساب
-            </button>
+    <!-- شاشة التحميل -->
+    <div id="loadingScreen">
+        <div class="loading-logo">متجر المستقبل</div>
+        <div class="loading-subtitle">تجربة تسوق ثورية تنتظرك...</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="progressBar"></div>
         </div>
     </div>
 
-    <!-- Overlay -->
-    <div class="overlay" id="overlay"></div>
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- باقي المحتوى كما هو تماماً -->
+        <!-- Particle Background -->
+        <div class="particles" id="particles"></div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
+        <!-- Floating Background Elements -->
+        <div class="floating-elements">
+            <div class="floating-element" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+            <div class="floating-element" style="width: 150px; height: 150px; top: 60%; left: 80%;"></div>
+            <div class="floating-element" style="width: 80px; height: 80px; top: 30%; left: 60%;"></div>
+            <div class="floating-element" style="width: 120px; height: 120px; top: 80%; left: 20%;"></div>
+            <div class="floating-element" style="width: 90px; height: 90px; top: 40%; left: 30%;"></div>
+        </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>متجر المستقبل</h3>
-                    <p>نقدم لكم أحدث المنتجات بتقنيات متطورة وتصاميم مستقبلية تناسب جميع الأذواق والاحتياجات.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-container">
+                        <div class="logo">متجر المستقبل</div>
+                    </div>
+                    
+                    <nav class="nav-links">
+                        <a href="#" class="active">الرئيسية</a>
+                        <a href="latest-products.html">إدارة المنتجات</a>
+                        <a href="#">التصنيفات</a>
+                        <a href="#">من نحن</a>
+                        <a href="#">اتصل بنا</a>
+                    </nav>
+                    
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="icon-btn">
+                            <i class="fas fa-heart"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <button class="icon-btn" id="cartButton">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge" id="cartCount">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-animation">
+                <div class="floating-shapes">
+                    <div class="shape"></div>
+                    <div class="shape"></div>
+                    <div class="shape"></div>
+                    <div class="shape"></div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1>متجر المستقبل</h1>
+                    <p>تجربة تسوق فريدة من نوعها مع أحدث التقنيات والتصاميم المستقبلية. اكتشف عالمًا من المنتجات المبتكرة والعروض الحصرية.</p>
+                    <button class="btn btn-primary" id="shopNowBtn">استكشف المنتجات</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D Carousel Section -->
+        <section class="carousel-section">
+            <div class="container">
+                <h2 class="section-title">عروض خاصة</h2>
+                
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <!-- سيتم إضافة العروض الخاصة هنا -->
+                    </div>
+                    
+                    <div class="carousel-nav">
+                        <button class="carousel-nav-btn" id="prevBtn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="carousel-nav-btn" id="nextBtn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
                     </div>
                 </div>
                 
-                <div class="footer-column">
-                    <h3>روابط سريعة</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">الرئيسية</a></li>
-                        <li><a href="latest-products.html">إدارة المنتجات</a></li>
-                        <li><a href="#">عروض خاصة</a></li>
-                        <li><a href="#">الجديد</a></li>
-                        <li><a href="#">اتصل بنا</a></li>
-                    </ul>
+                <div class="carousel-indicators" id="carouselIndicators">
+                    <!-- سيتم إضافة المؤشرات هنا -->
                 </div>
-                
-                <div class="footer-column">
-                    <h3>خدمة العملاء</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">الشحن والتوصيل</a></li>
-                        <li><a href="#">سياسة الإرجاع</a></li>
-                        <li><a href="#">أسئلة شائعة</a></li>
-                        <li><a href="#">دليل المقاسات</a></li>
-                        <li><a href="#">طرق الدفع</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>اتصل بنا</h3>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-phone" style="margin-left: 8px;"></i>+249 924 299 798</li>
-                        <li><i class="fas fa-envelope" style="margin-left: 8px;"></i> info@futurestore.com</li>
-                        <li><i class="fas fa-map-marker-alt" style="margin-left: 8px;"></i> الرياض، المملكة العربية السعودية</li>
-                    </ul>
-                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="container">
+            <h2 class="section-title">منتجاتنا المميزة</h2>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">الكل</button>
+                <button class="filter-btn" data-category="سيارات">سيارات</button>
+                <button class="filter-btn" data-category="بدل">بدل</button>
+                <button class="filter-btn" data-category="فساتين">فساتين</button>
+                <button class="filter-btn" data-category="طرح">طرح</button>
+                <button class="filter-btn" data-category="سبورتات">سبورتات</button>
+                <button class="filter-btn" data-category="عروض خاصة">عروض خاصة</button>
             </div>
             
-            <div class="copyright">
-                <p>جميع الحقوق محفوظة &copy; 2025 متجر المستقبل</p>
+            <div class="loading" id="productsLoading">
+                <div class="loading-spinner"></div>
+            </div>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here by JavaScript -->
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-box-open"></i>
+                <p>لا توجد منتجات متاحة حالياً</p>
+                <p>يرجى زيارة صفحة إدارة المنتجات لإضافة منتجات جديدة</p>
+                <a href="ad.html" class="btn btn-primary" style="margin-top: 20px;">
+                    <i class="fas fa-cog"></i>
+                    الانتقال إلى إدارة المنتجات
+                </a>
+            </div>
+        </section>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h2 class="cart-title">سلة التسوق</h2>
+                <button class="close-cart" id="closeCart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be added here -->
+            </div>
+            
+            <div class="cart-total">
+                <span>المجموع:</span>
+                <span id="cartTotal">0 ر.س</span>
+            </div>
+            
+            <div class="cart-actions">
+                <button class="btn btn-primary" id="continueShopping">مواصلة التسوق</button>
+                <button class="whatsapp-btn" id="whatsappOrder">
+                    <i class="fab fa-whatsapp"></i>
+                    طلب عبر واتساب
+                </button>
             </div>
         </div>
-    </footer>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast"></div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>متجر المستقبل</h3>
+                        <p>نقدم لكم أحدث المنتجات بتقنيات متطورة وتصاميم مستقبلية تناسب جميع الأذواق والاحتياجات.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>روابط سريعة</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">الرئيسية</a></li>
+                            <li><a href="https://mostagb-al-store.vercel.app/ad.html">إدارة المنتجات</a></li>
+                            <li><a href="#">عروض خاصة</a></li>
+                            <li><a href="#">الجديد</a></li>
+                            <li><a href="#">اتصل بنا</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>خدمة العملاء</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">الشحن والتوصيل</a></li>
+                            <li><a href="#">سياسة الإرجاع</a></li>
+                            <li><a href="#">أسئلة شائعة</a></li>
+                            <li><a href="#">دليل المقاسات</a></li>
+                            <li><a href="#">طرق الدفع</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>اتصل بنا</h3>
+                        <ul class="footer-links">
+                            <li><i class="fas fa-phone" style="margin-left: 8px;"></i>+249 924 299 798</li>
+                            <li><i class="fas fa-envelope" style="margin-left: 8px;"></i> info@futurestore.com</li>
+                            <li><i class="fas fa-map-marker-alt" style="margin-left: 8px;"></i> الرياض، المملكة العربية السعودية</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    <p>جميع الحقوق محفوظة &copy; 2025 متجر المستقبل</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script>
         // 🔧 إعدادات Supabase - غير هذه القيم بمعلومات مشروعك
-        const SUPABASE_URL = 'https://nvwabjwlzzelzkizblss.supabase.co'; // غير برابط مشروعك
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52d2FiandsenplbHpraXpibHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNDU1NDQsImV4cCI6MjA3NTkyMTU0NH0.AI9-rockiprdgbImyOoQCQ2p4wmI3MTJ6Fa-AX5_Nno'; // غير بالمفتاح العام لمشروعك
+        const SUPABASE_URL = 'https://nvwabjwlzzelzkizblss.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52d2FiandsenplbHpraXpibHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNDU1NDQsImV4cCI6MjA3NTkyMTU0NH0.AI9-rockiprdgbImyOoQCQ2p4wmI3MTJ6Fa-AX5_Nno';
 
         // تهيئة Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1934,6 +2061,44 @@
         const nextBtn = document.getElementById('nextBtn');
         const carouselIndicators = document.getElementById('carouselIndicators');
 
+        // شاشة التحميل
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('progressBar');
+        const mainContent = document.querySelector('.main-content');
+
+        // بدء شاشة التحميل
+        function startLoadingScreen() {
+            // بدء شريط التقدم
+            progressBar.style.width = '100%';
+            
+            // الانتقال بعد 5 ثواني
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                
+                // إظهار المحتوى الرئيسي بعد انتهاء الانتقال
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.classList.add('loaded');
+                    
+                    // تهيئة الموقع بعد انتهاء التحميل
+                    initializeSite();
+                }, 800);
+            }, 5000);
+        }
+
+        // Initialize the site after loading
+        function initializeSite() {
+            createParticles();
+            loadProducts();
+            loadCarousel();
+            loadCartFromLocalStorage();
+            
+            // Auto rotate carousel
+            setInterval(() => {
+                rotateCarousel(currentCarouselIndex + 1);
+            }, 4000);
+        }
+
         // Create particle background
         function createParticles() {
             for (let i = 0; i < 50; i++) {
@@ -1955,7 +2120,7 @@
             }
         }
 
-        // Theme Management - إصلاح مشكلة تغيير الثيم
+        // Theme Management
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
             document.body.classList.toggle('light-theme');
@@ -1997,7 +2162,7 @@
             }, 3000);
         }
         
-        // Cart Management - إصلاح مشكلة سلة التسوق
+        // Cart Management
         cartButton.addEventListener('click', () => {
             cartSidebar.classList.add('open');
             overlay.classList.add('active');
@@ -2172,14 +2337,14 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             message += `\nالمجموع: ${total.toFixed(2)} ر.س`;
             
-            const phoneNumber = '966123456789'; // غير برقم الواتساب الحقيقي
+            const phoneNumber = '966123456789';
             const encodedMessage = encodeURIComponent(message);
             const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
             
             window.open(url, '_blank');
         });
         
-        // Load 3D Carousel - إصلاح مشكلة var()
+        // Load 3D Carousel
         async function loadCarousel() {
             try {
                 let offers = [];
@@ -2329,7 +2494,7 @@
             }
         }
         
-        // تدوير الكاروسيل - إصلاح مشكلة var()
+        // تدوير الكاروسيل
         function rotateCarousel(newIndex) {
             const items = document.querySelectorAll('.carousel-item');
             const indicators = document.querySelectorAll('.carousel-indicator');
@@ -2352,7 +2517,7 @@
             updateCarouselItems();
         }
         
-        // تحديث مواضيع العناصر في الكاروسيل - إصلاح مشكلة var()
+        // تحديث مواضيع العناصر في الكاروسيل
         function updateCarouselItems() {
             const items = document.querySelectorAll('.carousel-item');
             const angle = 360 / items.length;
@@ -2580,15 +2745,8 @@
         
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            loadProducts();
-            loadCarousel();
-            loadCartFromLocalStorage();
-            
-            // Auto rotate carousel
-            setInterval(() => {
-                rotateCarousel(currentCarouselIndex + 1);
-            }, 4000);
+            // بدء شاشة التحميل
+            startLoadingScreen();
         });
     </script>
 </body>
