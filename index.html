@@ -23,6 +23,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --blur: blur(20px);
             --neon-glow: 0 0 10px rgba(0, 198, 255, 0.7), 0 0 20px rgba(0, 198, 255, 0.5), 0 0 30px rgba(0, 198, 255, 0.3);
+            --carousel-radius: 500px;
         }
 
         .light-theme {
@@ -459,6 +460,291 @@
         .btn-secondary {
             background: var(--secondary);
             border: 1px solid var(--secondary);
+        }
+
+        /* 3D Carousel Section */
+        .carousel-section {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .carousel {
+            position: relative;
+            width: var(--carousel-radius);
+            height: var(--carousel-radius);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--card-border);
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .carousel-item:hover {
+            transform: scale(1.05) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), var(--neon-glow);
+        }
+
+        .carousel-item.active {
+            transform: translateZ(100px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 198, 255, 0.8);
+        }
+
+        .carousel-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .carousel-item:hover .carousel-image {
+            transform: scale(1.1);
+        }
+
+        .carousel-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .carousel-category {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            backdrop-filter: var(--blur);
+        }
+
+        .carousel-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .carousel-price {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .carousel-current-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+        }
+
+        .carousel-original-price {
+            font-size: 1rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .carousel-discount {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px rgba(255, 45, 117, 0.7);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        .carousel-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .carousel-add-to-cart {
+            background: var(--primary);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .carousel-add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        .carousel-add-to-cart:hover::before {
+            left: 100%;
+        }
+
+        .carousel-add-to-cart:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--neon-glow);
+        }
+
+        .carousel-action-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            backdrop-filter: var(--blur);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .carousel-action-btn:hover::before {
+            left: 100%;
+        }
+
+        .carousel-action-btn:hover {
+            background: var(--primary);
+            color: #0a0a0a;
+            transform: rotate(10deg);
+            box-shadow: var(--neon-glow);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        .carousel-nav-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 24px;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .carousel-nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .carousel-nav-btn:hover {
+            background: var(--primary);
+            color: #0a0a0a;
+            transform: scale(1.1);
+            box-shadow: var(--neon-glow);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background: var(--primary);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
         }
 
         /* Products Section */
@@ -1288,6 +1574,15 @@
                 width: 380px;
                 left: -380px;
             }
+
+            .carousel-container {
+                height: 550px;
+            }
+
+            .carousel-item {
+                width: 240px;
+                height: 340px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1311,6 +1606,21 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
                 gap: 25px;
+            }
+
+            .carousel-container {
+                height: 500px;
+            }
+
+            .carousel-item {
+                width: 220px;
+                height: 320px;
+            }
+
+            .carousel-nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
         }
 
@@ -1337,6 +1647,25 @@
             
             .logo {
                 font-size: 26px;
+            }
+
+            .carousel-container {
+                height: 450px;
+            }
+
+            .carousel-item {
+                width: 200px;
+                height: 300px;
+            }
+
+            .carousel-nav {
+                padding: 0 10px;
+            }
+
+            .carousel-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
 
@@ -1407,6 +1736,32 @@
                 <h1>متجر المستقبل</h1>
                 <p>تجربة تسوق فريدة من نوعها مع أحدث التقنيات والتصاميم المستقبلية. اكتشف عالمًا من المنتجات المبتكرة والعروض الحصرية.</p>
                 <button class="btn btn-primary" id="shopNowBtn">استكشف المنتجات</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Carousel Section -->
+    <section class="carousel-section">
+        <div class="container">
+            <h2 class="section-title">عروض خاصة</h2>
+            
+            <div class="carousel-container">
+                <div class="carousel" id="carousel">
+                    <!-- سيتم إضافة العروض الخاصة هنا -->
+                </div>
+                
+                <div class="carousel-nav">
+                    <button class="carousel-nav-btn" id="prevBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="carousel-nav-btn" id="nextBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="carousel-indicators" id="carouselIndicators">
+                <!-- سيتم إضافة المؤشرات هنا -->
             </div>
         </div>
     </section>
@@ -1541,6 +1896,8 @@
         // Cart state
         let cart = [];
         let products = [];
+        let specialOffers = [];
+        let currentCarouselIndex = 0;
         
         // DOM Elements
         const themeToggle = document.getElementById('themeToggle');
@@ -1560,6 +1917,10 @@
         const filterButtons = document.querySelectorAll('.filter-btn');
         const toast = document.getElementById('toast');
         const particlesContainer = document.getElementById('particles');
+        const carousel = document.getElementById('carousel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const carouselIndicators = document.getElementById('carouselIndicators');
 
         // Create particle background
         function createParticles() {
@@ -1582,7 +1943,7 @@
             }
         }
 
-        // Theme Management
+        // Theme Management - إصلاح مشكلة تغيير الثيم
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
             document.body.classList.toggle('light-theme');
@@ -1624,7 +1985,7 @@
             }, 3000);
         }
         
-        // Cart Management
+        // Cart Management - إصلاح مشكلة سلة التسوق
         cartButton.addEventListener('click', () => {
             cartSidebar.classList.add('open');
             overlay.classList.add('active');
@@ -1659,15 +2020,17 @@
             showToast('تم إضافة المنتج إلى السلة');
             
             // Show confirmation animation
-            const button = event.target.closest('.add-to-cart');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> تم الإضافة';
-            button.style.background = '#10b981';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = '';
-            }, 1500);
+            const button = event.target.closest('.add-to-cart') || event.target.closest('.carousel-add-to-cart');
+            if (button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> تم الإضافة';
+                button.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '';
+                }, 1500);
+            }
         }
         
         // Update cart UI
@@ -1803,6 +2166,209 @@
             
             window.open(url, '_blank');
         });
+        
+        // Load 3D Carousel - إصلاح مشكلة var()
+        async function loadCarousel() {
+            try {
+                let offers = [];
+                
+                // إذا لم يتم إعداد Supabase، استخدم بيانات تجريبية
+                if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+                    offers = [
+                        {
+                            id: 101,
+                            name: 'عرض خاص: هاتف ذكي بشاشة منحنية',
+                            category: 'عروض خاصة',
+                            price: 1699,
+                            original_price: 2199,
+                            discount: 23,
+                            image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        },
+                        {
+                            id: 102,
+                            name: 'عرض خاص: سماعات لاسلكية متطورة',
+                            category: 'عروض خاصة',
+                            price: 249,
+                            original_price: 399,
+                            discount: 38,
+                            image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        },
+                        {
+                            id: 103,
+                            name: 'عرض خاص: ساعة ذكية رياضية',
+                            category: 'عروض خاصة',
+                            price: 399,
+                            original_price: 550,
+                            discount: 27,
+                            image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        },
+                        {
+                            id: 104,
+                            name: 'عرض خاص: نظارة واقع افتراضي',
+                            category: 'عروض خاصة',
+                            price: 699,
+                            original_price: 999,
+                            discount: 30,
+                            image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        },
+                        {
+                            id: 105,
+                            name: 'عرض خاص: روبوت تنظيف ذكي',
+                            category: 'عروض خاصة',
+                            price: 999,
+                            original_price: 1500,
+                            discount: 33,
+                            image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        },
+                        {
+                            id: 106,
+                            name: 'عرض خاص: حذاء رياضي بتقنية النانو',
+                            category: 'عروض خاصة',
+                            price: 299,
+                            original_price: 450,
+                            discount: 34,
+                            image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                        }
+                    ];
+                } else {
+                    // جلب العروض الخاصة من Supabase
+                    const { data, error } = await supabase
+                        .from('products')
+                        .select('*')
+                        .eq('category', 'عروض خاصة')
+                        .order('created_at', { ascending: false })
+                        .limit(6);
+
+                    if (error) throw error;
+                    
+                    offers = data || [];
+                }
+                
+                specialOffers = offers;
+                
+                carousel.innerHTML = '';
+                carouselIndicators.innerHTML = '';
+                
+                specialOffers.forEach((offer, index) => {
+                    // إنشاء عنصر الكاروسيل
+                    const carouselItem = document.createElement('div');
+                    carouselItem.className = 'carousel-item';
+                    if (index === 0) carouselItem.classList.add('active');
+                    
+                    carouselItem.innerHTML = `
+                        ${offer.discount ? `<div class="carousel-discount">-${offer.discount}%</div>` : ''}
+                        <img src="${offer.image_url || offer.image}" alt="${offer.name}" class="carousel-image">
+                        <div class="carousel-content">
+                            <div class="carousel-category">${offer.category}</div>
+                            <h3 class="carousel-title">${offer.name}</h3>
+                            <div class="carousel-price">
+                                <span class="carousel-current-price">${offer.price} ر.س</span>
+                                ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ر.س</span>` : ''}
+                            </div>
+                            <div class="carousel-actions">
+                                <button class="carousel-add-to-cart" data-id="${offer.id}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    أضف إلى السلة
+                                </button>
+                                <button class="carousel-action-btn"><i class="far fa-heart"></i></button>
+                                <button class="carousel-action-btn"><i class="far fa-eye"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    carousel.appendChild(carouselItem);
+                    
+                    // إنشاء المؤشرات
+                    const indicator = document.createElement('div');
+                    indicator.className = 'carousel-indicator';
+                    if (index === 0) indicator.classList.add('active');
+                    indicator.setAttribute('data-index', index);
+                    indicator.addEventListener('click', () => {
+                        rotateCarousel(index);
+                    });
+                    carouselIndicators.appendChild(indicator);
+                });
+                
+                // تحديث مواضيع العناصر في الكاروسيل
+                updateCarouselItems();
+                
+                // إضافة مستمعي الأحداث لأزرار التنقل
+                prevBtn.addEventListener('click', () => {
+                    rotateCarousel(currentCarouselIndex - 1);
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    rotateCarousel(currentCarouselIndex + 1);
+                });
+                
+                // إضافة مستمعي الأحداث لأزرار إضافة إلى السلة
+                document.querySelectorAll('.carousel-add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        const product = specialOffers.find(p => p.id === id);
+                        if (product) {
+                            addToCart(product);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading carousel:', error);
+                showToast('حدث خطأ في تحميل العروض الخاصة', true);
+            }
+        }
+        
+        // تدوير الكاروسيل - إصلاح مشكلة var()
+        function rotateCarousel(newIndex) {
+            const items = document.querySelectorAll('.carousel-item');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            
+            if (newIndex < 0) newIndex = items.length - 1;
+            if (newIndex >= items.length) newIndex = 0;
+            
+            currentCarouselIndex = newIndex;
+            
+            // تحديث المؤشرات
+            indicators.forEach((indicator, index) => {
+                if (index === currentCarouselIndex) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+            
+            // تحديث مواضيع العناصر
+            updateCarouselItems();
+        }
+        
+        // تحديث مواضيع العناصر في الكاروسيل - إصلاح مشكلة var()
+        function updateCarouselItems() {
+            const items = document.querySelectorAll('.carousel-item');
+            const angle = 360 / items.length;
+            
+            // الحصول على قيمة --carousel-radius من CSS
+            const carouselRadius = getComputedStyle(document.documentElement).getPropertyValue('--carousel-radius').trim();
+            // تحويل القيمة إلى رقم (إزالة px)
+            const radiusValue = parseInt(carouselRadius);
+            
+            items.forEach((item, index) => {
+                // إزالة الفئة النشطة من جميع العناصر
+                item.classList.remove('active');
+                
+                // حساب الزاوية للعنصر الحالي
+                const currentAngle = angle * index - angle * currentCarouselIndex;
+                
+                // تطبيق التحويلات ثلاثية الأبعاد
+                item.style.transform = `
+                    rotateY(${currentAngle}deg) 
+                    translateZ(${radiusValue}px)
+                `;
+                
+                // إضافة الفئة النشطة للعنصر الأمامي
+                if (Math.abs(currentAngle) < angle / 2 || Math.abs(currentAngle) > 360 - angle / 2) {
+                    item.classList.add('active');
+                }
+            });
+        }
         
         // Load products from Supabase
         async function loadProducts(category = 'all') {
@@ -2004,7 +2570,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             loadProducts();
+            loadCarousel();
             loadCartFromLocalStorage();
+            
+            // Auto rotate carousel
+            setInterval(() => {
+                rotateCarousel(currentCarouselIndex + 1);
+            }, 4000);
         });
     </script>
 </body>
