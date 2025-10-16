@@ -1952,7 +1952,7 @@
             
             <div class="cart-total">
                 <span>المجموع:</span>
-                <span id="cartTotal">0 ر.س</span>
+                <span id="cartTotal">0 ج.س</span>
             </div>
             
             <div class="cart-actions">
@@ -2234,7 +2234,7 @@
                         <img src="${item.image_url || 'https://via.placeholder.com/80'}" alt="${item.name}" class="cart-item-image">
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">${item.price} ر.س</div>
+                            <div class="cart-item-price">${item.price} ج.س</div>
                             <div class="cart-item-actions">
                                 <button class="quantity-btn decrease" data-id="${item.id}">-</button>
                                 <span class="cart-item-quantity">${item.quantity}</span>
@@ -2273,7 +2273,7 @@
             
             // Update total
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotal.textContent = `${total.toFixed(2)} ر.س`;
+            cartTotal.textContent = `${total.toFixed(2)} ج.س`;
         }
         
         // Cart item functions
@@ -2331,11 +2331,11 @@
             let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
             
             cart.forEach(item => {
-                message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ر.س\n`;
+                message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ج.س\n`;
             });
             
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            message += `\nالمجموع: ${total.toFixed(2)} ر.س`;
+            message += `\nالمجموع: ${total.toFixed(2)} ج.س`;
             
             const phoneNumber = '0924299798';
             const encodedMessage = encodeURIComponent(message);
@@ -2439,8 +2439,8 @@
                             <div class="carousel-category">${offer.category}</div>
                             <h3 class="carousel-title">${offer.name}</h3>
                             <div class="carousel-price">
-                                <span class="carousel-current-price">${offer.price} ر.س</span>
-                                ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ر.س</span>` : ''}
+                                <span class="carousel-current-price">${offer.price} ج.س</span>
+                                ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ج.س</span>` : ''}
                             </div>
                             <div class="carousel-actions">
                                 <button class="carousel-add-to-cart" data-id="${offer.id}">
@@ -2661,7 +2661,7 @@
                                 
                                 <div class="product-price">
                                     <span class="current-price">${product.price} ر.س</span>
-                                    ${product.original_price ? `<span class="original-price">${product.original_price} ر.س</span>` : ''}
+                                    ${product.original_price ? `<span class="original-price">${product.original_price} ج.س</span>` : ''}
                                 </div>
                                 
                                 <div class="product-actions">
