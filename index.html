@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        /* شاشة التحميل الجديدة بتأثير المطر النيوني */
+        /* شاشة التحميل الجديدة بتأثير الشخصية والسيارة */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -27,18 +27,6 @@
         #loadingScreen.fade-out {
             opacity: 0;
             visibility: hidden;
-        }
-
-        /* قناع البرق */
-        #lightning {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0);
-            z-index: 1;
-            pointer-events: none;
         }
 
         .loading-content {
@@ -60,6 +48,7 @@
             text-shadow: 0 0 20px rgba(0, 198, 255, 0.7), 0 0 40px rgba(0, 198, 255, 0.5), 0 0 60px rgba(0, 198, 255, 0.3);
             position: relative;
             margin-bottom: 30px;
+            opacity: 0;
         }
 
         .loading-subtitle {
@@ -67,6 +56,7 @@
             font-size: 1.2rem;
             margin-bottom: 40px;
             text-align: center;
+            opacity: 0;
         }
 
         .loading-progress-container {
@@ -91,49 +81,157 @@
             z-index: 5;
         }
 
-        /* أنماط قطرات المطر */
-        .rain-drop {
+        /* الشخصية الكرتونية */
+        .cartoon-character {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 150px;
+            z-index: 20;
+            opacity: 0;
+        }
+
+        .character-body {
+            position: absolute;
+            width: 60px;
+            height: 100px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border-radius: 30px 30px 0 0;
+            bottom: 0;
+            left: 20px;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+        }
+
+        .character-head {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            border-radius: 50%;
+            bottom: 95px;
+            left: 25px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        }
+
+        .character-hat {
+            position: absolute;
+            width: 60px;
+            height: 25px;
+            background: linear-gradient(45deg, #ff2d75, #ff0080);
+            border-radius: 30px 30px 0 0;
+            bottom: 135px;
+            left: 20px;
+            opacity: 0;
+            transform: scale(0);
+            box-shadow: 0 0 20px rgba(255, 45, 117, 0.7);
+        }
+
+        .hat-top {
+            position: absolute;
+            width: 20px;
+            height: 15px;
+            background: #ff2d75;
+            border-radius: 10px 10px 0 0;
+            bottom: 25px;
+            left: 20px;
+        }
+
+        /* سيارة ديك الكلاسيكية */
+        .deLorean-car {
+            position: absolute;
+            bottom: 140px;
+            left: -200px;
+            width: 180px;
+            height: 80px;
+            z-index: 15;
+            opacity: 0;
+        }
+
+        .car-body {
+            position: absolute;
+            width: 180px;
+            height: 50px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border-radius: 10px 10px 0 0;
+            bottom: 0;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+        }
+
+        .car-front {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border-radius: 0 10px 0 0;
+            bottom: 0;
+            right: -30px;
+            transform: skewX(-20deg);
+        }
+
+        .car-window {
+            position: absolute;
+            width: 120px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px 5px 0 0;
+            bottom: 35px;
+            left: 30px;
+        }
+
+        .car-door-line {
             position: absolute;
             width: 2px;
-            height: 25px;
-            background: linear-gradient(to bottom, transparent, #00c6ff);
-            border-radius: 0 0 10px 10px;
-            opacity: 0.7;
-            z-index: 2;
-            box-shadow: 0 0 10px #00c6ff;
-            filter: blur(0.5px);
+            height: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            bottom: 35px;
+            left: 90px;
         }
 
-        /* موجات تأثير الاصطدام */
-        .ripple {
+        .car-wheels {
             position: absolute;
+            width: 180px;
+            height: 20px;
+            bottom: -5px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+
+        .car-wheel {
+            width: 20px;
+            height: 20px;
+            background: #333;
             border-radius: 50%;
-            background: rgba(0, 198, 255, 0.3);
-            transform: scale(0);
-            pointer-events: none;
-            z-index: 4;
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
         }
 
-        /* موجات أسفل الشاشة */
-        .bottom-ripple {
+        .car-details {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        .wave {
-            position: absolute;
-            bottom: 0;
             width: 100%;
             height: 10px;
-            background: rgba(0, 198, 255, 0.3);
+            bottom: 50px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .car-detail {
+            width: 5px;
+            height: 5px;
+            background: #ff2d75;
             border-radius: 50%;
-            filter: blur(5px);
-            transform: scaleY(0.3);
+            box-shadow: 0 0 5px rgba(255, 45, 117, 0.7);
+        }
+
+        .car-road {
+            position: absolute;
+            bottom: 130px;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
         }
 
         /* إخفاء المحتوى الرئيسي أثناء التحميل */
@@ -143,29 +241,6 @@
 
         .main-content.loaded {
             display: block;
-        }
-
-        /* سيارة التوصيل */
-        .delivery-car {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            opacity: 0;
-            pointer-events: none;
-            font-size: 60px;
-            color: #00c6ff;
-            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-        }
-        
-        /* تأثير إضافة المنتج للسلة */
-        .cart-animation {
-            position: fixed;
-            z-index: 1000;
-            pointer-events: none;
-            font-size: 24px;
-            color: #00c6ff;
         }
 
         /* الأنماط الأصلية بالكامل */
@@ -1543,6 +1618,29 @@
             opacity: 0.3;
         }
 
+        /* سيارة التوصيل */
+        .delivery-car {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 60px;
+            color: #00c6ff;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+        }
+        
+        /* تأثير إضافة المنتج للسلة */
+        .cart-animation {
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            font-size: 24px;
+            color: #00c6ff;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .products-grid {
@@ -1601,6 +1699,25 @@
                 height: 50px;
                 font-size: 20px;
             }
+
+            .deLorean-car {
+                width: 140px;
+                bottom: 130px;
+            }
+
+            .car-body {
+                width: 140px;
+            }
+
+            .car-front {
+                width: 50px;
+                right: -25px;
+            }
+
+            .car-window {
+                width: 90px;
+                left: 25px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1650,17 +1767,63 @@
             .cart-actions {
                 margin-top: 20px;
             }
+
+            .deLorean-car {
+                width: 120px;
+                bottom: 120px;
+            }
+
+            .car-body {
+                width: 120px;
+            }
+
+            .car-front {
+                width: 40px;
+                right: -20px;
+            }
+
+            .car-window {
+                width: 70px;
+                left: 25px;
+            }
         }
     </style>
 </head>
 <body class="dark-theme">
-    <!-- شاشة التحميل الجديدة بتأثير المطر النيوني -->
+    <!-- شاشة التحميل الجديدة بتأثير الشخصية والسيارة -->
     <div id="loadingScreen">
-        <div id="lightning"></div>
-        <div class="bottom-ripple"></div>
+        <!-- الشخصية الكرتونية -->
+        <div class="cartoon-character" id="cartoonCharacter">
+            <div class="character-body"></div>
+            <div class="character-head"></div>
+            <div class="character-hat" id="characterHat">
+                <div class="hat-top"></div>
+            </div>
+        </div>
+
+        <!-- الطريق -->
+        <div class="car-road"></div>
+
+        <!-- سيارة ديك -->
+        <div class="deLorean-car" id="deloreanCar">
+            <div class="car-body"></div>
+            <div class="car-front"></div>
+            <div class="car-window"></div>
+            <div class="car-door-line"></div>
+            <div class="car-wheels">
+                <div class="car-wheel"></div>
+                <div class="car-wheel"></div>
+            </div>
+            <div class="car-details">
+                <div class="car-detail"></div>
+                <div class="car-detail"></div>
+                <div class="car-detail"></div>
+            </div>
+        </div>
+
         <div class="loading-content">
-            <div class="loading-logo">متجر المستقبل</div>
-            <div class="loading-subtitle">تجربة تسوق ثورية تنتظرك...</div>
+            <div class="loading-logo" id="loadingLogo">متجر المستقبل</div>
+            <div class="loading-subtitle" id="loadingSubtitle">تجربة تسوق ثورية تنتظرك...</div>
             <div class="loading-progress-container">
                 <div class="loading-progress-bar" id="progressBar"></div>
             </div>
@@ -1942,250 +2105,167 @@
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('progressBar');
         const mainContent = document.querySelector('.main-content');
-        const lightning = document.getElementById('lightning');
-        const bottomRipple = document.querySelector('.bottom-ripple');
+        const cartoonCharacter = document.getElementById('cartoonCharacter');
+        const characterHat = document.getElementById('characterHat');
+        const deloreanCar = document.getElementById('deloreanCar');
+        const loadingLogo = document.getElementById('loadingLogo');
+        const loadingSubtitle = document.getElementById('loadingSubtitle');
 
-        // بدء شاشة التحميل
+        // بدء شاشة التحميل الجديدة
         function startLoadingScreen() {
-            // بدء تأثير المطر النيوني
-            createNeonRain();
-            
-            // بدء تأثير البرق
-            startLightningEffect();
-            
-            // بدء موجات أسفل الشاشة
-            createBottomRipples();
-            
-            // بدء شريط التقدم
+            // التأكد من توفر GSAP
             if (typeof gsap !== 'undefined') {
-                gsap.to(progressBar, {
-                    width: '100%',
-                    duration: 5,
-                    ease: "power2.inOut",
+                // إنشاء أنيميشن متسلسل للشخصية والسيارة
+                const loadingTimeline = gsap.timeline();
+
+                // 1. ظهور الشخصية الكرتونية
+                loadingTimeline.to(cartoonCharacter, {
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out"
+                })
+
+                // 2. وضع القبعة على الرأس
+                .to(characterHat, {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: "back.out(1.7)"
+                }, "+=0.5")
+
+                // 3. ظهور سيارة ديك
+                .to(deloreanCar, {
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: "power2.out"
+                }, "+=0.3")
+
+                // 4. تحرك السيارة نحو الشخصية
+                .to(deloreanCar, {
+                    left: '45%',
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                })
+
+                // 5. اختفاء الشخصية (تركب السيارة)
+                .to(cartoonCharacter, {
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: "power2.in"
+                }, "-=0.5")
+
+                // 6. تحرك السيارة فوق شريط التحميل
+                .to(deloreanCar, {
+                    left: '80%',
+                    duration: 3,
+                    ease: "power1.inOut",
                     onUpdate: function() {
-                        // إضافة موجات عند اصطدام قطرات المطر بشريط التقدم
-                        const progress = parseInt(progressBar.style.width) || 0;
-                        if (progress % 8 === 0) {
-                            createRipple(progressBar.getBoundingClientRect().left + (progressBar.offsetWidth * progress / 100), 
-                                       progressBar.getBoundingClientRect().top + progressBar.offsetHeight / 2);
-                        }
+                        // تحديث شريط التقدم بناءً على موقع السيارة
+                        const carLeft = parseFloat(deloreanCar.style.left) || 45;
+                        const progress = ((carLeft - 45) / 35) * 100;
+                        progressBar.style.width = Math.min(progress, 100) + '%';
+                    }
+                })
+
+                // 7. ظهور اسم الموقع
+                .to(loadingLogo, {
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                    onStart: function() {
+                        // إضافة تأثير ظريف للاسم
+                        gsap.to(loadingLogo, {
+                            y: -10,
+                            duration: 1,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut"
+                        });
+                    }
+                }, "-=1.5")
+
+                // 8. ظهور العنوان الفرعي
+                .to(loadingSubtitle, {
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: "power2.out"
+                }, "-=0.5")
+
+                // 9. اختفاء السيارة
+                .to(deloreanCar, {
+                    left: '100%',
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.in",
+                    onComplete: function() {
+                        // الانتقال إلى المحتوى الرئيسي
+                        completeLoading();
                     }
                 });
             } else {
                 // Fallback في حالة عدم توفر GSAP
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                    } else {
-                        width += 1;
-                        progressBar.style.width = width + '%';
-                    }
-                }, 50);
+                startFallbackLoading();
             }
+        }
+
+        // Fallback loading في حالة عدم توفر GSAP
+        function startFallbackLoading() {
+            cartoonCharacter.style.opacity = 1;
             
-            // الانتقال بعد 5 ثواني
             setTimeout(() => {
-                loadingScreen.classList.add('fade-out');
+                characterHat.style.opacity = 1;
+                characterHat.style.transform = 'scale(1)';
                 
-                // إظهار المحتوى الرئيسي بعد انتهاء الانتقال
                 setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    mainContent.classList.add('loaded');
+                    deloreanCar.style.opacity = 1;
                     
-                    // تهيئة الموقع بعد انتهاء التحميل
-                    initializeSite();
-                }, 800);
-            }, 5000);
-        }
-
-        // إنشاء تأثير المطر النيوني
-        function createNeonRain() {
-            // إنشاء 150 قطرة مطر
-            for (let i = 0; i < 150; i++) {
-                setTimeout(() => {
-                    createRainDrop();
-                }, i * 30);
-            }
-            
-            // استمرار في إنشاء المطر كل 100 مللي ثانية
-            setInterval(() => {
-                createRainDrop();
-            }, 100);
-        }
-
-        // إنشاء قطرة مطر فردية
-        function createRainDrop() {
-            const drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            
-            // تحديد موقع عشوائي
-            const left = Math.random() * 100;
-            const top = -5;
-            const duration = Math.random() * 2 + 1;
-            const size = Math.random() * 3 + 1;
-            const opacity = Math.random() * 0.5 + 0.3;
-            
-            drop.style.left = `${left}%`;
-            drop.style.top = `${top}%`;
-            drop.style.width = `${size}px`;
-            drop.style.height = `${25 + Math.random() * 15}px`;
-            drop.style.opacity = opacity;
-            
-            loadingScreen.appendChild(drop);
-            
-            // استخدام GSAP للتحريك السلس أو CSS animation كبديل
-            if (typeof gsap !== 'undefined') {
-                gsap.to(drop, {
-                    top: '110%',
-                    duration: duration,
-                    ease: "power1.in",
-                    onComplete: function() {
-                        // إنشاء موجة عند الاصطدام بشريط التقدم
-                        const progressBarRect = progressBar.getBoundingClientRect();
-                        const dropRect = drop.getBoundingClientRect();
+                    setTimeout(() => {
+                        deloreanCar.style.left = '45%';
                         
-                        if (dropRect.top + dropRect.height >= progressBarRect.top && 
-                            dropRect.left >= progressBarRect.left && 
-                            dropRect.left <= progressBarRect.left + progressBarRect.width) {
-                            createRipple(dropRect.left, progressBarRect.top + progressBarRect.height / 2);
-                        }
-                        
-                        // إزالة القطرة بعد الاصطدام
-                        drop.remove();
-                    }
-                });
-            } else {
-                // Fallback animation
-                drop.style.transition = `top ${duration}s linear`;
-                drop.style.top = '110%';
-                
-                setTimeout(() => {
-                    const progressBarRect = progressBar.getBoundingClientRect();
-                    const dropRect = drop.getBoundingClientRect();
-                    
-                    if (dropRect.top + dropRect.height >= progressBarRect.top && 
-                        dropRect.left >= progressBarRect.left && 
-                        dropRect.left <= progressBarRect.left + progressBarRect.width) {
-                        createRipple(dropRect.left, progressBarRect.top + progressBarRect.height / 2);
-                    }
-                    
-                    drop.remove();
-                }, duration * 1000);
-            }
-        }
-
-        // إنشاء موجة عند الاصطدام
-        function createRipple(x, y) {
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            
-            ripple.style.left = `${x}px`;
-            ripple.style.top = `${y}px`;
-            
-            loadingScreen.appendChild(ripple);
-            
-            // استخدام GSAP لتحريك الموجة أو CSS animation كبديل
-            if (typeof gsap !== 'undefined') {
-                gsap.to(ripple, {
-                    width: '80px',
-                    height: '80px',
-                    opacity: 0,
-                    duration: 1.2,
-                    ease: "power2.out",
-                    onComplete: function() {
-                        ripple.remove();
-                    }
-                });
-            } else {
-                // Fallback animation
-                ripple.style.transition = 'all 1.2s ease-out';
-                ripple.style.width = '80px';
-                ripple.style.height = '80px';
-                ripple.style.opacity = '0';
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 1200);
-            }
-        }
-
-        // إنشاء موجات أسفل الشاشة
-        function createBottomRipples() {
-            for (let i = 0; i < 5; i++) {
-                const wave = document.createElement('div');
-                wave.className = 'wave';
-                
-                bottomRipple.appendChild(wave);
-                
-                // استخدام GSAP لتحريك الموجة أو CSS animation كبديل
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(wave, {
-                        scaleY: 1,
-                        duration: 1.5,
-                        delay: i * 0.3,
-                        yoyo: true,
-                        repeat: -1,
-                        ease: "sine.inOut"
-                    });
-                } else {
-                    // Fallback animation
-                    wave.style.animation = `waveAnimation 1.5s ${i * 0.3}s infinite alternate`;
-                }
-            }
-        }
-
-        // تأثير البرق
-        function startLightningEffect() {
-            setInterval(() => {
-                // إضاءة خفيفة عشوائية
-                if (Math.random() > 0.7) {
-                    if (typeof gsap !== 'undefined') {
-                        gsap.to(lightning, {
-                            background: 'rgba(255, 255, 255, 0.1)',
-                            duration: 0.1,
-                            yoyo: true,
-                            repeat: 1,
-                            ease: "power1.inOut"
-                        });
-                    } else {
-                        // Fallback animation
-                        lightning.style.transition = 'background 0.1s';
-                        lightning.style.background = 'rgba(255, 255, 255, 0.1)';
                         setTimeout(() => {
-                            lightning.style.background = 'rgba(255, 255, 255, 0)';
-                        }, 100);
-                    }
-                }
-                
-                // برق قوي نادر
-                if (Math.random() > 0.9) {
-                    if (typeof gsap !== 'undefined') {
-                        gsap.to(lightning, {
-                            background: 'rgba(255, 255, 255, 0.3)',
-                            duration: 0.05,
-                            yoyo: true,
-                            repeat: 3,
-                            ease: "power1.inOut"
-                        });
-                    } else {
-                        // Fallback animation
-                        let count = 0;
-                        const flash = setInterval(() => {
-                            lightning.style.background = count % 2 === 0 ? 
-                                'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0)';
-                            count++;
-                            if (count >= 6) {
-                                clearInterval(flash);
-                                lightning.style.background = 'rgba(255, 255, 255, 0)';
-                            }
-                        }, 50);
-                    }
-                }
+                            cartoonCharacter.style.opacity = 0;
+                            
+                            let progress = 0;
+                            const interval = setInterval(() => {
+                                progress += 1;
+                                deloreanCar.style.left = (45 + (progress * 0.35)) + '%';
+                                progressBar.style.width = progress + '%';
+                                
+                                if (progress >= 100) {
+                                    clearInterval(interval);
+                                    loadingLogo.style.opacity = 1;
+                                    loadingSubtitle.style.opacity = 1;
+                                    
+                                    setTimeout(() => {
+                                        deloreanCar.style.left = '100%';
+                                        deloreanCar.style.opacity = 0;
+                                        
+                                        setTimeout(() => {
+                                            completeLoading();
+                                        }, 1000);
+                                    }, 500);
+                                }
+                            }, 30);
+                        }, 500);
+                    }, 800);
+                }, 800);
             }, 1000);
         }
 
-        // Initialize the site after loading
+        // إكمال التحميل والانتقال للمحتوى الرئيسي
+        function completeLoading() {
+            loadingScreen.classList.add('fade-out');
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                mainContent.classList.add('loaded');
+                
+                // تهيئة الموقع بعد انتهاء التحميل
+                initializeSite();
+            }, 800);
+        }
+
+        // تهيئة الموقع بعد التحميل
         function initializeSite() {
             createParticles();
             initAnimations();
