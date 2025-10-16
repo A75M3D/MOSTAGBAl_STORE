@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        /* شاشة التحميل الجديدة بتأثير الشخصية والسيارة */
+        /* شاشة التحميل الجديدة بتأثير الشخصية والعربية */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -138,90 +138,16 @@
             left: 20px;
         }
 
-        /* سيارة ديك الكلاسيكية */
-        .deLorean-car {
+        /* العربية (السيارة) */
+        .arabic-car {
             position: absolute;
             bottom: 140px;
             left: -200px;
-            width: 180px;
-            height: 80px;
+            font-size: 80px;
+            color: #00c6ff;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
             z-index: 15;
             opacity: 0;
-        }
-
-        .car-body {
-            position: absolute;
-            width: 180px;
-            height: 50px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border-radius: 10px 10px 0 0;
-            bottom: 0;
-            box-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-        }
-
-        .car-front {
-            position: absolute;
-            width: 60px;
-            height: 40px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border-radius: 0 10px 0 0;
-            bottom: 0;
-            right: -30px;
-            transform: skewX(-20deg);
-        }
-
-        .car-window {
-            position: absolute;
-            width: 120px;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 5px 5px 0 0;
-            bottom: 35px;
-            left: 30px;
-        }
-
-        .car-door-line {
-            position: absolute;
-            width: 2px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.5);
-            bottom: 35px;
-            left: 90px;
-        }
-
-        .car-wheels {
-            position: absolute;
-            width: 180px;
-            height: 20px;
-            bottom: -5px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-        }
-
-        .car-wheel {
-            width: 20px;
-            height: 20px;
-            background: #333;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
-        }
-
-        .car-details {
-            position: absolute;
-            width: 100%;
-            height: 10px;
-            bottom: 50px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .car-detail {
-            width: 5px;
-            height: 5px;
-            background: #ff2d75;
-            border-radius: 50%;
-            box-shadow: 0 0 5px rgba(255, 45, 117, 0.7);
         }
 
         .car-road {
@@ -1700,23 +1626,9 @@
                 font-size: 20px;
             }
 
-            .deLorean-car {
-                width: 140px;
+            .arabic-car {
+                font-size: 60px;
                 bottom: 130px;
-            }
-
-            .car-body {
-                width: 140px;
-            }
-
-            .car-front {
-                width: 50px;
-                right: -25px;
-            }
-
-            .car-window {
-                width: 90px;
-                left: 25px;
             }
         }
 
@@ -1768,29 +1680,15 @@
                 margin-top: 20px;
             }
 
-            .deLorean-car {
-                width: 120px;
+            .arabic-car {
+                font-size: 50px;
                 bottom: 120px;
-            }
-
-            .car-body {
-                width: 120px;
-            }
-
-            .car-front {
-                width: 40px;
-                right: -20px;
-            }
-
-            .car-window {
-                width: 70px;
-                left: 25px;
             }
         }
     </style>
 </head>
 <body class="dark-theme">
-    <!-- شاشة التحميل الجديدة بتأثير الشخصية والسيارة -->
+    <!-- شاشة التحميل الجديدة بتأثير الشخصية والعربية -->
     <div id="loadingScreen">
         <!-- الشخصية الكرتونية -->
         <div class="cartoon-character" id="cartoonCharacter">
@@ -1804,21 +1702,9 @@
         <!-- الطريق -->
         <div class="car-road"></div>
 
-        <!-- سيارة ديك -->
-        <div class="deLorean-car" id="deloreanCar">
-            <div class="car-body"></div>
-            <div class="car-front"></div>
-            <div class="car-window"></div>
-            <div class="car-door-line"></div>
-            <div class="car-wheels">
-                <div class="car-wheel"></div>
-                <div class="car-wheel"></div>
-            </div>
-            <div class="car-details">
-                <div class="car-detail"></div>
-                <div class="car-detail"></div>
-                <div class="car-detail"></div>
-            </div>
+        <!-- العربية (السيارة) -->
+        <div class="arabic-car" id="arabicCar">
+            <i class="fas fa-truck"></i>
         </div>
 
         <div class="loading-content">
@@ -2107,7 +1993,7 @@
         const mainContent = document.querySelector('.main-content');
         const cartoonCharacter = document.getElementById('cartoonCharacter');
         const characterHat = document.getElementById('characterHat');
-        const deloreanCar = document.getElementById('deloreanCar');
+        const arabicCar = document.getElementById('arabicCar');
         const loadingLogo = document.getElementById('loadingLogo');
         const loadingSubtitle = document.getElementById('loadingSubtitle');
 
@@ -2115,7 +2001,7 @@
         function startLoadingScreen() {
             // التأكد من توفر GSAP
             if (typeof gsap !== 'undefined') {
-                // إنشاء أنيميشن متسلسل للشخصية والسيارة
+                // إنشاء أنيميشن متسلسل للشخصية والعربية
                 const loadingTimeline = gsap.timeline();
 
                 // 1. ظهور الشخصية الكرتونية
@@ -2133,35 +2019,35 @@
                     ease: "back.out(1.7)"
                 }, "+=0.5")
 
-                // 3. ظهور سيارة ديك
-                .to(deloreanCar, {
+                // 3. ظهور العربية
+                .to(arabicCar, {
                     opacity: 1,
                     duration: 0.8,
                     ease: "power2.out"
                 }, "+=0.3")
 
-                // 4. تحرك السيارة نحو الشخصية
-                .to(deloreanCar, {
+                // 4. تحرك العربية نحو الشخصية
+                .to(arabicCar, {
                     left: '45%',
                     duration: 1.5,
                     ease: "power2.inOut"
                 })
 
-                // 5. اختفاء الشخصية (تركب السيارة)
+                // 5. اختفاء الشخصية (تركب العربية)
                 .to(cartoonCharacter, {
                     opacity: 0,
                     duration: 0.5,
                     ease: "power2.in"
                 }, "-=0.5")
 
-                // 6. تحرك السيارة فوق شريط التحميل
-                .to(deloreanCar, {
+                // 6. تحرك العربية فوق شريط التحميل
+                .to(arabicCar, {
                     left: '80%',
                     duration: 3,
                     ease: "power1.inOut",
                     onUpdate: function() {
-                        // تحديث شريط التقدم بناءً على موقع السيارة
-                        const carLeft = parseFloat(deloreanCar.style.left) || 45;
+                        // تحديث شريط التقدم بناءً على موقع العربية
+                        const carLeft = parseFloat(arabicCar.style.left) || 45;
                         const progress = ((carLeft - 45) / 35) * 100;
                         progressBar.style.width = Math.min(progress, 100) + '%';
                     }
@@ -2191,8 +2077,8 @@
                     ease: "power2.out"
                 }, "-=0.5")
 
-                // 9. اختفاء السيارة
-                .to(deloreanCar, {
+                // 9. اختفاء العربية
+                .to(arabicCar, {
                     left: '100%',
                     opacity: 0,
                     duration: 1,
@@ -2217,10 +2103,10 @@
                 characterHat.style.transform = 'scale(1)';
                 
                 setTimeout(() => {
-                    deloreanCar.style.opacity = 1;
+                    arabicCar.style.opacity = 1;
                     
                     setTimeout(() => {
-                        deloreanCar.style.left = '45%';
+                        arabicCar.style.left = '45%';
                         
                         setTimeout(() => {
                             cartoonCharacter.style.opacity = 0;
@@ -2228,7 +2114,7 @@
                             let progress = 0;
                             const interval = setInterval(() => {
                                 progress += 1;
-                                deloreanCar.style.left = (45 + (progress * 0.35)) + '%';
+                                arabicCar.style.left = (45 + (progress * 0.35)) + '%';
                                 progressBar.style.width = progress + '%';
                                 
                                 if (progress >= 100) {
@@ -2237,8 +2123,8 @@
                                     loadingSubtitle.style.opacity = 1;
                                     
                                     setTimeout(() => {
-                                        deloreanCar.style.left = '100%';
-                                        deloreanCar.style.opacity = 0;
+                                        arabicCar.style.left = '100%';
+                                        arabicCar.style.opacity = 0;
                                         
                                         setTimeout(() => {
                                             completeLoading();
@@ -2755,7 +2641,7 @@
                 return;
             }
             
-            // أنيميشن السيارة
+            // أنيميشن العربية
             if (typeof gsap !== 'undefined') {
                 gsap.to(deliveryCar, {
                     bottom: '50%',
@@ -2763,7 +2649,7 @@
                     duration: 1,
                     ease: "back.out(1.7)",
                     onComplete: function() {
-                        // أنيميشن اختفاء السيارة
+                        // أنيميشن اختفاء العربية
                         gsap.to(deliveryCar, {
                             left: '100%',
                             duration: 1.5,
@@ -2784,7 +2670,7 @@
                                 const encodedMessage = encodeURIComponent(message);
                                 const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
                                 
-                                // إعادة تعيين موقع السيارة
+                                // إعادة تعيين موقع العربية
                                 gsap.set(deliveryCar, {
                                     bottom: -100,
                                     left: '50%',
@@ -2822,7 +2708,7 @@
                         const encodedMessage = encodeURIComponent(message);
                         const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
                         
-                        // إعادة تعيين موقع السيارة
+                        // إعادة تعيين موقع العربية
                         deliveryCar.style.bottom = '-100px';
                         deliveryCar.style.left = '50%';
                         deliveryCar.style.opacity = '0';
