@@ -11,15 +11,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        /* شاشة التحميل الجديدة بتأثير الشخصية والعربية */
+        /* شاشة التحميل الجديدة ثلاثية الأبعاد */
         #loadingScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
@@ -29,135 +32,110 @@
             visibility: hidden;
         }
 
-        .loading-content {
+        .hologram-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            perspective: 1000px;
+        }
+
+        .hologram-cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 8s infinite linear;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 198, 255, 0.1);
+            border: 2px solid rgba(0, 198, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00c6ff;
+            text-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .cube-face.front { transform: translateZ(100px); }
+        .cube-face.back { transform: translateZ(-100px) rotateY(180deg); }
+        .cube-face.right { transform: translateX(100px) rotateY(90deg); }
+        .cube-face.left { transform: translateX(-100px) rotateY(-90deg); }
+        .cube-face.top { transform: translateY(-100px) rotateX(90deg); }
+        .cube-face.bottom { transform: translateY(100px) rotateX(-90deg); }
+
+        .loading-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #00c6ff, #ff2d75, #7b42f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
-            text-align: center;
+            opacity: 0;
+        }
+
+        .particles-3d {
+            position: absolute;
             width: 100%;
-        }
-
-        .loading-logo {
-            font-size: 4.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #00c6ff, #ff2d75);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7), 0 0 40px rgba(0, 198, 255, 0.5), 0 0 60px rgba(0, 198, 255, 0.3);
-            position: relative;
-            margin-bottom: 30px;
-            opacity: 0;
-        }
-
-        .loading-subtitle {
-            color: #b3b3b3;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            text-align: center;
-            opacity: 0;
-        }
-
-        .loading-progress-container {
-            width: 80%;
-            max-width: 600px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 10px rgba(0, 198, 255, 0.2);
-        }
-
-        .loading-progress-bar {
             height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, #00c6ff, #ff2d75);
-            border-radius: 4px;
-            box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
-            position: relative;
-            z-index: 5;
-        }
-
-        /* الشخصية الكرتونية */
-        .cartoon-character {
-            position: absolute;
-            bottom: 150px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 150px;
-            z-index: 20;
-            opacity: 0;
-        }
-
-        .character-body {
-            position: absolute;
-            width: 60px;
-            height: 100px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border-radius: 30px 30px 0 0;
-            bottom: 0;
-            left: 20px;
-            box-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-        }
-
-        .character-head {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #ffd700, #ffaa00);
-            border-radius: 50%;
-            bottom: 95px;
-            left: 25px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-        }
-
-        .character-hat {
-            position: absolute;
-            width: 60px;
-            height: 25px;
-            background: linear-gradient(45deg, #ff2d75, #ff0080);
-            border-radius: 30px 30px 0 0;
-            bottom: 135px;
-            left: 20px;
-            opacity: 0;
-            transform: scale(0);
-            box-shadow: 0 0 20px rgba(255, 45, 117, 0.7);
-        }
-
-        .hat-top {
-            position: absolute;
-            width: 20px;
-            height: 15px;
-            background: #ff2d75;
-            border-radius: 10px 10px 0 0;
-            bottom: 25px;
-            left: 20px;
-        }
-
-        /* العربية (السيارة) */
-        .arabic-car {
-            position: absolute;
-            bottom: 140px;
-            left: -200px;
-            font-size: 80px;
-            color: #00c6ff;
-            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-            z-index: 15;
-            opacity: 0;
-        }
-
-        .car-road {
-            position: absolute;
-            bottom: 130px;
+            top: 0;
             left: 0;
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+        }
+
+        .particle-3d {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00c6ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00c6ff, 0 0 20px #00c6ff;
+        }
+
+        .quantum-ring {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 3px solid transparent;
+            border-top: 3px solid #00c6ff;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
+        }
+
+        .quantum-ring:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            border-top: 3px solid #ff2d75;
+            animation-duration: 1.5s;
+            animation-direction: reverse;
+        }
+
+        .quantum-ring:nth-child(3) {
+            width: 90px;
+            height: 90px;
+            border-top: 3px solid #7b42f6;
+            animation-duration: 1s;
+        }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* إخفاء المحتوى الرئيسي أثناء التحميل */
@@ -1625,11 +1603,6 @@
                 height: 50px;
                 font-size: 20px;
             }
-
-            .arabic-car {
-                font-size: 60px;
-                bottom: 130px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -1679,41 +1652,30 @@
             .cart-actions {
                 margin-top: 20px;
             }
-
-            .arabic-car {
-                font-size: 50px;
-                bottom: 120px;
-            }
         }
     </style>
 </head>
 <body class="dark-theme">
-    <!-- شاشة التحميل الجديدة بتأثير الشخصية والعربية -->
+    <!-- شاشة التحميل الجديدة ثلاثية الأبعاد -->
     <div id="loadingScreen">
-        <!-- الشخصية الكرتونية -->
-        <div class="cartoon-character" id="cartoonCharacter">
-            <div class="character-body"></div>
-            <div class="character-head"></div>
-            <div class="character-hat" id="characterHat">
-                <div class="hat-top"></div>
+        <div class="particles-3d"></div>
+        
+        <div class="hologram-container">
+            <div class="quantum-ring"></div>
+            <div class="quantum-ring"></div>
+            <div class="quantum-ring"></div>
+            
+            <div class="hologram-cube">
+                <div class="cube-face front">F</div>
+                <div class="cube-face back">B</div>
+                <div class="cube-face right">R</div>
+                <div class="cube-face left">L</div>
+                <div class="cube-face top">T</div>
+                <div class="cube-face bottom">B</div>
             </div>
         </div>
-
-        <!-- الطريق -->
-        <div class="car-road"></div>
-
-        <!-- العربية (السيارة) -->
-        <div class="arabic-car" id="arabicCar">
-            <i class="fas fa-truck"></i>
-        </div>
-
-        <div class="loading-content">
-            <div class="loading-logo" id="loadingLogo">متجر المستقبل</div>
-            <div class="loading-subtitle" id="loadingSubtitle">تجربة تسوق ثورية تنتظرك...</div>
-            <div class="loading-progress-container">
-                <div class="loading-progress-bar" id="progressBar"></div>
-            </div>
-        </div>
+        
+        <div class="loading-logo">متجر المستقبل</div>
     </div>
 
     <!-- المحتوى الرئيسي -->
@@ -1987,99 +1949,48 @@
         const carouselIndicators = document.getElementById('carouselIndicators');
         const deliveryCar = document.querySelector('.delivery-car');
 
-        // شاشة التحميل
+        // شاشة التحميل الجديدة ثلاثية الأبعاد
         const loadingScreen = document.getElementById('loadingScreen');
-        const progressBar = document.getElementById('progressBar');
         const mainContent = document.querySelector('.main-content');
-        const cartoonCharacter = document.getElementById('cartoonCharacter');
-        const characterHat = document.getElementById('characterHat');
-        const arabicCar = document.getElementById('arabicCar');
-        const loadingLogo = document.getElementById('loadingLogo');
-        const loadingSubtitle = document.getElementById('loadingSubtitle');
+        const loadingLogo = document.querySelector('.loading-logo');
+        const hologramCube = document.querySelector('.hologram-cube');
+        const particles3d = document.querySelector('.particles-3d');
 
         // بدء شاشة التحميل الجديدة
         function startLoadingScreen() {
+            // إنشاء الجسيمات ثلاثية الأبعاد
+            create3DParticles();
+            
             // التأكد من توفر GSAP
             if (typeof gsap !== 'undefined') {
-                // إنشاء أنيميشن متسلسل للشخصية والعربية
+                // إنشاء أنيميشن متسلسل للشاشة ثلاثية الأبعاد
                 const loadingTimeline = gsap.timeline();
 
-                // 1. ظهور الشخصية الكرتونية
-                loadingTimeline.to(cartoonCharacter, {
+                // 1. ظهور الشعار
+                loadingTimeline.to(loadingLogo, {
                     opacity: 1,
-                    duration: 1,
-                    ease: "power2.out"
-                })
-
-                // 2. وضع القبعة على الرأس
-                .to(characterHat, {
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    ease: "back.out(1.7)"
-                }, "+=0.5")
-
-                // 3. ظهور العربية
-                .to(arabicCar, {
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "+=0.3")
-
-                // 4. تحرك العربية نحو الشخصية
-                .to(arabicCar, {
-                    left: '45%',
                     duration: 1.5,
-                    ease: "power2.inOut"
-                })
-
-                // 5. اختفاء الشخصية (تركب العربية)
-                .to(cartoonCharacter, {
-                    opacity: 0,
-                    duration: 0.5,
-                    ease: "power2.in"
-                }, "-=0.5")
-
-                // 6. تحرك العربية فوق شريط التحميل
-                .to(arabicCar, {
-                    left: '80%',
-                    duration: 3,
-                    ease: "power1.inOut",
-                    onUpdate: function() {
-                        // تحديث شريط التقدم بناءً على موقع العربية
-                        const carLeft = parseFloat(arabicCar.style.left) || 45;
-                        const progress = ((carLeft - 45) / 35) * 100;
-                        progressBar.style.width = Math.min(progress, 100) + '%';
-                    }
-                })
-
-                // 7. ظهور اسم الموقع
-                .to(loadingLogo, {
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power2.out",
-                    onStart: function() {
-                        // إضافة تأثير ظريف للاسم
-                        gsap.to(loadingLogo, {
-                            y: -10,
-                            duration: 1,
-                            repeat: -1,
-                            yoyo: true,
-                            ease: "sine.inOut"
-                        });
-                    }
-                }, "-=1.5")
-
-                // 8. ظهور العنوان الفرعي
-                .to(loadingSubtitle, {
-                    opacity: 1,
-                    duration: 0.8,
                     ease: "power2.out"
-                }, "-=0.5")
+                })
 
-                // 9. اختفاء العربية
-                .to(arabicCar, {
-                    left: '100%',
+                // 2. تدوير المكعب ثلاثي الأبعاد
+                .to(hologramCube, {
+                    rotationY: 360,
+                    rotationX: 360,
+                    duration: 4,
+                    ease: "power2.inOut"
+                }, "-=1")
+
+                // 3. تأثير نبض للشعار
+                .to(loadingLogo, {
+                    scale: 1.2,
+                    duration: 1,
+                    yoyo: true,
+                    repeat: 3
+                })
+
+                // 4. اختفاء شاشة التحميل
+                .to(loadingScreen, {
                     opacity: 0,
                     duration: 1,
                     ease: "power2.in",
@@ -2090,52 +2001,51 @@
                 });
             } else {
                 // Fallback في حالة عدم توفر GSAP
-                startFallbackLoading();
+                loadingLogo.style.opacity = 1;
+                
+                setTimeout(() => {
+                    loadingScreen.style.opacity = 0;
+                    setTimeout(() => {
+                        completeLoading();
+                    }, 1000);
+                }, 3000);
             }
         }
 
-        // Fallback loading في حالة عدم توفر GSAP
-        function startFallbackLoading() {
-            cartoonCharacter.style.opacity = 1;
-            
-            setTimeout(() => {
-                characterHat.style.opacity = 1;
-                characterHat.style.transform = 'scale(1)';
+        // إنشاء الجسيمات ثلاثية الأبعاد
+        function create3DParticles() {
+            if (!particles3d) return;
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle-3d';
                 
-                setTimeout(() => {
-                    arabicCar.style.opacity = 1;
-                    
-                    setTimeout(() => {
-                        arabicCar.style.left = '45%';
-                        
-                        setTimeout(() => {
-                            cartoonCharacter.style.opacity = 0;
-                            
-                            let progress = 0;
-                            const interval = setInterval(() => {
-                                progress += 1;
-                                arabicCar.style.left = (45 + (progress * 0.35)) + '%';
-                                progressBar.style.width = progress + '%';
-                                
-                                if (progress >= 100) {
-                                    clearInterval(interval);
-                                    loadingLogo.style.opacity = 1;
-                                    loadingSubtitle.style.opacity = 1;
-                                    
-                                    setTimeout(() => {
-                                        arabicCar.style.left = '100%';
-                                        arabicCar.style.opacity = 0;
-                                        
-                                        setTimeout(() => {
-                                            completeLoading();
-                                        }, 1000);
-                                    }, 500);
-                                }
-                            }, 30);
-                        }, 500);
-                    }, 800);
-                }, 800);
-            }, 1000);
+                const size = Math.random() * 4 + 2;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const depth = Math.random() * 200 - 100;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.transform = `translateZ(${depth}px)`;
+                
+                particles3d.appendChild(particle);
+                
+                // تحريك الجسيمات
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(particle, {
+                        x: 'random(-100, 100)',
+                        y: 'random(-100, 100)',
+                        z: 'random(-100, 100)',
+                        duration: 'random(5, 15)',
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut"
+                    });
+                }
+            }
         }
 
         // إكمال التحميل والانتقال للمحتوى الرئيسي
