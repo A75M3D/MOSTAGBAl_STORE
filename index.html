@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* شاشة التحميل المحسنة */
+        /* شاشة التحميل المحسنة مع الشاحنة */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -20,36 +20,67 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden;
         }
 
         #loadingScreen.fade-out {
             opacity: 0;
             visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading-truck {
+            position: absolute;
+            font-size: 80px;
+            color: #00c6ff;
+            bottom: 20%;
+            left: -100px;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+            transition: left 3s ease-in-out;
+        }
+
+        .loading-truck.active {
+            left: 120%;
         }
 
         .loading-logo {
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #00c6ff, #ff2d75);
+            background: linear-gradient(to right, #00c6ff, #ff2d75, #7b42f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease 0.5s;
         }
 
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.1);
-            border-top: 5px solid #00c6ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .loading-logo.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .loading-progress.show {
+            opacity: 1;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #00c6ff, #ff2d75);
+            border-radius: 3px;
+            transition: width 3s ease 1.5s;
         }
 
         /* إخفاء المحتوى الرئيسي أثناء التحميل */
@@ -788,6 +819,29 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4), var(--neon-glow);
         }
 
+        /* تأثير الضوء الكهروضوئي عند الإضافة للسلة */
+        .product-card.added-to-cart {
+            animation: electroGlow 1.5s ease;
+        }
+
+        @keyframes electroGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 198, 255, 0.5);
+            }
+            25% {
+                box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 198, 255, 1), 0 0 40px rgba(123, 66, 246, 0.8), 0 0 60px rgba(255, 45, 117, 0.6);
+            }
+            75% {
+                box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6);
+            }
+            100% {
+                box-shadow: 0 20px 40px rgba(0,0,0,0.4), var(--neon-glow);
+            }
+        }
+
         .product-image {
             height: 280px;
             width: 100%;
@@ -973,7 +1027,7 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Cart Sidebar - محسن للهواتف */
+        /* Cart Sidebar - محسن للهواتف مع زر واتساب ثابت */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -1140,6 +1194,11 @@
             flex-direction: column;
             gap: 15px;
             margin-top: 30px;
+            position: sticky;
+            bottom: 0;
+            background: var(--glass-bg);
+            padding: 15px 0;
+            border-top: 1px solid var(--glass-border);
         }
 
         .whatsapp-btn {
@@ -1530,6 +1589,14 @@
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
+
+            .loading-logo {
+                font-size: 2.5rem;
+            }
+            
+            .loading-truck {
+                font-size: 60px;
+            }
         }
 
         /* Mobile Menu Button */
@@ -1567,10 +1634,15 @@
     </style>
 </head>
 <body class="dark-theme">
-    <!-- شاشة التحميل -->
+    <!-- شاشة التحميل مع الشاحنة -->
     <div id="loadingScreen">
+        <div class="loading-truck">
+            <i class="fas fa-truck"></i>
+        </div>
         <div class="loading-logo">متجر المستقبل</div>
-        <div class="loading-spinner"></div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
     </div>
 
     <!-- المحتوى الرئيسي -->
@@ -1799,6 +1871,10 @@
 
         // عناصر DOM
         const loadingScreen = document.getElementById('loadingScreen');
+        const loadingTruck = document.querySelector('.loading-truck');
+        const loadingLogo = document.querySelector('.loading-logo');
+        const loadingProgress = document.querySelector('.loading-progress');
+        const loadingProgressBar = document.querySelector('.loading-progress-bar');
         const mainContent = document.querySelector('.main-content');
         const themeToggle = document.getElementById('themeToggle');
         const cartButton = document.getElementById('cartButton');
@@ -1825,14 +1901,27 @@
 
         // بدء التحميل
         function startLoading() {
+            // تشغيل أنيميشن الشاحنة
+            setTimeout(() => {
+                loadingTruck.classList.add('active');
+            }, 500);
+
+            // إظهار الشعار وشريط التقدم بعد اختفاء الشاحنة
+            setTimeout(() => {
+                loadingLogo.classList.add('show');
+                loadingProgress.classList.add('show');
+                loadingProgressBar.style.width = '100%';
+            }, 2000);
+
+            // الانتقال إلى المحتوى الرئيسي
             setTimeout(() => {
                 loadingScreen.classList.add('fade-out');
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
                     mainContent.classList.add('loaded');
                     initializeSite();
-                }, 500);
-            }, 1500);
+                }, 800);
+            }, 4500);
         }
 
         // تهيئة الموقع
@@ -1941,7 +2030,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // إضافة منتج إلى السلة
+        // إضافة منتج إلى السلة مع تأثير الضوء الكهروضوئي
         function addToCart(product, button) {
             const existingItem = cart.find(item => item.id === product.id);
             
@@ -1952,6 +2041,15 @@
                     ...product,
                     quantity: 1
                 });
+            }
+            
+            // إضافة تأثير الضوء الكهروضوئي
+            const productCard = button.closest('.product-card');
+            if (productCard) {
+                productCard.classList.add('added-to-cart');
+                setTimeout(() => {
+                    productCard.classList.remove('added-to-cart');
+                }, 1500);
             }
             
             updateCartUI();
