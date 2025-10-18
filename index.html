@@ -1043,7 +1043,8 @@
             padding: 30px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            /* إزالة overflow-y: auto من العنصر الرئيسي */
+            overflow-y: hidden; /* منع التمرير العام للسلة */
         }
 
         .cart-sidebar.open {
@@ -1081,9 +1082,9 @@
 
         .cart-items {
             flex-grow: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* نقل خاصية التمرير إلى عنصر العناصر فقط */
             margin-bottom: 20px;
-            max-height: calc(100vh - 300px);
+            max-height: calc(100vh - 300px); /* ضبط الارتفاع الأقصى */
         }
 
         .cart-item {
@@ -1193,12 +1194,15 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 30px;
-            position: sticky;
+            margin-top: auto; /* دفع الأزرار للأسفل */
+            position: sticky; /* جعل الأزرار ثابتة */
             bottom: 0;
             background: var(--glass-bg);
             padding: 15px 0;
             border-top: 1px solid var(--glass-border);
+            /* إضافة تأثير ضبابي خلفي */
+            backdrop-filter: blur(5px);
+            z-index: 10; /* التأكد من ظهور الأزرار فوق المحتوى */
         }
 
         .whatsapp-btn {
@@ -2022,6 +2026,11 @@
             cartSidebar.classList.add('open');
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // التأكد من أن السلة تظهر من الأعلى
+            setTimeout(() => {
+                cartItems.scrollTop = 0;
+            }, 100);
         }
 
         function closeCartSidebar() {
