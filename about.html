@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتصل بنا - متجر المستقبل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #1a3a6c;
+            --accent: #f39c12;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        /* Hero Section */
+        .contact-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1551836026-d5c0889dd6d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 60px;
+        }
+        
+        .contact-hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .contact-hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            animation: fadeIn 2s ease;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            animation: fadeIn 2.5s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            margin: 15px auto;
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .contact-info {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-info h3 {
+            color: var(--secondary);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .contact-method:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .contact-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .contact-details h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .contact-details p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .contact-link {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .contact-link:hover {
+            color: var(--accent);
+        }
+        
+        .contact-form {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Map Section */
+        .map-section {
+            padding: 80px 0;
+            background-color: #f0f4f8;
+        }
+        
+        .map-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 400px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Working Hours */
+        .hours-section {
+            padding: 80px 0;
+        }
+        
+        .hours-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .hours-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .hours-card h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .hours-list {
+            list-style: none;
+        }
+        
+        .hours-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .hours-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .hours-list .day {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .hours-list .time {
+            color: #666;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 0;
+            background-color: #f0f4f8;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background-color: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            color: var(--secondary);
+            transition: background-color 0.3s;
+        }
+        
+        .faq-question:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .contact-hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .contact-hero p {
+                font-size: 1.1rem;
+            }
+            
+            .contact-info, .contact-form, .hours-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <h1>متجر المستقبل</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">منتجاتنا</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="contact.html" class="active">اتصل بنا</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h2>نحن هنا لمساعدتك</h2>
+            <p>فريق الدعم لدينا متواجد دائماً للإجابة على استفساراتك وتقديم المساعدة التي تحتاجها</p>
+            <a href="#contact" class="btn">تواصل معنا الآن</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">اتصل بنا</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>معلومات الاتصال</h3>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>الهاتف</h4>
+                            <p>اتصل بنا على الرقم التالي وسنكون سعداء بخدمتك</p>
+                            <a href="tel:+966112345678" class="contact-link">+966 11 234 5678</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>واتساب</h4>
+                            <p>راسلنا على واتساب للحصول على رد سريع</p>
+                            <a href="https://wa.me/966112345678" target="_blank" class="contact-link">+966 11 234 5678</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>البريد الإلكتروني</h4>
+                            <p>أرسل لنا رسالة وسنرد عليك في أقرب وقت</p>
+                            <a href="mailto:info@futurestore.com" class="contact-link">info@futurestore.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>العنوان</h4>
+                            <p>المملكة العربية السعودية - الرياض</p>
+                            <p>حي العليا، شارع الملك فهد</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>أرسل رسالة</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">الاسم الكامل</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">رقم الهاتف</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">الموضوع</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">الرسالة</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">إرسال الرسالة</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <h2 class="section-title">موقعنا</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.161509379573!2d46.67285981500178!3d24.7136259841216!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f03890d489399%3A0xba974d1c98e79fd5!2sRiyadh%2C%20Saudi%20Arabia!5e0!3m2!1sen!2s!4v1633954292913!5m2!1sen!2s" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Working Hours -->
+    <section class="hours-section">
+        <div class="container">
+            <h2 class="section-title">ساعات العمل</h2>
+            <div class="hours-container">
+                <div class="hours-card">
+                    <h3>مركز الاتصال</h3>
+                    <ul class="hours-list">
+                        <li>
+                            <span class="day">الأحد - الخميس</span>
+                            <span class="time">8:00 ص - 10:00 م</span>
+                        </li>
+                        <li>
+                            <span class="day">الجمعة</span>
+                            <span class="time">4:00 م - 10:00 م</span>
+                        </li>
+                        <li>
+                            <span class="day">السبت</span>
+                            <span class="time">9:00 ص - 10:00 م</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="hours-card">
+                    <h3>المتجر الرئيسي</h3>
+                    <ul class="hours-list">
+                        <li>
+                            <span class="day">الأحد - الخميس</span>
+                            <span class="time">9:00 ص - 11:00 م</span>
+                        </li>
+                        <li>
+                            <span class="day">الجمعة</span>
+                            <span class="time">4:00 م - 11:00 م</span>
+                        </li>
+                        <li>
+                            <span class="day">السبت</span>
+                            <span class="time">9:00 ص - 11:00 م</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title">الأسئلة الشائعة</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>ما هي طرق الدفع المتاحة؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+            <p> الدفع اما عبر بنكك او كاش بعد التسليم </p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>ما هي مدة التوصيل؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>التوصيل داخل المدينة خلال 24-48 ساعة، وللمدن الأخرى من 2-5 أيام عمل. كما نقدم خدمة التوصيل السريع خلال 4 ساعات في بعض المناطق.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>هل يمكنني استبدال أو إرجاع المنتج؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، يمكنك إرجاع أو استبدال المنتج خلال 14 يوماً من تاريخ الاستلام، بشرط أن يكون المنتج بحالته الأصلية وبالعبوة والأوراق كاملة.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>هل تقدمون خدمة التوصيل للمنازل؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، نقدم خدمة التوصيل للمنازل في جميع أنحاء المملكة العربية السعودية. كما نقدم خدمة التوصيل المجاني للطلبات التي تزيد عن 200 ريال.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>متجر المستقبل</h3>
+                    <p>رواد التجارة الإلكترونية منذ 2024، ملتزمون بتقديم أفضل المنتجات والخدمات لعملائنا الكرام.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="products.html">منتجاتنا</a></li>
+                        <li><a href="about.html">من نحن</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>خدماتنا</h3>
+                    <ul>
+                        <li><a href="#">التسوق عبر الإنترنت</a></li>
+                        <li><a href="#">التوصيل السريع</a></li>
+                        <li><a href="#">الدعم الفني</a></li>
+                        <li><a href="#">الضمان والاستبدال</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i>الخرطوم، السودان </li>
+                        <li><i class="fas fa-phone"></i>0924299798</li>
+                        <li><i class="fas fa-envelope"></i> info@futurestore.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2025 متجر المستقبل</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+            });
+        });
+        
+        // Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('شكراً لتواصلك معنا! سنرد عليك في أقرب وقت ممكن.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
