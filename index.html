@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر المستقبل - تجربة تسوق ثورية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- إضافة مكتبة Supabase مع التكامل الآمن -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- إضافة مكتبات GSAP للأنيميشنات المتقدمة -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
-        /* شاشة التحميل الجديدة ثلاثية الأبعاد */
+        /* شاشة التحميل المحسنة */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -23,8 +19,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            flex-direction: column;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
         #loadingScreen.fade-out {
@@ -32,105 +28,23 @@
             visibility: hidden;
         }
 
-        .hologram-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            perspective: 1000px;
-        }
-
-        .hologram-cube {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 8s infinite linear;
-        }
-
-        .cube-face {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: rgba(0, 198, 255, 0.1);
-            border: 2px solid rgba(0, 198, 255, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #00c6ff;
-            text-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
-            backdrop-filter: blur(10px);
-        }
-
-        .cube-face.front { transform: translateZ(100px); }
-        .cube-face.back { transform: translateZ(-100px) rotateY(180deg); }
-        .cube-face.right { transform: translateX(100px) rotateY(90deg); }
-        .cube-face.left { transform: translateX(-100px) rotateY(-90deg); }
-        .cube-face.top { transform: translateY(-100px) rotateX(90deg); }
-        .cube-face.bottom { transform: translateY(100px) rotateX(-90deg); }
-
         .loading-logo {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #00c6ff, #ff2d75, #7b42f6);
+            background: linear-gradient(to right, #00c6ff, #ff2d75);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            opacity: 0;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
-        .particles-3d {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .particle-3d {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #00c6ff;
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #00c6ff;
             border-radius: 50%;
-            box-shadow: 0 0 10px #00c6ff, 0 0 20px #00c6ff;
-        }
-
-        .quantum-ring {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border: 3px solid transparent;
-            border-top: 3px solid #00c6ff;
-            border-radius: 50%;
-            animation: spin 2s linear infinite;
-            box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
-        }
-
-        .quantum-ring:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            border-top: 3px solid #ff2d75;
-            animation-duration: 1.5s;
-            animation-direction: reverse;
-        }
-
-        .quantum-ring:nth-child(3) {
-            width: 90px;
-            height: 90px;
-            border-top: 3px solid #7b42f6;
-            animation-duration: 1s;
-        }
-
-        @keyframes rotateCube {
-            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
-            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
@@ -147,7 +61,7 @@
             display: block;
         }
 
-        /* الأنماط الأصلية بالكامل */
+        /* الأنماط الأصلية المحسنة */
         :root {
             --primary: #00c6ff;
             --primary-dark: #0072ff;
@@ -157,13 +71,13 @@
             --text: #ffffff;
             --text-light: #b3b3b3;
             --background: #0a0a0a;
-            --card-bg: rgba(30, 30, 40, 0.7);
+            --card-bg: rgba(30, 30, 40, 0.9);
             --card-border: rgba(255, 255, 255, 0.1);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --glass-bg: rgba(20, 20, 30, 0.6);
+            --glass-bg: rgba(20, 20, 30, 0.85);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --blur: blur(20px);
-            --neon-glow: 0 0 10px rgba(0, 198, 255, 0.7), 0 0 20px rgba(0, 198, 255, 0.5), 0 0 30px rgba(0, 198, 255, 0.3);
+            --blur: blur(10px);
+            --neon-glow: 0 0 10px rgba(0, 198, 255, 0.5);
             --carousel-radius: 500px;
         }
 
@@ -176,12 +90,12 @@
             --text: #1a1a1a;
             --text-light: #666666;
             --background: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --card-border: rgba(0, 0, 0, 0.1);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(0, 0, 0, 0.08);
-            --neon-glow: 0 0 10px rgba(0, 102, 204, 0.3), 0 0 20px rgba(0, 102, 204, 0.2);
+            --neon-glow: 0 0 10px rgba(0, 102, 204, 0.3);
         }
 
         * {
@@ -485,12 +399,7 @@
             border: 1px solid var(--primary-light);
         }
 
-        .btn-secondary {
-            background: var(--secondary);
-            border: 1px solid var(--secondary);
-        }
-
-        /* 3D Carousel Section */
+        /* 3D Carousel Section - محسن للأداء */
         .carousel-section {
             padding: 80px 0;
             position: relative;
@@ -774,7 +683,7 @@
             box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
         }
 
-        /* Products Section */
+        /* Products Section - مع تأثيرات الضوء المحسنة */
         .section-title {
             text-align: center;
             font-size: 3rem;
@@ -850,6 +759,11 @@
             transition: all 0.4s;
             position: relative;
             opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         .product-card::before {
@@ -1059,12 +973,12 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Cart Sidebar */
+        /* Cart Sidebar - محسن للهواتف */
         .cart-sidebar {
             position: fixed;
             top: 0;
-            left: -450px;
-            width: 450px;
+            left: -100%;
+            width: 100%;
             height: 100vh;
             background: var(--glass-bg);
             backdrop-filter: var(--blur);
@@ -1075,6 +989,7 @@
             padding: 30px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
 
         .cart-sidebar.open {
@@ -1138,21 +1053,27 @@
             height: 80px;
             object-fit: cover;
             border-radius: 10px;
+            flex-shrink: 0;
         }
 
         .cart-item-details {
             flex-grow: 1;
+            min-width: 0;
         }
 
         .cart-item-name {
             font-weight: 600;
             margin-bottom: 5px;
             color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .cart-item-price {
             color: var(--primary);
             font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .cart-item-actions {
@@ -1173,6 +1094,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .quantity-btn:hover {
@@ -1194,6 +1116,7 @@
             cursor: pointer;
             font-size: 18px;
             transition: transform 0.2s;
+            flex-shrink: 0;
         }
 
         .remove-item:hover {
@@ -1217,11 +1140,6 @@
             flex-direction: column;
             gap: 15px;
             margin-top: 30px;
-            position: sticky;
-            bottom: 0;
-            background: var(--glass-bg);
-            padding: 15px 0;
-            border-top: 1px solid var(--glass-border);
         }
 
         .whatsapp-btn {
@@ -1292,6 +1210,56 @@
         .overlay.active {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* سيارة التوصيل */
+        .delivery-car {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 60px;
+            color: #00c6ff;
+            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
+            transition: all 1s ease;
+        }
+
+        .delivery-car.active {
+            bottom: 50%;
+            opacity: 1;
+        }
+
+        .delivery-car.delivering {
+            left: 100%;
+            opacity: 0;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: #0a0a0a;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: var(--secondary);
+            color: white;
         }
 
         /* Footer */
@@ -1420,25 +1388,6 @@
             font-size: 0.9rem;
         }
 
-        /* Floating elements */
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .floating-element {
-            position: absolute;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            opacity: 0.1;
-            border-radius: 50%;
-            filter: blur(10px);
-        }
-
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -1457,103 +1406,15 @@
             margin-bottom: 30px;
         }
 
-        /* Loading States */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--glass-bg);
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Toast Notifications */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: #0a0a0a;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            z-index: 10000;
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
-            font-weight: 600;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.error {
-            background: var(--secondary);
-            color: white;
-        }
-
-        /* Particle Background */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.3;
-        }
-
-        /* سيارة التوصيل */
-        .delivery-car {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            opacity: 0;
-            pointer-events: none;
-            font-size: 60px;
-            color: #00c6ff;
-            text-shadow: 0 0 20px rgba(0, 198, 255, 0.7);
-        }
-        
-        /* تأثير إضافة المنتج للسلة */
-        .cart-animation {
-            position: fixed;
-            z-index: 1000;
-            pointer-events: none;
-            font-size: 24px;
-            color: #00c6ff;
-        }
-
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
             
             .cart-sidebar {
-                width: 380px;
-                left: -380px;
+                width: 100%;
+                left: -100%;
             }
 
             .carousel-container {
@@ -1579,11 +1440,6 @@
                 font-size: 2.2rem;
             }
             
-            .cart-sidebar {
-                width: 100%;
-                left: -100%;
-            }
-            
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
                 gap: 25px;
@@ -1602,6 +1458,23 @@
                 width: 50px;
                 height: 50px;
                 font-size: 20px;
+            }
+
+            .cart-sidebar {
+                padding: 20px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cart-item-image {
+                align-self: center;
+            }
+
+            .cart-item-details {
+                width: 100%;
             }
         }
 
@@ -1652,46 +1525,56 @@
             .cart-actions {
                 margin-top: 20px;
             }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--glass-bg);
+                backdrop-filter: var(--blur);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: var(--shadow);
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
         }
     </style>
 </head>
 <body class="dark-theme">
-    <!-- شاشة التحميل الجديدة ثلاثية الأبعاد -->
+    <!-- شاشة التحميل -->
     <div id="loadingScreen">
-        <div class="particles-3d"></div>
-        
-        <div class="hologram-container">
-            <div class="quantum-ring"></div>
-            <div class="quantum-ring"></div>
-            <div class="quantum-ring"></div>
-            
-            <div class="hologram-cube">
-                <div class="cube-face front">F</div>
-                <div class="cube-face back">B</div>
-                <div class="cube-face right">R</div>
-                <div class="cube-face left">L</div>
-                <div class="cube-face top">T</div>
-                <div class="cube-face bottom">B</div>
-            </div>
-        </div>
-        
         <div class="loading-logo">متجر المستقبل</div>
+        <div class="loading-spinner"></div>
     </div>
 
     <!-- المحتوى الرئيسي -->
     <div class="main-content">
-        <!-- Particle Background -->
-        <div class="particles" id="particles"></div>
-
-        <!-- Floating Background Elements -->
-        <div class="floating-elements">
-            <div class="floating-element" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
-            <div class="floating-element" style="width: 150px; height: 150px; top: 60%; left: 80%;"></div>
-            <div class="floating-element" style="width: 80px; height: 80px; top: 30%; left: 60%;"></div>
-            <div class="floating-element" style="width: 120px; height: 120px; top: 80%; left: 20%;"></div>
-            <div class="floating-element" style="width: 90px; height: 90px; top: 40%; left: 30%;"></div>
-        </div>
-
         <!-- سيارة التوصيل -->
         <div class="delivery-car">
             <i class="fas fa-truck"></i>
@@ -1701,11 +1584,12 @@
         <header>
             <div class="container">
                 <div class="header-content">
-                    <div class="logo-container">
-                        <div class="logo">متجر المستقبل</div>
-                    </div>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo">متجر المستقبل</div>
                     
-                    <nav class="nav-links">
+                    <nav class="nav-links" id="navLinks">
                         <a href="#" class="active">الرئيسية</a>
                         <a href="latest-products.html">إدارة المنتجات</a>
                         <a href="#">التصنيفات</a>
@@ -1787,10 +1671,6 @@
                 <button class="filter-btn" data-category="طرح">طرح</button>
                 <button class="filter-btn" data-category="سبورتات">سبورتات</button>
                 <button class="filter-btn" data-category="عروض خاصة">عروض خاصة</button>
-            </div>
-            
-            <div class="loading" id="productsLoading">
-                <div class="loading-spinner"></div>
             </div>
             
             <div class="products-grid" id="productsGrid">
@@ -1896,36 +1776,30 @@
     </div>
 
     <script>
-        // 🔧 إعدادات Supabase - استبدل هذه القيم بمعلومات مشروعك
+        // 🔧 إعدادات Supabase
         const SUPABASE_URL = 'https://nvwabjwlzzelzkizblss.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52d2FiandsenplbHpraXpibHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzNDU1NDQsImV4cCI6MjA3NTkyMTU0NH0.AI9-rockiprdgbImyOoQCQ2p4wmI3MTJ6Fa-AX5_Nno';
 
-        // تهيئة Supabase مع التحقق من الأمان
+        // تهيئة Supabase
         let supabase;
         try {
-            if (SUPABASE_URL && SUPABASE_ANON_KEY && 
-                SUPABASE_URL !== 'https://your-project.supabase.co' && 
-                SUPABASE_ANON_KEY !== 'your-anon-key') {
+            if (SUPABASE_URL && SUPABASE_ANON_KEY) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } else {
-                console.warn('إعدادات Supabase غير مكتملة. سيتم استخدام البيانات التجريبية.');
             }
         } catch (error) {
             console.error('خطأ في تهيئة Supabase:', error);
         }
 
-        // تهيئة GSAP
-        if (typeof gsap !== 'undefined') {
-            gsap.registerPlugin(ScrollTrigger);
-        }
-
-        // Cart state
+        // حالة التطبيق
         let cart = [];
         let products = [];
         let specialOffers = [];
         let currentCarouselIndex = 0;
-        
-        // DOM Elements
+        let carouselInterval;
+
+        // عناصر DOM
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.querySelector('.main-content');
         const themeToggle = document.getElementById('themeToggle');
         const cartButton = document.getElementById('cartButton');
         const cartSidebar = document.getElementById('cartSidebar');
@@ -1938,256 +1812,98 @@
         const whatsappOrder = document.getElementById('whatsappOrder');
         const productsGrid = document.getElementById('productsGrid');
         const emptyState = document.getElementById('emptyState');
-        const productsLoading = document.getElementById('productsLoading');
         const shopNowBtn = document.getElementById('shopNowBtn');
         const filterButtons = document.querySelectorAll('.filter-btn');
         const toast = document.getElementById('toast');
-        const particlesContainer = document.getElementById('particles');
         const carousel = document.getElementById('carousel');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const carouselIndicators = document.getElementById('carouselIndicators');
         const deliveryCar = document.querySelector('.delivery-car');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
 
-        // شاشة التحميل الجديدة ثلاثية الأبعاد
-        const loadingScreen = document.getElementById('loadingScreen');
-        const mainContent = document.querySelector('.main-content');
-        const loadingLogo = document.querySelector('.loading-logo');
-        const hologramCube = document.querySelector('.hologram-cube');
-        const particles3d = document.querySelector('.particles-3d');
-
-        // بدء شاشة التحميل الجديدة
-        function startLoadingScreen() {
-            // إنشاء الجسيمات ثلاثية الأبعاد
-            create3DParticles();
-            
-            // التأكد من توفر GSAP
-            if (typeof gsap !== 'undefined') {
-                // إنشاء أنيميشن متسلسل للشاشة ثلاثية الأبعاد
-                const loadingTimeline = gsap.timeline();
-
-                // 1. ظهور الشعار
-                loadingTimeline.to(loadingLogo, {
-                    opacity: 1,
-                    duration: 1.5,
-                    ease: "power2.out"
-                })
-
-                // 2. تدوير المكعب ثلاثي الأبعاد
-                .to(hologramCube, {
-                    rotationY: 360,
-                    rotationX: 360,
-                    duration: 4,
-                    ease: "power2.inOut"
-                }, "-=1")
-
-                // 3. تأثير نبض للشعار
-                .to(loadingLogo, {
-                    scale: 1.2,
-                    duration: 1,
-                    yoyo: true,
-                    repeat: 3
-                })
-
-                // 4. اختفاء شاشة التحميل
-                .to(loadingScreen, {
-                    opacity: 0,
-                    duration: 1,
-                    ease: "power2.in",
-                    onComplete: function() {
-                        // الانتقال إلى المحتوى الرئيسي
-                        completeLoading();
-                    }
-                });
-            } else {
-                // Fallback في حالة عدم توفر GSAP
-                loadingLogo.style.opacity = 1;
-                
-                setTimeout(() => {
-                    loadingScreen.style.opacity = 0;
-                    setTimeout(() => {
-                        completeLoading();
-                    }, 1000);
-                }, 3000);
-            }
-        }
-
-        // إنشاء الجسيمات ثلاثية الأبعاد
-        function create3DParticles() {
-            if (!particles3d) return;
-
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle-3d';
-                
-                const size = Math.random() * 4 + 2;
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                const depth = Math.random() * 200 - 100;
-                
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${left}%`;
-                particle.style.top = `${top}%`;
-                particle.style.transform = `translateZ(${depth}px)`;
-                
-                particles3d.appendChild(particle);
-                
-                // تحريك الجسيمات
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(particle, {
-                        x: 'random(-100, 100)',
-                        y: 'random(-100, 100)',
-                        z: 'random(-100, 100)',
-                        duration: 'random(5, 15)',
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "sine.inOut"
-                    });
-                }
-            }
-        }
-
-        // إكمال التحميل والانتقال للمحتوى الرئيسي
-        function completeLoading() {
-            loadingScreen.classList.add('fade-out');
-            
+        // بدء التحميل
+        function startLoading() {
             setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                mainContent.classList.add('loaded');
-                
-                // تهيئة الموقع بعد انتهاء التحميل
-                initializeSite();
-            }, 800);
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.classList.add('loaded');
+                    initializeSite();
+                }, 500);
+            }, 1500);
         }
 
-        // تهيئة الموقع بعد التحميل
+        // تهيئة الموقع
         function initializeSite() {
-            createParticles();
-            initAnimations();
             loadProducts();
             loadCarousel();
             loadCartFromLocalStorage();
+            setupEventListeners();
             
-            // Auto rotate carousel
-            setInterval(() => {
+            // تشغيل الكاروسيل التلقائي كل 3 ثواني
+            carouselInterval = setInterval(() => {
                 rotateCarousel(currentCarouselIndex + 1);
-            }, 4000);
+            }, 3000);
         }
 
-        // Create particle background
-        function createParticles() {
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                const size = Math.random() * 5 + 2;
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                const duration = Math.random() * 20 + 10;
-                const delay = Math.random() * 20;
-                
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${left}%`;
-                particle.style.top = `${top}%`;
-                
-                particlesContainer.appendChild(particle);
-                
-                // استخدام GSAP لتحريك الجسيمات أو CSS animation كبديل
-                if (typeof gsap !== 'undefined') {
-                    gsap.to(particle, {
-                        y: '-=100vh',
-                        x: '+=100',
-                        duration: duration,
-                        delay: delay,
-                        repeat: -1,
-                        ease: "none"
-                    });
-                } else {
-                    // Fallback animation
-                    particle.style.animation = `floatParticle ${duration}s ${delay}s infinite linear`;
-                }
-            }
-        }
-
-        // تهيئة أنيميشنات GSAP
-        function initAnimations() {
-            if (typeof gsap === 'undefined') return;
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // تبديل السمة
+            themeToggle.addEventListener('click', toggleTheme);
             
-            // أنيميشن الشعار
-            gsap.to('.logo', {
-                y: -5,
-                duration: 2,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
+            // إدارة السلة
+            cartButton.addEventListener('click', openCart);
+            closeCart.addEventListener('click', closeCartSidebar);
+            overlay.addEventListener('click', closeCartSidebar);
+            continueShopping.addEventListener('click', closeCartSidebar);
             
-            // أنيميشن العنوان الرئيسي
-            gsap.to('.hero h1', {
-                backgroundPosition: '200% 50%',
-                duration: 5,
-                repeat: -1,
-                ease: "none"
-            });
+            // زر الطلب عبر واتساب
+            whatsappOrder.addEventListener('click', sendWhatsAppOrder);
             
-            // أنيميشن الأزرار
-            gsap.to('.btn-primary', {
-                boxShadow: '0 0 20px rgba(0, 198, 255, 0.8)',
-                duration: 2,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-            
-            // أنيميشن الأشكال العائمة
-            gsap.to('.shape', {
-                y: 'random(-50, 50)',
-                x: 'random(-50, 50)',
-                rotation: 'random(-180, 180)',
-                duration: 'random(10, 20)',
-                repeat: -1,
-                yoyo: true,
-                stagger: 0.5,
-                ease: "sine.inOut"
-            });
-            
-            // أنيميشن العناصر عند التمرير
-            gsap.utils.toArray('.product-card').forEach(card => {
-                gsap.fromTo(card, {
-                    opacity: 0,
-                    y: 50
-                }, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top 80%',
-                        toggleActions: 'play none none reverse'
-                    }
+            // تصفية المنتجات
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const category = this.getAttribute('data-category');
+                    loadProducts(category);
                 });
             });
             
-            // أنيميشن قسم العروض الخاصة
-            gsap.fromTo('.carousel-section', {
-                opacity: 0,
-                y: 50
-            }, {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: '.carousel-section',
-                    start: 'top 80%',
-                    toggleActions: 'play none none reverse'
-                }
+            // زر استكشف المنتجات
+            shopNowBtn.addEventListener('click', () => {
+                document.querySelector('.products-grid').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            });
+            
+            // القائمة المتنقلة
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // التنقل في الكاروسيل
+            prevBtn.addEventListener('click', () => {
+                clearInterval(carouselInterval);
+                rotateCarousel(currentCarouselIndex - 1);
+                carouselInterval = setInterval(() => {
+                    rotateCarousel(currentCarouselIndex + 1);
+                }, 3000);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                clearInterval(carouselInterval);
+                rotateCarousel(currentCarouselIndex + 1);
+                carouselInterval = setInterval(() => {
+                    rotateCarousel(currentCarouselIndex + 1);
+                }, 3000);
             });
         }
 
-        // Theme Management
-        themeToggle.addEventListener('click', () => {
+        // تبديل السمة
+        function toggleTheme() {
             document.body.classList.toggle('dark-theme');
             document.body.classList.toggle('light-theme');
             
@@ -2201,9 +1917,9 @@
                 icon.classList.add('fa-moon');
                 localStorage.setItem('theme', 'dark');
             }
-        });
-        
-        // Load saved theme
+        }
+
+        // تحميل السمة المحفوظة
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
@@ -2212,65 +1928,20 @@
             themeToggle.querySelector('i').classList.add('fa-sun');
         }
 
-        // Toast notification function
-        function showToast(message, isError = false) {
-            toast.textContent = message;
-            toast.className = 'toast';
-            
-            if (isError) {
-                toast.classList.add('error');
-            }
-            
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Cart Management
-        cartButton.addEventListener('click', () => {
+        // فتح وإغلاق السلة
+        function openCart() {
             cartSidebar.classList.add('open');
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
-            // أنيميشن فتح السلة
-            if (typeof gsap !== 'undefined') {
-                gsap.fromTo(cartSidebar, {
-                    x: -450
-                }, {
-                    x: 0,
-                    duration: 0.5,
-                    ease: "back.out(1.7)"
-                });
-            }
-        });
-        
-        closeCart.addEventListener('click', closeCartSidebar);
-        overlay.addEventListener('click', closeCartSidebar);
-        continueShopping.addEventListener('click', closeCartSidebar);
-        
-        function closeCartSidebar() {
-            // أنيميشن إغلاق السلة
-            if (typeof gsap !== 'undefined') {
-                gsap.to(cartSidebar, {
-                    x: -450,
-                    duration: 0.4,
-                    ease: "power2.in",
-                    onComplete: function() {
-                        cartSidebar.classList.remove('open');
-                        overlay.classList.remove('active');
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-            } else {
-                cartSidebar.classList.remove('open');
-                overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
         }
-        
-        // Add to cart function
+
+        function closeCartSidebar() {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // إضافة منتج إلى السلة
         function addToCart(product, button) {
             const existingItem = cart.find(item => item.id === product.id);
             
@@ -2283,88 +1954,24 @@
                 });
             }
             
-            // أنيميشن إضافة المنتج للسلة
-            const buttonRect = button.getBoundingClientRect();
-            const cartRect = cartButton.getBoundingClientRect();
+            updateCartUI();
+            saveCartToLocalStorage();
+            showToast('تم إضافة المنتج إلى السلة');
             
-            const animationElement = document.createElement('div');
-            animationElement.className = 'cart-animation';
-            animationElement.innerHTML = '<i class="fas fa-shopping-cart"></i>';
-            animationElement.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-            animationElement.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
-            
-            document.body.appendChild(animationElement);
-            
-            if (typeof gsap !== 'undefined') {
-                gsap.to(animationElement, {
-                    left: cartRect.left + cartRect.width / 2,
-                    top: cartRect.top + cartRect.height / 2,
-                    scale: 0.5,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.out",
-                    onComplete: function() {
-                        animationElement.remove();
-                        updateCartUI();
-                        saveCartToLocalStorage();
-                        showToast('تم إضافة المنتج إلى السلة');
-                        
-                        // أنيميشن زر السلة
-                        gsap.to(cartButton, {
-                            scale: 1.2,
-                            duration: 0.2,
-                            yoyo: true,
-                            repeat: 1,
-                            ease: "power2.inOut"
-                        });
-                    }
-                });
-            } else {
-                // Fallback animation
-                animationElement.style.transition = 'all 0.8s ease-out';
-                animationElement.style.left = `${cartRect.left + cartRect.width / 2}px`;
-                animationElement.style.top = `${cartRect.top + cartRect.height / 2}px`;
-                animationElement.style.transform = 'scale(0.5)';
-                animationElement.style.opacity = '0';
-                
-                setTimeout(() => {
-                    animationElement.remove();
-                    updateCartUI();
-                    saveCartToLocalStorage();
-                    showToast('تم إضافة المنتج إلى السلة');
-                    
-                    // أنيميشن زر السلة
-                    cartButton.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        cartButton.style.transform = 'scale(1)';
-                    }, 200);
-                }, 800);
-            }
+            // تأثير بسيط على زر السلة
+            cartButton.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                cartButton.style.transform = 'scale(1)';
+            }, 200);
         }
-        
-        // Update cart UI
+
+        // تحديث واجهة السلة
         function updateCartUI() {
-            // Update cart count
+            // تحديث العداد
             const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
             cartCount.textContent = totalItems;
             
-            // أنيميشن تحديث العداد
-            if (typeof gsap !== 'undefined') {
-                gsap.to(cartCount, {
-                    scale: 1.5,
-                    duration: 0.2,
-                    yoyo: true,
-                    repeat: 1,
-                    ease: "power2.inOut"
-                });
-            } else {
-                cartCount.style.transform = 'scale(1.5)';
-                setTimeout(() => {
-                    cartCount.style.transform = 'scale(1)';
-                }, 200);
-            }
-            
-            // Update cart items
+            // تحديث العناصر
             cartItems.innerHTML = '';
             
             if (cart.length === 0) {
@@ -2378,8 +1985,6 @@
                 cart.forEach((item, index) => {
                     const cartItemElement = document.createElement('div');
                     cartItemElement.className = 'cart-item';
-                    cartItemElement.style.opacity = 0;
-                    cartItemElement.style.transform = 'translateX(-20px)';
                     
                     cartItemElement.innerHTML = `
                         <img src="${item.image_url || 'https://via.placeholder.com/80'}" alt="${item.name}" class="cart-item-image">
@@ -2398,26 +2003,13 @@
                     `;
                     cartItems.appendChild(cartItemElement);
                     
-                    // أنيميشن ظهور عنصر السلة
-                    if (typeof gsap !== 'undefined') {
-                        gsap.to(cartItemElement, {
-                            opacity: 1,
-                            x: 0,
-                            duration: 0.5,
-                            delay: index * 0.1,
-                            ease: "back.out(1.7)"
-                        });
-                    } else {
-                        // Fallback animation
-                        setTimeout(() => {
-                            cartItemElement.style.opacity = 1;
-                            cartItemElement.style.transform = 'translateX(0)';
-                            cartItemElement.style.transition = 'all 0.5s ease-out';
-                        }, index * 100);
-                    }
+                    // إضافة تأثير ظهور تدريجي
+                    setTimeout(() => {
+                        cartItemElement.style.opacity = '1';
+                    }, index * 100);
                 });
                 
-                // Add event listeners to quantity buttons
+                // إضافة مستمعي الأحداث لأزرار الكمية
                 document.querySelectorAll('.decrease').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const id = parseInt(btn.getAttribute('data-id'));
@@ -2440,32 +2032,12 @@
                 });
             }
             
-            // Update total
+            // تحديث المجموع
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotal.textContent = `${total.toFixed(2)} ج.س`;
-            
-            // أنيميشن تحديث المجموع
-            if (typeof gsap !== 'undefined') {
-                gsap.fromTo(cartTotal, {
-                    scale: 1.2,
-                    color: '#00c6ff'
-                }, {
-                    scale: 1,
-                    color: 'var(--text)',
-                    duration: 0.5,
-                    ease: "elastic.out(1, 0.5)"
-                });
-            } else {
-                cartTotal.style.transform = 'scale(1.2)';
-                cartTotal.style.color = '#00c6ff';
-                setTimeout(() => {
-                    cartTotal.style.transform = 'scale(1)';
-                    cartTotal.style.color = '';
-                }, 500);
-            }
         }
-        
-        // Cart item functions
+
+        // إدارة كمية العناصر في السلة
         function increaseQuantity(id) {
             const item = cart.find(item => item.id === id);
             if (item) {
@@ -2490,47 +2062,17 @@
         }
         
         function removeFromCart(id) {
-            const itemElement = document.querySelector(`.cart-item [data-id="${id}"]`).closest('.cart-item');
-            
-            // أنيميشن إزالة العنصر
-            if (typeof gsap !== 'undefined') {
-                gsap.to(itemElement, {
-                    opacity: 0,
-                    x: -20,
-                    height: 0,
-                    marginBottom: 0,
-                    duration: 0.4,
-                    ease: "power2.in",
-                    onComplete: function() {
-                        cart = cart.filter(item => item.id !== id);
-                        updateCartUI();
-                        saveCartToLocalStorage();
-                        showToast('تم إزالة المنتج من السلة');
-                    }
-                });
-            } else {
-                // Fallback animation
-                itemElement.style.opacity = 0;
-                itemElement.style.transform = 'translateX(-20px)';
-                itemElement.style.height = 0;
-                itemElement.style.marginBottom = 0;
-                itemElement.style.transition = 'all 0.4s ease-in';
-                
-                setTimeout(() => {
-                    cart = cart.filter(item => item.id !== id);
-                    updateCartUI();
-                    saveCartToLocalStorage();
-                    showToast('تم إزالة المنتج من السلة');
-                }, 400);
-            }
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+            saveCartToLocalStorage();
+            showToast('تم إزالة المنتج من السلة');
         }
-        
-        // Save cart to localStorage
+
+        // حفظ واستعادة السلة من التخزين المحلي
         function saveCartToLocalStorage() {
             localStorage.setItem('futureStoreCart', JSON.stringify(cart));
         }
         
-        // Load cart from localStorage
         function loadCartFromLocalStorage() {
             const savedCart = localStorage.getItem('futureStoreCart');
             if (savedCart) {
@@ -2543,99 +2085,51 @@
                 }
             }
         }
-        
-        // WhatsApp order function
-        whatsappOrder.addEventListener('click', () => {
+
+        // إرسال طلب عبر واتساب مع أنيميشن الشاحنة
+        function sendWhatsAppOrder() {
             if (cart.length === 0) {
                 showToast('سلة التسوق فارغة', true);
                 return;
             }
             
-            // أنيميشن العربية
-            if (typeof gsap !== 'undefined') {
-                gsap.to(deliveryCar, {
-                    bottom: '50%',
-                    opacity: 1,
-                    duration: 1,
-                    ease: "back.out(1.7)",
-                    onComplete: function() {
-                        // أنيميشن اختفاء العربية
-                        gsap.to(deliveryCar, {
-                            left: '100%',
-                            duration: 1.5,
-                            delay: 0.5,
-                            ease: "power2.in",
-                            onComplete: function() {
-                                // إعداد رسالة الواتساب
-                                let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                                
-                                cart.forEach(item => {
-                                    message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ج.س\n`;
-                                });
-                                
-                                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                                message += `\nالمجموع: ${total.toFixed(2)} ج.س`;
-                                
-                                const phoneNumber = '0924299798';
-                                const encodedMessage = encodeURIComponent(message);
-                                const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-                                
-                                // إعادة تعيين موقع العربية
-                                gsap.set(deliveryCar, {
-                                    bottom: -100,
-                                    left: '50%',
-                                    opacity: 0
-                                });
-                                
-                                // فتح رابط الواتساب
-                                window.open(url, '_blank');
-                            }
-                        });
-                    }
-                });
-            } else {
-                // Fallback animation
-                deliveryCar.style.bottom = '50%';
-                deliveryCar.style.opacity = '1';
-                deliveryCar.style.transition = 'all 1s ease-out';
+            // أنيميشن الشاحنة
+            deliveryCar.classList.add('active');
+            
+            setTimeout(() => {
+                deliveryCar.classList.add('delivering');
                 
                 setTimeout(() => {
-                    deliveryCar.style.left = '100%';
-                    deliveryCar.style.transition = 'all 1.5s ease-in';
+                    // إعداد رسالة الواتساب
+                    let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
                     
+                    cart.forEach(item => {
+                        message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ج.س\n`;
+                    });
+                    
+                    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    message += `\nالمجموع: ${total.toFixed(2)} ج.س`;
+                    
+                    const phoneNumber = '0924299798';
+                    const encodedMessage = encodeURIComponent(message);
+                    const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                    
+                    // إعادة تعيين موقع الشاحنة
                     setTimeout(() => {
-                        // إعداد رسالة الواتساب
-                        let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                        
-                        cart.forEach(item => {
-                            message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ج.س\n`;
-                        });
-                        
-                        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                        message += `\nالمجموع: ${total.toFixed(2)} ج.س`;
-                        
-                        const phoneNumber = '0924299798';
-                        const encodedMessage = encodeURIComponent(message);
-                        const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-                        
-                        // إعادة تعيين موقع العربية
-                        deliveryCar.style.bottom = '-100px';
-                        deliveryCar.style.left = '50%';
-                        deliveryCar.style.opacity = '0';
-                        
-                        // فتح رابط الواتساب
-                        window.open(url, '_blank');
-                    }, 2000);
-                }, 1000);
-            }
-        });
-        
-        // Load 3D Carousel
+                        deliveryCar.classList.remove('active', 'delivering');
+                    }, 500);
+                    
+                    // فتح رابط الواتساب
+                    window.open(url, '_blank');
+                }, 1500);
+            }, 1000);
+        }
+
+        // تحميل الكاروسيل
         async function loadCarousel() {
             try {
                 let offers = [];
                 
-                // استخدام Supabase إذا كان متاحاً
                 if (supabase) {
                     const { data, error } = await supabase
                         .from('products')
@@ -2648,7 +2142,7 @@
                     
                     offers = data || [];
                 } else {
-                    // بيانات تجريبية في حالة عدم توفر Supabase
+                    // بيانات تجريبية
                     offers = [
                         {
                             id: 101,
@@ -2657,7 +2151,7 @@
                             price: 1699,
                             original_price: 2199,
                             discount: 23,
-                            image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
                             id: 102,
@@ -2666,7 +2160,7 @@
                             price: 249,
                             original_price: 399,
                             discount: 38,
-                            image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
                             id: 103,
@@ -2675,7 +2169,7 @@
                             price: 399,
                             original_price: 550,
                             discount: 27,
-                            image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
                             id: 104,
@@ -2684,7 +2178,7 @@
                             price: 699,
                             original_price: 999,
                             discount: 30,
-                            image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
                             id: 105,
@@ -2693,7 +2187,7 @@
                             price: 999,
                             original_price: 1500,
                             discount: 33,
-                            image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
                             id: 106,
@@ -2702,7 +2196,7 @@
                             price: 299,
                             original_price: 450,
                             discount: 34,
-                            image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
+                            image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         }
                     ];
                 }
@@ -2720,7 +2214,7 @@
                     
                     carouselItem.innerHTML = `
                         ${offer.discount ? `<div class="carousel-discount">-${offer.discount}%</div>` : ''}
-                        <img src="${offer.image_url || offer.image}" alt="${offer.name}" class="carousel-image">
+                        <img src="${offer.image_url}" alt="${offer.name}" class="carousel-image">
                         <div class="carousel-content">
                             <div class="carousel-category">${offer.category}</div>
                             <h3 class="carousel-title">${offer.name}</h3>
@@ -2747,39 +2241,33 @@
                     if (index === 0) indicator.classList.add('active');
                     indicator.setAttribute('data-index', index);
                     indicator.addEventListener('click', () => {
+                        clearInterval(carouselInterval);
                         rotateCarousel(index);
+                        carouselInterval = setInterval(() => {
+                            rotateCarousel(currentCarouselIndex + 1);
+                        }, 3000);
                     });
                     carouselIndicators.appendChild(indicator);
+                    
+                    // إضافة مستمع حدث لإضافة إلى السلة
+                    carouselItem.querySelector('.carousel-add-to-cart').addEventListener('click', (e) => {
+                        const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                        const product = specialOffers.find(p => p.id === id);
+                        if (product) {
+                            addToCart(product, e.currentTarget);
+                        }
+                    });
                 });
                 
                 // تحديث مواضيع العناصر في الكاروسيل
                 updateCarouselItems();
                 
-                // إضافة مستمعي الأحداث لأزرار التنقل
-                prevBtn.addEventListener('click', () => {
-                    rotateCarousel(currentCarouselIndex - 1);
-                });
-                
-                nextBtn.addEventListener('click', () => {
-                    rotateCarousel(currentCarouselIndex + 1);
-                });
-                
-                // إضافة مستمعي الأحداث لأزرار إضافة إلى السلة
-                document.querySelectorAll('.carousel-add-to-cart').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = parseInt(btn.getAttribute('data-id'));
-                        const product = specialOffers.find(p => p.id === id);
-                        if (product) {
-                            addToCart(product, btn);
-                        }
-                    });
-                });
             } catch (error) {
                 console.error('Error loading carousel:', error);
                 showToast('حدث خطأ في تحميل العروض الخاصة', true);
             }
         }
-        
+
         // تدوير الكاروسيل
         function rotateCarousel(newIndex) {
             const items = document.querySelectorAll('.carousel-item');
@@ -2802,7 +2290,7 @@
             // تحديث مواضيع العناصر
             updateCarouselItems();
         }
-        
+
         // تحديث مواضيع العناصر في الكاروسيل
         function updateCarouselItems() {
             const items = document.querySelectorAll('.carousel-item');
@@ -2832,41 +2320,39 @@
                 }
             });
         }
-        
-        // Load products
+
+        // تحميل المنتجات
         async function loadProducts(category = 'all') {
-            productsLoading.style.display = 'flex';
             productsGrid.innerHTML = '';
             emptyState.style.display = 'none';
             
             try {
-                // استخدام Supabase إذا كان متاحاً
+                let data = [];
+                
                 if (supabase) {
                     let query = supabase
                         .from('products')
                         .select('*')
                         .order('created_at', { ascending: false });
 
-                    // Filter by category if needed
                     if (category !== 'all') {
                         query = query.eq('category', category);
                     }
 
-                    const { data, error } = await query;
+                    const { data: productsData, error } = await query;
 
                     if (error) throw error;
-                    
-                    products = data || [];
+                    data = productsData || [];
                 } else {
-                    // بيانات تجريبية في حالة عدم توفر Supabase
-                    products = [
+                    // بيانات تجريبية
+                    data = [
                         {
                             id: 1,
                             name: 'سماعات لاسلكية متطورة',
                             category: 'إلكترونيات',
                             price: 299,
                             original_price: 399,
-                            image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أبيض', 'أزرق']
                         },
                         {
@@ -2875,7 +2361,7 @@
                             category: 'إلكترونيات',
                             price: 450,
                             original_price: 550,
-                            image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'فضي', 'ذهبي']
                         },
                         {
@@ -2884,7 +2370,7 @@
                             category: 'إلكترونيات',
                             price: 1899,
                             original_price: 2199,
-                            image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أزرق', 'أخضر']
                         },
                         {
@@ -2893,7 +2379,7 @@
                             category: 'رياضة',
                             price: 350,
                             original_price: 450,
-                            image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أبيض', 'أحمر']
                         },
                         {
@@ -2902,7 +2388,7 @@
                             category: 'إلكترونيات',
                             price: 799,
                             original_price: 999,
-                            image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'رمادي']
                         },
                         {
@@ -2911,29 +2397,26 @@
                             category: 'أجهزة منزلية',
                             price: 1200,
                             original_price: 1500,
-                            image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+                            image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أبيض', 'أسود']
                         }
                     ];
                 }
                 
-                // تصفية حسب الفئة إذا لزم الأمر
+                // تصفية حسب الفئة
                 if (category !== 'all') {
-                    products = products.filter(product => product.category === category);
+                    data = data.filter(product => product.category === category);
                 }
                 
-                if (products.length === 0) {
+                if (data.length === 0) {
                     emptyState.style.display = 'block';
-                    productsGrid.innerHTML = '';
                 } else {
-                    emptyState.style.display = 'none';
-                    
-                    products.forEach((product, index) => {
+                    data.forEach((product, index) => {
                         const productCard = document.createElement('div');
                         productCard.className = 'product-card';
                         
                         productCard.innerHTML = `
-                            <img src="${product.image_url || product.image}" alt="${product.name}" class="product-image">
+                            <img src="${product.image_url}" alt="${product.name}" class="product-image">
                             <div class="product-content">
                                 <div class="product-category">${product.category}</div>
                                 <h3 class="product-title">${product.name}</h3>
@@ -2962,37 +2445,17 @@
                         
                         productsGrid.appendChild(productCard);
                         
-                        // أنيميشن ظهور البطاقة
-                        if (typeof gsap !== 'undefined') {
-                            gsap.fromTo(productCard, {
-                                opacity: 0,
-                                y: 50,
-                                scale: 0.9
-                            }, {
-                                opacity: 1,
-                                y: 0,
-                                scale: 1,
-                                duration: 0.6,
-                                delay: index * 0.1,
-                                ease: "back.out(1.7)"
-                            });
-                        } else {
-                            // Fallback animation
-                            setTimeout(() => {
-                                productCard.style.opacity = 1;
-                                productCard.style.transform = 'translateY(0) scale(1)';
-                                productCard.style.transition = 'all 0.6s ease-out';
-                            }, index * 100);
-                        }
-                    });
-                    
-                    // Add event listeners to add to cart buttons
-                    document.querySelectorAll('.add-to-cart').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = parseInt(btn.getAttribute('data-id'));
-                            const product = products.find(p => p.id === id);
+                        // إضافة تأثير ظهور تدريجي
+                        setTimeout(() => {
+                            productCard.style.opacity = '1';
+                        }, index * 100);
+                        
+                        // إضافة مستمع حدث لإضافة إلى السلة
+                        productCard.querySelector('.add-to-cart').addEventListener('click', (e) => {
+                            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                            const product = data.find(p => p.id === id);
                             if (product) {
-                                addToCart(product, btn);
+                                addToCart(product, e.currentTarget);
                             }
                         });
                     });
@@ -3001,12 +2464,10 @@
                 console.error('Error loading products:', error);
                 showToast('حدث خطأ في تحميل المنتجات', true);
                 emptyState.style.display = 'block';
-            } finally {
-                productsLoading.style.display = 'none';
             }
         }
-        
-        // Helper function to convert color names to hex
+
+        // دالة مساعدة لتحويل أسماء الألوان إلى hex
         function getColorHex(colorName) {
             const colorMap = {
                 'أسود': '#000000',
@@ -3029,61 +2490,25 @@
             
             return colorMap[colorName] || '#CCCCCC';
         }
-        
-        // Filter products by category
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Remove active class from all buttons
-                filterButtons.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
-                this.classList.add('active');
-                // Get the category from data attribute
-                const category = this.getAttribute('data-category');
-                // Load products for this category
-                loadProducts(category);
-            });
-        });
-        
-        // Shop now button scroll to products
-        shopNowBtn.addEventListener('click', () => {
-            if (typeof gsap !== 'undefined') {
-                gsap.to(window, {
-                    duration: 1,
-                    scrollTo: {
-                        y: '.products-grid',
-                        offsetY: 50
-                    },
-                    ease: "power2.inOut"
-                });
-            } else {
-                // Fallback scroll
-                document.querySelector('.products-grid').scrollIntoView({ 
-                    behavior: 'smooth' 
-                });
-            }
-        });
-        
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            // بدء شاشة التحميل
-            startLoadingScreen();
-        });
 
-        // إضافة CSS animations لل fallback
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes waveAnimation {
-                0% { transform: scaleY(0.3); }
-                50% { transform: scaleY(1); }
-                100% { transform: scaleY(0.3); }
+        // عرض الإشعارات
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (isError) {
+                toast.classList.add('error');
             }
             
-            @keyframes floatParticle {
-                0% { transform: translate(0, 0); }
-                100% { transform: translate(100px, -100vh); }
-            }
-        `;
-        document.head.appendChild(style);
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // بدء التحميل عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', startLoading);
     </script>
 </body>
 </html>
