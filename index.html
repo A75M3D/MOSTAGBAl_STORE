@@ -1031,8 +1031,8 @@
         .cart-sidebar {
             position: fixed;
             top: 0;
-            left: -100%;
-            width: 100%;
+            left: -450px;
+            width: 450px;
             height: 100vh;
             background: var(--glass-bg);
             backdrop-filter: var(--blur);
@@ -1044,7 +1044,6 @@
             display: flex;
             flex-direction: column;
             /* إزالة overflow-y: auto من العنصر الرئيسي */
-            overflow-y: hidden; /* منع التمرير العام للسلة */
         }
 
         .cart-sidebar.open {
@@ -1476,8 +1475,8 @@
             }
             
             .cart-sidebar {
-                width: 100%;
-                left: -100%;
+                width: 380px;
+                left: -380px;
             }
 
             .carousel-container {
@@ -1501,6 +1500,11 @@
             
             .section-title {
                 font-size: 2.2rem;
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                left: -100%;
             }
             
             .products-grid {
@@ -1666,11 +1670,11 @@
                     <div class="logo">متجر المستقبل</div>
                     
                     <nav class="nav-links" id="navLinks">
-                        <a href="#" class="active">الرئيسية</a>
+                        <a href="index.html" class="active">الرئيسية</a>
                         <a href="latest-products.html">إدارة المنتجات</a>
-                        <a href="#">التصنيفات</a>
-                        <a href="#">من نحن</a>
-                        <a href="#">اتصل بنا</a>
+                        <a href="index.html">التصنيفات</a>
+                        <a href="about.html">من نحن</a>
+                        <a href="contact.html">اتصل بنا</a>
                     </nav>
                     
                     <div class="header-actions">
