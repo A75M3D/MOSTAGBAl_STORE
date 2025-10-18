@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من نحن - متجر المستقبل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #1a3a6c;
+            --accent: #f39c12;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 60px;
+        }
+        
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            animation: fadeIn 2s ease;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            animation: fadeIn 2.5s ease;
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* About Section */
+        .about {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            margin: 15px auto;
+        }
+        
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* History Section */
+        .history {
+            padding: 80px 0;
+            background-color: #f0f4f8;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary);
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            padding: 20px 0;
+            position: relative;
+            width: 50%;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 40px;
+            text-align: left;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 40px;
+            text-align: right;
+        }
+        
+        .timeline-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .timeline-content:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            transform: rotate(45deg);
+            top: 15px;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content:after {
+            right: -10px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content:after {
+            left: -10px;
+        }
+        
+        .timeline-year {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Values Section */
+        .values {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .value-card {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .value-card h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        /* Team Section */
+        .team {
+            padding: 80px 0;
+            background-color: #f0f4f8;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .team-member {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-img {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .member-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .team-member:hover .member-img img {
+            transform: scale(1.1);
+        }
+        
+        .member-info {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .member-info h3 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .member-role {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .timeline:before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 0;
+                text-align: left;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-content:after {
+                left: -10px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-store-alt"></i>
+                    <h1>متجر المستقبل</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">الرئيسية</a></li>
+                        <li><a href="#">منتجاتنا</a></li>
+                        <li><a href="#" class="active">من نحن</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2> هدفنا ان نقدم افضل خدمة للعميل الخطة المجانية 30 منتج لكل صاحب منتجات لمدة شهر </h2>
+            <p>منذ تأسيسنا عام 2024، كنا روادًا في تقديم أحدث المنتجات والتقنيات لعملائنا الكرام، متمسكين بقيمنا الأصيلة وملتزمين برؤية مستقبلية طموحة.</p>
+            <a href="#" class="btn">اكتشف رحلتنا</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">من نحن</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>متجر المستقبل: رحلة من التميز والابتكار</h3>
+                    <p>تأسس متجر المستقبل في عام 2024 على يد رائد الأعمال أحمد عبدالكريم ، الذي كان يؤمن بأن المستقبل للتجارة الإلكترونية والتقنيات الحديثة. بدأنا برؤية واضحة وهي تقديم أفضل المنتجات بأعلى جودة وأسعار منافسة.</p>
+                    <p>على مر السنين، تطور متجر المستقبل من متجر صغير في قلب المدينة إلى أحد أكبر منصات التجارة الإلكترونية في المنطقة، مع وجود في أكثر من 10 دول وخدمة مئات الالاف من العملاء سنويًا.</p>
+                    <p>نحن نؤمن بأن نجاحنا يرتبط ارتباطًا وثيقًا برضا عملائنا، لذلك نعمل دائمًا على تطوير خدماتنا وتحسين تجربة التسوق لضمان توفير أفضل ما يمكن لعملائنا الكرام.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1563017940-49f99f5c2fb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="متجر المستقبل">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="history">
+        <div class="container">
+            <h2 class="section-title">رحلتنا عبر الزمن</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2024</span>
+                        <h3>بداية الرحلة</h3>
+                        <p>تأسيس أول متجر في الرياض مع فريق عمل مكون من 5 أفراد فقط، متخصص في بيع الأجهزة الإلكترونية.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2024</span>
+                        <h3>التوسع الأول</h3>
+                        <p>افتتاح 3 فروع جديدة في مدن رئيسية بالمملكة، وبداية التعاون مع علامات تجارية عالمية.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2025</span>
+                        <h3>التحول الرقمي</h3>
+                        <p>إطلاق الموقع الإلكتروني ليكون أول منصة تجارة إلكترونية في المنطقة، محققًا نموًا بنسبة 300% في السنة الأولى.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2025</span>
+                        <h3>التوسع الدولي</h3>
+                        <p>بداية العمل في الأسواق الدولية مع افتتاح فروع في الإمارات ومصر والكويت، وتأسيس مركز توزيع إقليمي.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2026</span>
+                        <h3> نطمح في 2026الريادة التكنولوجية</h3>
+                        <p>إطلاق تطبيق الهاتف المحمول وتطبيقات الذكاء الاصطناعي لتوصيات المنتجات، مع تحقيق أكثر من مليون عملية شراء عبر الإنترنت.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2030</span>
+                        <h3>رؤية المستقبل</h3>
+                        <p>الاستثمار في تقنيات الميتافيرس والتجارة الافتراضية، والتحضير لإطلاق منصة التسوق بالواقع المعزز.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values">
+        <div class="container">
+            <h2 class="section-title">قيمنا الأساسية</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>العميل أولاً</h3>
+                    <p>نضع رضا العملاء في مقدمة أولوياتنا، ونعمل دائمًا على توفير أفضل تجربة تسوق ممكنة.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>الابتكار</h3>
+                    <p>نسعى دائمًا لتبني أحدث التقنيات والأفكار المبتكرة لتحسين خدماتنا وتجربة عملائنا.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>النزاهة</h3>
+                    <p>نلتزم بأعلى معايير الشفافية والأمانة في جميع تعاملاتنا مع العملاء والشركاء.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>التطوير المستمر</h3>
+                    <p>نؤمن بأن النجاح الحقيقي يأتي من التطوير المستمر لأنفسنا ومنتجاتنا وخدماتنا.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team">
+        <div class="container">
+            <h2 class="section-title">فريق القيادة</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=634&q=80" alt="محمد العلي">
+                    </div>
+                    <div class="member-info">
+                        <h3>محمد العلي</h3>
+                        <p class="member-role">المؤسس والرئيس التنفيذي</p>
+                        <p>قاد رحلة متجر المستقبل منذ تأسيسه، ويتمتع بخبرة تزيد عن  12 عامًا في مجال التجارة الإلكترونية.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=634&q=80" alt="سارة الحربي">
+                    </div>
+                    <div class="member-info">
+                        <h3>سارة الحربي</h3>
+                        <p class="member-role">نائب الرئيس للتسويق</p>
+                        <p>انضمت إلى الفريق عام 2024، وقادت العديد من الحملات الناجحة التي ساهمت في نمو العلامة التجارية.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="خالد السعد">
+                    </div>
+                    <div class="member-info">
+                        <h3>خالد السعد</h3>
+                        <p class="member-role">مدير التكنولوجيا</p>
+                        <p>يشرف على جميع الجوانب التقنية، ويقود فريق المطورين لتحقيق رؤية المتجر الرقمية.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="https://images.unsplash.com/photo-1551836026-d5c0889dd6d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="نورة القحطاني">
+                    </div>
+                    <div class="member-info">
+                        <h3>نورة القحطاني</h3>
+                        <p class="member-role">مديرة العمليات</p>
+                        <p>تشرف على سلسلة التوريد والخدمات اللوجستية، وتضمن تقديم أفضل تجربة تسوق للعملاء.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>متجر المستقبل</h3>
+                    <p>رواد التجارة الإلكترونية منذ 2024، ملتزمون بتقديم أفضل المنتجات والخدمات لعملائنا الكرام.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="#">الرئيسية</a></li>
+                        <li><a href="#">منتجاتنا</a></li>
+                        <li><a href="#">من نحن</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>خدماتنا</h3>
+                    <ul>
+                        <li><a href="#">التسوق عبر الإنترنت</a></li>
+                        <li><a href="#">التوصيل السريع</a></li>
+                        <li><a href="#">الدعم الفني</a></li>
+                        <li><a href="#">الضمان والاستبدال</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> الخرطوم ،السودان</li>
+                        <li><i class="fas fa-phone"></i>0924299798</li>
+                        <li><i class="fas fa-envelope"></i> info@futurestore.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2025 متجر المستقبل</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
