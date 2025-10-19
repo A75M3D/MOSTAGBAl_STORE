@@ -558,7 +558,6 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
-            margin-top: auto; /* دفع الأزرار للأسفل */
         }
 
         .carousel-add-to-cart {
@@ -578,7 +577,6 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-            white-space: nowrap; /* منع كسر النص */
         }
 
         .carousel-add-to-cart::before {
@@ -618,7 +616,6 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
-            flex-shrink: 0; /* منع تغيير الحجم */
         }
 
         .carousel-action-btn::before {
@@ -1472,24 +1469,25 @@
         }
 
         /* Mobile Carousel Styles - تصميم الكاروسيل للهاتف */
-        .mobile-carousel-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-
         .mobile-carousel {
-            display: flex;
-            transition: transform 0.5s ease;
+            display: none;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
             gap: 20px;
             padding: 10px 0;
+            scrollbar-width: none; /* إخفاء شريط التمرير في Firefox */
+            -ms-overflow-style: none; /* إخفاء شريط التمرير في IE و Edge */
+        }
+
+        .mobile-carousel::-webkit-scrollbar {
+            display: none; /* إخفاء شريط التمرير في Chrome و Safari */
         }
 
         .mobile-carousel-item {
-            flex: 0 0 calc(100% - 40px);
-            max-width: calc(100% - 40px);
-            margin: 0 20px;
+            flex: 0 0 auto;
+            width: 280px;
             height: 380px;
+            scroll-snap-align: start;
             background: var(--card-bg);
             backdrop-filter: var(--blur);
             border: 1px solid var(--card-border);
@@ -1508,7 +1506,7 @@
 
         /* Mobile Carousel Indicators */
         .mobile-carousel-indicators {
-            display: flex;
+            display: none;
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
@@ -1528,58 +1526,6 @@
             background: var(--primary);
             transform: scale(1.2);
             box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
-        }
-
-        /* Mobile Carousel Navigation */
-        .mobile-carousel-nav {
-            display: flex;
-            justify-content: space-between;
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            transform: translateY(-50%);
-            z-index: 10;
-            padding: 0 10px;
-        }
-
-        .mobile-carousel-nav-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text);
-            font-size: 18px;
-            backdrop-filter: var(--blur);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-carousel-nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .mobile-carousel-nav-btn:hover::before {
-            left: 100%;
-        }
-
-        .mobile-carousel-nav-btn:hover {
-            background: var(--primary);
-            color: #0a0a0a;
-            transform: scale(1.1);
-            box-shadow: var(--neon-glow);
         }
 
         /* Responsive Design */
@@ -1667,15 +1613,11 @@
                 display: none;
             }
 
-            .mobile-carousel-container {
-                display: block;
-            }
-
-            .mobile-carousel-indicators {
+            .mobile-carousel {
                 display: flex;
             }
 
-            .mobile-carousel-nav {
+            .mobile-carousel-indicators {
                 display: flex;
             }
         }
@@ -1739,12 +1681,6 @@
             
             .loading-truck {
                 font-size: 60px;
-            }
-
-            .mobile-carousel-item {
-                flex: 0 0 calc(100% - 20px);
-                max-width: calc(100% - 20px);
-                margin: 0 10px;
             }
         }
 
@@ -1880,23 +1816,13 @@
                 </div>
                 
                 <!-- الكاروسيل المتنقل للهاتف -->
-                <div class="mobile-carousel-container" id="mobileCarouselContainer">
-                    <div class="mobile-carousel" id="mobileCarousel">
-                        <!-- سيتم إضافة العروض الخاصة هنا -->
-                    </div>
-                    
-                    <div class="mobile-carousel-nav">
-                        <button class="mobile-carousel-nav-btn" id="mobilePrevBtn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <button class="mobile-carousel-nav-btn" id="mobileNextBtn">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="mobile-carousel-indicators" id="mobileCarouselIndicators">
-                        <!-- سيتم إضافة المؤشرات هنا -->
-                    </div>
+                <div class="mobile-carousel" id="mobileCarousel">
+                    <!-- سيتم إضافة العروض الخاصة هنا -->
+                </div>
+                
+                <!-- مؤشرات الكاروسيل للهاتف -->
+                <div class="mobile-carousel-indicators" id="mobileCarouselIndicators">
+                    <!-- سيتم إضافة المؤشرات هنا -->
                 </div>
             </div>
         </section>
@@ -2073,9 +1999,6 @@
         const mobileCarousel = document.getElementById('mobileCarousel');
         const desktopCarousel = document.getElementById('desktopCarousel');
         const mobileCarouselIndicators = document.getElementById('mobileCarouselIndicators');
-        const mobileCarouselContainer = document.getElementById('mobileCarouselContainer');
-        const mobilePrevBtn = document.getElementById('mobilePrevBtn');
-        const mobileNextBtn = document.getElementById('mobileNextBtn');
 
         // بدء التحميل
         function startLoading() {
@@ -2176,23 +2099,6 @@
                 });
             }
             
-            // التنقل في الكاروسيل المتنقل (للجوال)
-            mobilePrevBtn.addEventListener('click', () => {
-                clearInterval(mobileCarouselInterval);
-                rotateMobileCarousel(currentMobileCarouselIndex - 1);
-                mobileCarouselInterval = setInterval(() => {
-                    rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                }, 5000);
-            });
-            
-            mobileNextBtn.addEventListener('click', () => {
-                clearInterval(mobileCarouselInterval);
-                rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                mobileCarouselInterval = setInterval(() => {
-                    rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                }, 5000);
-            });
-            
             // إعادة تهيئة الكاروسيل عند تغيير حجم النافذة
             window.addEventListener('resize', handleResize);
         }
@@ -2205,7 +2111,8 @@
                 // إخفاء الكاروسيل ثلاثي الأبعاد وإظهار الكاروسيل المتنقل
                 desktopCarousel.style.display = 'none';
                 carouselIndicators.style.display = 'none';
-                mobileCarouselContainer.style.display = 'block';
+                mobileCarousel.style.display = 'flex';
+                mobileCarouselIndicators.style.display = 'flex';
                 // تشغيل الكاروسيل التلقائي للهاتف
                 if (!mobileCarouselInterval) {
                     mobileCarouselInterval = setInterval(() => {
@@ -2219,7 +2126,8 @@
                 // إظهار الكاروسيل ثلاثي الأبعاد وإخفاء الكاروسيل المتنقل
                 desktopCarousel.style.display = 'flex';
                 carouselIndicators.style.display = 'flex';
-                mobileCarouselContainer.style.display = 'none';
+                mobileCarousel.style.display = 'none';
+                mobileCarouselIndicators.style.display = 'none';
                 // إعادة تشغيل الكاروسيل التلقائي للديسكتوب
                 if (!carouselInterval) {
                     carouselInterval = setInterval(() => {
@@ -2714,10 +2622,12 @@
                 }
             });
             
-            // حساب عرض العنصر مع المسافة بين العناصر
-            const itemWidth = items[0].offsetWidth + 40; // عرض العنصر + المسافة بين العناصر
             // تمرير الكاروسيل إلى العنصر الحالي
-            mobileCarousel.style.transform = `translateX(-${currentMobileCarouselIndex * itemWidth}px)`;
+            const itemWidth = 280 + 20; // عرض العنصر + المسافة بين العناصر
+            mobileCarousel.scrollTo({
+                left: currentMobileCarouselIndex * itemWidth,
+                behavior: 'smooth'
+            });
         }
 
         // تحديث مواضيع العناصر في الكاروسيل (فقط على الديسكتوب)
