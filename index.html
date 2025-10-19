@@ -1468,6 +1468,42 @@
             margin-bottom: 30px;
         }
 
+        /* Mobile Carousel Styles - تصميم الكاروسيل للهاتف */
+        .mobile-carousel {
+            display: none;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 10px 0;
+            scrollbar-width: none; /* إخفاء شريط التمرير في Firefox */
+            -ms-overflow-style: none; /* إخفاء شريط التمرير في IE و Edge */
+        }
+
+        .mobile-carousel::-webkit-scrollbar {
+            display: none; /* إخفاء شريط التمرير في Chrome و Safari */
+        }
+
+        .mobile-carousel-item {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 380px;
+            scroll-snap-align: start;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--card-border);
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .mobile-carousel-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), var(--neon-glow);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .products-grid {
@@ -1542,6 +1578,19 @@
 
             .cart-item-details {
                 width: 100%;
+            }
+
+            /* إخفاء الكاروسيل ثلاثي الأبعاد وإظهار الكاروسيل المتنقل للهاتف */
+            .carousel-container {
+                display: none;
+            }
+
+            .carousel-indicators {
+                display: none;
+            }
+
+            .mobile-carousel {
+                display: flex;
             }
         }
 
@@ -1718,7 +1767,8 @@
             <div class="container">
                 <h2 class="section-title">عروض خاصة</h2>
                 
-                <div class="carousel-container">
+                <!-- الكاروسيل ثلاثي الأبعاد للديسكتوب -->
+                <div class="carousel-container" id="desktopCarousel">
                     <div class="carousel" id="carousel">
                         <!-- سيتم إضافة العروض الخاصة هنا -->
                     </div>
@@ -1735,6 +1785,11 @@
                 
                 <div class="carousel-indicators" id="carouselIndicators">
                     <!-- سيتم إضافة المؤشرات هنا -->
+                </div>
+                
+                <!-- الكاروسيل المتنقل للهاتف -->
+                <div class="mobile-carousel" id="mobileCarousel">
+                    <!-- سيتم إضافة العروض الخاصة هنا -->
                 </div>
             </div>
         </section>
@@ -1906,6 +1961,8 @@
         const deliveryCar = document.querySelector('.delivery-car');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
+        const mobileCarousel = document.getElementById('mobileCarousel');
+        const desktopCarousel = document.getElementById('desktopCarousel');
 
         // بدء التحميل
         function startLoading() {
@@ -1939,10 +1996,12 @@
             loadCartFromLocalStorage();
             setupEventListeners();
             
-            // تشغيل الكاروسيل التلقائي كل 3 ثواني
-            carouselInterval = setInterval(() => {
-                rotateCarousel(currentCarouselIndex + 1);
-            }, 3000);
+            // تشغيل الكاروسيل التلقائي كل 3 ثواني (فقط على الديسكتوب)
+            if (window.innerWidth > 768) {
+                carouselInterval = setInterval(() => {
+                    rotateCarousel(currentCarouselIndex + 1);
+                }, 3000);
+            }
         }
 
         // إعداد مستمعي الأحداث
@@ -1981,22 +2040,48 @@
                 navLinks.classList.toggle('active');
             });
             
-            // التنقل في الكاروسيل
-            prevBtn.addEventListener('click', () => {
-                clearInterval(carouselInterval);
-                rotateCarousel(currentCarouselIndex - 1);
-                carouselInterval = setInterval(() => {
+            // التنقل في الكاروسيل (فقط على الديسكتوب)
+            if (window.innerWidth > 768) {
+                prevBtn.addEventListener('click', () => {
+                    clearInterval(carouselInterval);
+                    rotateCarousel(currentCarouselIndex - 1);
+                    carouselInterval = setInterval(() => {
+                        rotateCarousel(currentCarouselIndex + 1);
+                    }, 3000);
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    clearInterval(carouselInterval);
                     rotateCarousel(currentCarouselIndex + 1);
-                }, 3000);
-            });
+                    carouselInterval = setInterval(() => {
+                        rotateCarousel(currentCarouselIndex + 1);
+                    }, 3000);
+                });
+            }
             
-            nextBtn.addEventListener('click', () => {
+            // إعادة تهيئة الكاروسيل عند تغيير حجم النافذة
+            window.addEventListener('resize', handleResize);
+        }
+
+        // التعامل مع تغيير حجم النافذة
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                // إيقاف الكاروسيل التلقائي على الهاتف
                 clearInterval(carouselInterval);
-                rotateCarousel(currentCarouselIndex + 1);
+                // إخفاء الكاروسيل ثلاثي الأبعاد وإظهار الكاروسيل المتنقل
+                desktopCarousel.style.display = 'none';
+                carouselIndicators.style.display = 'none';
+                mobileCarousel.style.display = 'flex';
+            } else {
+                // إظهار الكاروسيل ثلاثي الأبعاد وإخفاء الكاروسيل المتنقل
+                desktopCarousel.style.display = 'flex';
+                carouselIndicators.style.display = 'flex';
+                mobileCarousel.style.display = 'none';
+                // إعادة تشغيل الكاروسيل التلقائي
                 carouselInterval = setInterval(() => {
                     rotateCarousel(currentCarouselIndex + 1);
                 }, 3000);
-            });
+            }
         }
 
         // تبديل السمة
@@ -2057,7 +2142,7 @@
             }
             
             // إضافة تأثير الضوء الكهروضوئي
-            const productCard = button.closest('.product-card');
+            const productCard = button.closest('.product-card, .carousel-item, .mobile-carousel-item');
             if (productCard) {
                 productCard.classList.add('added-to-cart');
                 setTimeout(() => {
@@ -2314,11 +2399,12 @@
                 
                 specialOffers = offers;
                 
+                // إعداد الكاروسيل ثلاثي الأبعاد للديسكتوب
                 carousel.innerHTML = '';
                 carouselIndicators.innerHTML = '';
                 
                 specialOffers.forEach((offer, index) => {
-                    // إنشاء عنصر الكاروسيل
+                    // إنشاء عنصر الكاروسيل للديسكتوب
                     const carouselItem = document.createElement('div');
                     carouselItem.className = 'carousel-item';
                     if (index === 0) carouselItem.classList.add('active');
@@ -2370,8 +2456,51 @@
                     });
                 });
                 
-                // تحديث مواضيع العناصر في الكاروسيل
-                updateCarouselItems();
+                // إعداد الكاروسيل المتنقل للهاتف
+                mobileCarousel.innerHTML = '';
+                
+                specialOffers.forEach((offer, index) => {
+                    // إنشاء عنصر الكاروسيل للهاتف
+                    const mobileCarouselItem = document.createElement('div');
+                    mobileCarouselItem.className = 'mobile-carousel-item';
+                    
+                    mobileCarouselItem.innerHTML = `
+                        ${offer.discount ? `<div class="carousel-discount">-${offer.discount}%</div>` : ''}
+                        <img src="${offer.image_url}" alt="${offer.name}" class="carousel-image">
+                        <div class="carousel-content">
+                            <div class="carousel-category">${offer.category}</div>
+                            <h3 class="carousel-title">${offer.name}</h3>
+                            <div class="carousel-price">
+                                <span class="carousel-current-price">${offer.price} ج.س</span>
+                                ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ج.س</span>` : ''}
+                            </div>
+                            <div class="carousel-actions">
+                                <button class="carousel-add-to-cart" data-id="${offer.id}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    أضف إلى السلة
+                                </button>
+                                <button class="carousel-action-btn"><i class="far fa-heart"></i></button>
+                                <button class="carousel-action-btn"><i class="far fa-eye"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    mobileCarousel.appendChild(mobileCarouselItem);
+                    
+                    // إضافة مستمع حدث لإضافة إلى السلة
+                    mobileCarouselItem.querySelector('.carousel-add-to-cart').addEventListener('click', (e) => {
+                        const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                        const product = specialOffers.find(p => p.id === id);
+                        if (product) {
+                            addToCart(product, e.currentTarget);
+                        }
+                    });
+                });
+                
+                // تحديث مواضيع العناصر في الكاروسيل (فقط على الديسكتوب)
+                if (window.innerWidth > 768) {
+                    updateCarouselItems();
+                }
                 
             } catch (error) {
                 console.error('Error loading carousel:', error);
@@ -2379,8 +2508,10 @@
             }
         }
 
-        // تدوير الكاروسيل
+        // تدوير الكاروسيل (فقط على الديسكتوب)
         function rotateCarousel(newIndex) {
+            if (window.innerWidth <= 768) return;
+            
             const items = document.querySelectorAll('.carousel-item');
             const indicators = document.querySelectorAll('.carousel-indicator');
             
@@ -2402,8 +2533,10 @@
             updateCarouselItems();
         }
 
-        // تحديث مواضيع العناصر في الكاروسيل
+        // تحديث مواضيع العناصر في الكاروسيل (فقط على الديسكتوب)
         function updateCarouselItems() {
+            if (window.innerWidth <= 768) return;
+            
             const items = document.querySelectorAll('.carousel-item');
             const angle = 360 / items.length;
             
