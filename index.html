@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
     <title>متجر المستقبل - تجربة تسوق ثورية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -558,6 +560,7 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
+            margin-top: auto; /* إضافة هذه الخاصية لضمان ظهور الأزرار */
         }
 
         .carousel-add-to-cart {
@@ -577,6 +580,7 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            min-height: 44px; /* ضبط ارتفاع ثابت للزر */
         }
 
         .carousel-add-to-cart::before {
@@ -773,6 +777,36 @@
             box-shadow: var(--neon-glow);
         }
 
+        /* تأثيرات الضوء الجديدة للأزرار */
+        .filter-btn.intense-glow {
+            animation: intenseGlow 3s ease;
+        }
+
+        @keyframes intenseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6);
+            }
+            70% {
+                box-shadow: 0 0 30px rgba(0, 198, 255, 1), 0 0 40px rgba(123, 66, 246, 0.8), 0 0 60px rgba(255, 45, 117, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+            }
+        }
+
+        .filter-btn.electro-glow {
+            animation: electroGlow 6s infinite;
+        }
+
+        @keyframes electroGlow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(0, 198, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(0, 198, 255, 0.7), 0 0 20px rgba(123, 66, 246, 0.5);
+            }
+        }
+
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -821,10 +855,10 @@
 
         /* تأثير الضوء الكهروضوئي عند الإضافة للسلة */
         .product-card.added-to-cart {
-            animation: electroGlow 1.5s ease;
+            animation: electroGlowProduct 1.5s ease;
         }
 
-        @keyframes electroGlow {
+        @keyframes electroGlowProduct {
             0% {
                 box-shadow: 0 0 5px rgba(0, 198, 255, 0.5);
             }
@@ -2032,16 +2066,13 @@
             loadCartFromLocalStorage();
             setupEventListeners();
             
-            // تشغيل الكاروسيل التلقائي كل 5 ثواني (أبطأ من السابق)
+            // تشغيل الكاروسيل التلقائي فقط على الديسكتوب
             if (window.innerWidth > 768) {
                 carouselInterval = setInterval(() => {
                     rotateCarousel(currentCarouselIndex + 1);
                 }, 5000);
-            } else {
-                mobileCarouselInterval = setInterval(() => {
-                    rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                }, 5000);
             }
+            // لا تشغيل الكاروسيل التلقائي على الهاتف
         }
 
         // إعداد مستمعي الأحداث
@@ -2058,11 +2089,28 @@
             // زر الطلب عبر واتساب
             whatsappOrder.addEventListener('click', sendWhatsAppOrder);
             
-            // تصفية المنتجات
+            // تصفية المنتجات مع تأثيرات الضوء
             filterButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    filterButtons.forEach(b => b.classList.remove('active'));
+                    // إزالة الفئة النشطة من جميع الأزرار
+                    filterButtons.forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.remove('intense-glow');
+                        b.classList.remove('electro-glow');
+                    });
+                    
+                    // إضافة الفئة النشطة للزر المختار
                     this.classList.add('active');
+                    
+                    // إضافة تأثير الضوء الكثيف
+                    this.classList.add('intense-glow');
+                    
+                    // بعد 3 ثوانٍ، إزالة الضوء الكثيف وإضافة الضوء الكهروضوئي الخفيف
+                    setTimeout(() => {
+                        this.classList.remove('intense-glow');
+                        this.classList.add('electro-glow');
+                    }, 3000);
+                    
                     const category = this.getAttribute('data-category');
                     loadProducts(category);
                 });
@@ -2113,12 +2161,9 @@
                 carouselIndicators.style.display = 'none';
                 mobileCarousel.style.display = 'flex';
                 mobileCarouselIndicators.style.display = 'flex';
-                // تشغيل الكاروسيل التلقائي للهاتف
-                if (!mobileCarouselInterval) {
-                    mobileCarouselInterval = setInterval(() => {
-                        rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                    }, 5000);
-                }
+                // لا تشغيل الكاروسيل التلقائي للهاتف
+                clearInterval(mobileCarouselInterval);
+                mobileCarouselInterval = null;
             } else {
                 // إيقاف الكاروسيل التلقائي للهاتف
                 clearInterval(mobileCarouselInterval);
@@ -2547,11 +2592,8 @@
                     if (index === 0) mobileIndicator.classList.add('active');
                     mobileIndicator.setAttribute('data-index', index);
                     mobileIndicator.addEventListener('click', () => {
-                        clearInterval(mobileCarouselInterval);
+                        // لا يوجد كود للحركة التلقائية في الهاتف
                         rotateMobileCarousel(index);
-                        mobileCarouselInterval = setInterval(() => {
-                            rotateMobileCarousel(currentMobileCarouselIndex + 1);
-                        }, 5000);
                     });
                     mobileCarouselIndicators.appendChild(mobileIndicator);
                     
