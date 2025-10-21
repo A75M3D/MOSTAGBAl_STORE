@@ -522,6 +522,28 @@
             line-height: 1.4;
         }
 
+        /* تنسيق التقييم للكاروسيل */
+        .carousel-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .carousel-rating i {
+            color: var(--secondary);
+        }
+
+        .rating-count {
+            background: rgba(255, 45, 117, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
         .carousel-price {
             display: flex;
             align-items: center;
@@ -913,6 +935,28 @@
             margin-bottom: 12px;
             color: var(--text);
             line-height: 1.4;
+        }
+
+        /* تنسيق التقييم للمنتجات */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .product-rating i {
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .product-colors {
@@ -2436,7 +2480,7 @@
                     
                     offers = data || [];
                 } else {
-                    // بيانات تجريبية
+                    // بيانات تجريبية مع التقييمات
                     offers = [
                         {
                             id: 101,
@@ -2445,6 +2489,7 @@
                             price: 1699,
                             original_price: 2199,
                             discount: 23,
+                            rating: '3.2K',
                             image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
@@ -2454,6 +2499,7 @@
                             price: 249,
                             original_price: 399,
                             discount: 38,
+                            rating: '4.5K',
                             image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
@@ -2463,6 +2509,7 @@
                             price: 399,
                             original_price: 550,
                             discount: 27,
+                            rating: '2.8K',
                             image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
@@ -2472,6 +2519,7 @@
                             price: 699,
                             original_price: 999,
                             discount: 30,
+                            rating: '1.5K',
                             image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
@@ -2481,6 +2529,7 @@
                             price: 999,
                             original_price: 1500,
                             discount: 33,
+                            rating: '3.9K',
                             image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         },
                         {
@@ -2490,6 +2539,7 @@
                             price: 299,
                             original_price: 450,
                             discount: 34,
+                            rating: '4.2K',
                             image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
                         }
                     ];
@@ -2513,6 +2563,10 @@
                         <div class="carousel-content">
                             <div class="carousel-category">${offer.category}</div>
                             <h3 class="carousel-title">${offer.name}</h3>
+                            <div class="carousel-rating">
+                                <i class="fas fa-heart"></i>
+                                <span class="rating-count">${offer.rating || '1.8K'}</span>
+                            </div>
                             <div class="carousel-price">
                                 <span class="carousel-current-price">${offer.price} ج.س</span>
                                 ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ج.س</span>` : ''}
@@ -2569,6 +2623,10 @@
                         <div class="carousel-content">
                             <div class="carousel-category">${offer.category}</div>
                             <h3 class="carousel-title">${offer.name}</h3>
+                            <div class="carousel-rating">
+                                <i class="fas fa-heart"></i>
+                                <span class="rating-count">${offer.rating || '1.8K'}</span>
+                            </div>
                             <div class="carousel-price">
                                 <span class="carousel-current-price">${offer.price} ج.س</span>
                                 ${offer.original_price ? `<span class="carousel-original-price">${offer.original_price} ج.س</span>` : ''}
@@ -2727,7 +2785,7 @@
                     if (error) throw error;
                     data = productsData || [];
                 } else {
-                    // بيانات تجريبية
+                    // بيانات تجريبية مع التقييمات
                     data = [
                         {
                             id: 1,
@@ -2735,6 +2793,7 @@
                             category: 'إلكترونيات',
                             price: 299,
                             original_price: 399,
+                            rating: '3.2K',
                             image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أبيض', 'أزرق']
                         },
@@ -2744,6 +2803,7 @@
                             category: 'إلكترونيات',
                             price: 450,
                             original_price: 550,
+                            rating: '4.5K',
                             image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'فضي', 'ذهبي']
                         },
@@ -2753,6 +2813,7 @@
                             category: 'إلكترونيات',
                             price: 1899,
                             original_price: 2199,
+                            rating: '2.8K',
                             image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أزرق', 'أخضر']
                         },
@@ -2762,6 +2823,7 @@
                             category: 'رياضة',
                             price: 350,
                             original_price: 450,
+                            rating: '3.9K',
                             image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'أبيض', 'أحمر']
                         },
@@ -2771,6 +2833,7 @@
                             category: 'إلكترونيات',
                             price: 799,
                             original_price: 999,
+                            rating: '1.5K',
                             image_url: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أسود', 'رمادي']
                         },
@@ -2780,6 +2843,7 @@
                             category: 'أجهزة منزلية',
                             price: 1200,
                             original_price: 1500,
+                            rating: '4.2K',
                             image_url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
                             colors: ['أبيض', 'أسود']
                         }
@@ -2803,6 +2867,11 @@
                             <div class="product-content">
                                 <div class="product-category">${product.category}</div>
                                 <h3 class="product-title">${product.name}</h3>
+                                
+                                <div class="product-rating">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="rating-count">${product.rating || '2.3K'}</span>
+                                </div>
                                 
                                 <div class="product-colors">
                                     ${(product.colors || []).map(color => 
