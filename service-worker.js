@@ -1,11 +1,11 @@
-const CACHE_NAME = 'skillzoy-v3';
+const CACHE_NAME = 'M-STORE-v3';
 const urlsToCache = [
-  '/',
+  '/index.html',
   '/manifest.json',
   '/script.js',
-  '/index.html',
+  '/contact.html',
   '/ad.html',
-  '/',
+  '/about.html',
   // الملفات الثابتة اللي مش بتتغير
 ];
 
@@ -45,8 +45,8 @@ self.addEventListener('fetch', (event) => {
   const dynamicFiles = [
     '',
     '/index.html',
-    '',
-    ''
+    'about.html',
+    'contact.html'
   ];
   
   const isDynamicFile = dynamicFiles.some(file => 
