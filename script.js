@@ -103,7 +103,7 @@ const AppState = {
     init() {
         this.setupEventListeners();
         this.checkAuthStatus();
-        console.log('🚀 Skillzoy Academy Initialized');
+        console.log('🚀 M-STORE Initialized');
     },
     
     // إعداد مستمعي الأحداث
