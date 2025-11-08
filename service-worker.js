@@ -1,4 +1,4 @@
-const CACHE_NAME = 'M-STORE-v3';
+const CACHE_NAME = 'MOSTAGBAL-STORE-v3';
 const urlsToCache = [
   '/index.html',
   '/manifest.json',
