@@ -2992,5 +2992,32 @@
         // بدء التحميل عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', startLoading);
     </script>
+        <script>
+  // تسجيل Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ تم تسجيل الـ Service Worker'))
+      .catch(err => console.log('❌ خطأ في SW:', err));
+  }
+
+  // منطق زر التثبيت
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.hidden = false;
+  });
+
+  installBtn.addEventListener('click', async () => {
+    installBtn.hidden = true;
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    }
+  });
+        </script>
 </body>
 </html>
