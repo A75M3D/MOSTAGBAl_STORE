@@ -6,7 +6,9 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="MobileOptimized" content="width">
     <title>متجر المستقبل - تجربة تسوق ثورية</title>
-   <link rel="manifest" href="manifest.json">
+   <!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a8a">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -1797,6 +1799,33 @@
         }
     </style>
 </head>
+       <button id="installBtn" hidden class="install-btn">
+  📥 تثبيت التطبيق
+</button>
+
+<style>
+  .install-btn {
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .install-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
+  }
+
+  .install-btn:active {
+    transform: scale(0.98);
+  }
+</style>
 <body class="dark-theme">
     <!-- شاشة التحميل مع الشاحنة -->
     <div id="loadingScreen">
