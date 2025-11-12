@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Skillzoy-Academy';
+const CACHE_NAME = 'MOSTAGBAL-STORE';
 const urlsToCache = [
   '/index.html',
   '/script.js',
