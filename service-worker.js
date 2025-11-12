@@ -1,9 +1,9 @@
 const CACHE_NAME = 'Skillzoy-Academy';
 const urlsToCache = [
-  '/manifest.json',
+  '/index.html',
   '/script.js',
   '/login.html',
-  '/ad.html',
+  '/manifest.json',
   '/register.html',
   // الملفات الثابتة اللي مش بتتغير
 ];
@@ -43,8 +43,9 @@ self.addEventListener('fetch', (event) => {
   // الملفات الديناميكية اللي بتتغير باستمرار
   const dynamicFiles = [
     '',
-    '/index.html',
-    '/dashboard/index.html',
+    '/conact.html',
+    '/about.html',
+    '/ad.html',
     
   ];
   
