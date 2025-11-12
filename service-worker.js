@@ -1,11 +1,10 @@
-const CACHE_NAME = 'MOSTAGBAL-STORE';
+const CACHE_NAME = 'Skillzoy-Academy';
 const urlsToCache = [
-  '/index.html',
   '/manifest.json',
   '/script.js',
-  '/contact.html',
+  '/login.html',
   '/ad.html',
-  '/about.html',
+  '/register.html',
   // الملفات الثابتة اللي مش بتتغير
 ];
 
@@ -45,8 +44,8 @@ self.addEventListener('fetch', (event) => {
   const dynamicFiles = [
     '',
     '/index.html',
-    'about.html',
-    'contact.html'
+    '/dashboard/index.html',
+    
   ];
   
   const isDynamicFile = dynamicFiles.some(file => 
