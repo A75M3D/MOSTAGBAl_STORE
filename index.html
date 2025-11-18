@@ -3019,5 +3019,63 @@
     }
   });
         </script>
+        <script>
+(() => {
+
+       // ==============================
+      //Hacked Code for Hacking v1.2 //
+    // ==============================
+    document.addEventListener("keydown", (e) => {
+        if (
+            (e.ctrlKey && e.shiftKey && ["I", "C", "J", "L"].includes(e.key.toUpperCase())) ||
+            (e.key === "F12") ||
+            (e.ctrlKey && e.key.toUpperCase() === "U")
+        ) {
+            e.preventDefault();
+        }
+    });
+
+    
+    document.addEventListener("copy", e => e.preventDefault());
+    document.addEventListener("cut", e => e.preventDefault());
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("selectstart", e => e.preventDefault());
+
+    
+    let detectSize = () => {
+        if (window.outerWidth - window.innerWidth > 200 || 
+            window.outerHeight - window.innerHeight > 200) {
+            block();
+        }
+    };
+    window.addEventListener("resize", detectSize);
+
+    
+    let start = performance.now();
+    console.log("%c ", "font-size:200px;");
+    let end = performance.now();
+    if (end - start > 50) block();
+
+    // mutation observer
+    const observer = new MutationObserver(() => {
+        block();
+    });
+    observer.observe(document.documentElement, { attributes: true, childList: false, subtree: false });
+
+    // debugger trap
+    setInterval(() => {
+        const t = Date.now();
+        debugger;
+        if (Date.now() - t > 100) block();
+    }, 500);
+
+    // دالة block بدون أي تأثير على الصفحة
+    function block() {
+        
+        console.clear(); 
+    }
+
+})();
+</script> 
 </body>
 </html>
