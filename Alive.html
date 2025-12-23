@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supabase Multi Project Keeper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body style="background:#020617;color:#e5e7eb;font-family:Arial;padding:20px">
+<pre id="status">Initializing…</pre>
+
+<script>
+/* =================================================
+   CONFIG — ADD ALL YOUR PROJECTS HERE
+================================================= */
+const PROJECTS = [
+  {
+    name: "Project_A",
+    url: "https://sjipwstkvvrautexigmt.supabase.co",
+    key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqaXB3c3RrdnZyYXV0ZXhpZ210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MTE5MDcsImV4cCI6MjA3NDQ4NzkwN30.FSh2yIdZdvdNvtWxK5JB02PIdWOG3707qO-F0c84PnY",
+    table: "courses"
+  },
+  {
+    name: "Project_B",
+    url: "",
+    key: "",
+    table: "users"
+  }
+  // يمكنك إضافة عدد غير محدود من المشاريع
+];
+
+/* =================================================
+   GLOBAL HARD LIMITS
+================================================= */
+const INTERVAL = 12 * 60 * 60 * 1000; // 12 hours
+
+/* =================================================
+   CORE ENGINE
+================================================= */
+async function keepProjectAlive(project) {
+  const now = Date.now();
+  const LAST_KEY = "__sb_last_" + project.name;
+  const LOCK_KEY = "__sb_lock_" + project.name;
+
+  if (localStorage.getItem(LOCK_KEY)) return;
+
+  const last = localStorage.getItem(LAST_KEY);
+  if (last && now - Number(last) < INTERVAL) {
+    log(project.name + ": SAFE (interval not reached)");
+    return;
+  }
+
+  localStorage.setItem(LOCK_KEY, "1");
+
+  try {
+    const client = window.supabase.createClient(
+      project.url,
+      project.key
+    );
+
+    const { error } = await client
+      .from(project.table)
+      .select("id", { head: true })
+      .limit(1);
+
+    if (!error) {
+      localStorage.setItem(LAST_KEY, now.toString());
+      log(project.name + ": OK @ " + new Date().toLocaleString());
+    } else {
+      log(project.name + ": ERROR");
+    }
+
+  } catch (e) {
+    log(project.name + ": BLOCKED");
+  } finally {
+    localStorage.removeItem(LOCK_KEY);
+  }
+}
+
+/* =================================================
+   AUTO EXECUTION (ALL PROJECTS)
+================================================= */
+function runAll() {
+  PROJECTS.forEach(p => keepProjectAlive(p));
+}
+
+runAll();
+setInterval(runAll, INTERVAL);
+
+/* =================================================
+   LOG
+================================================= */
+function log(msg) {
+  const el = document.getElementById("status");
+  el.textContent += "\n" + msg;
+}
+</script>
+
+</body>
+</html>
