@@ -39,7 +39,13 @@
                     description: "هدايا تعليمية وفاخرة للأطفال، تجمع بين المتعة والفائدة والجودة العالية."
                 }
             ],
-            
+
+
+
+
+
+
+                
             // المنتجات الفاخرة
             products: [
                 {
@@ -133,7 +139,37 @@
             ],
 
         
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
             // الحصول على التصنيفات الفريدة
             getUniqueCategories: function() {
                 return [...new Set(this.products.map(product => product.category))];
