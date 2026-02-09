@@ -2,21 +2,169 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
     <title>Hadia Plus - عالم الهدايا الفاخرة</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B7355">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
         
         body { font-family: 'Cairo', sans-serif; }
         .playfair { font-family: 'Playfair Display', serif; }
         
+        /* شاشة التحميل */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2C3E50 0%, #1a1a2e 50%, #16213e 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #loadingScreen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .loading-progress.show {
+            opacity: 1;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #D4AF37, #8B7355, #800020);
+            border-radius: 3px;
+            transition: width 3s ease 1.5s;
+        }
+
+        /* إخفاء المحتوى الرئيسي أثناء التحميل */
+        .main-content {
+            display: none;
+        }
+
+        .main-content.loaded {
+            display: block;
+        }
+
+        /* تأثيرات الضوء عند اختيار المنتج */
+        .product-card.selected {
+            animation: intenseGlow 1.5s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes intenseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+            }
+            25% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.8), 0 0 30px rgba(139, 115, 85, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(212, 175, 55, 1), 0 0 40px rgba(139, 115, 85, 0.8), 0 0 60px rgba(128, 0, 32, 0.6);
+            }
+            75% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.8), 0 0 30px rgba(139, 115, 85, 0.6);
+            }
+            100% {
+                box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            }
+        }
+
+        /* زر التثبيت */
+        .install-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #D4AF37, #8B7355);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 115, 85, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .install-btn:hover {
+            background: linear-gradient(135deg, #8B7355, #800020);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.6);
+        }
+
+        .install-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* سيارة التوصيل */
+        .delivery-car {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 60px;
+            color: #D4AF37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+            transition: all 1s ease;
+        }
+
+        .delivery-car.active {
+            bottom: 50%;
+            opacity: 1;
+        }
+
+        .delivery-car.delivering {
+            left: 100%;
+            opacity: 0;
+        }
+
+        /* التأثيرات العامة */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #8B7355; border-radius: 4px; }
@@ -54,7 +202,70 @@
             0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
             50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
         }
+
+        /* تأثيرات الضوء للزر */
+        .filter-btn.intense-glow {
+            animation: intenseGlow 3s ease;
+        }
+
+        @keyframes intenseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            }
+            70% {
+                box-shadow: 0 0 30px rgba(212, 175, 55, 1), 0 0 40px rgba(139, 115, 85, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            }
+        }
+
+        .filter-btn.electro-glow {
+            animation: electroGlow 6s infinite;
+        }
+
+        @keyframes electroGlow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(212, 175, 55, 0.7), 0 0 20px rgba(139, 115, 85, 0.5);
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transition: all 0.3s ease;
+        }
+
+        /* تحسينات للهاتف */
+        @media (max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+            }
+            
+            .product-card {
+                margin: 0 10px;
+            }
+            
+            .install-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .install-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
     </style>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -74,12 +285,17 @@
                     animation: {
                         'bounce-slow': 'bounce 3s infinite',
                         'pulse-slow': 'pulse 3s infinite',
-                        'float': 'float 6s ease-in-out infinite'
+                        'float': 'float 6s ease-in-out infinite',
+                        'fadeInUp': 'fadeInUp 0.6s ease-out'
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -88,19 +304,30 @@
     </script>
 </head>
 <body class="bg-light text-gray-800 font-cairo">
+    <!-- زر التثبيت -->
+    <button id="installBtn" hidden class="install-btn">
+        <i class="fas fa-download"></i>
+        تثبيت التطبيق
+    </button>
+
+    <!-- سيارة التوصيل -->
+    <div class="delivery-car">
+        <i class="fas fa-gift"></i>
+    </div>
+
     <!-- شاشة التحميل -->
-    <div id="loadingScreen" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center">
+    <div id="loadingScreen">
         <div class="text-center">
             <div class="text-6xl playfair font-bold gradient-text mb-4">Hadia Plus</div>
             <div class="text-gold-light mb-8">الوجهة الفاخرة للهدايا العالمية</div>
-            <div class="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
-                <div id="loadingProgress" class="h-full bg-gradient-to-r from-secondary to-burgundy transition-all duration-1000"></div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
             </div>
         </div>
     </div>
 
     <!-- المحتوى الرئيسي -->
-    <div id="mainContent" class="hidden">
+    <div class="main-content">
         <!-- شريط التنقل -->
         <nav class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
             <div class="container mx-auto px-4">
@@ -110,7 +337,7 @@
                         <div class="text-3xl playfair font-bold gradient-text">Hadia<span class="text-secondary">+</span></div>
                     </div>
                     
-                    <!-- قائمة التنقل -->
+                    <!-- قائمة التنقل للديسكتوب -->
                     <div class="hidden md:flex items-center space-x-8 space-x-reverse">
                         <a href="#" class="text-dark hover:text-primary font-medium transition-colors">الرئيسية</a>
                         <a href="#" class="text-dark hover:text-primary font-medium transition-colors">الفئات</a>
@@ -129,7 +356,7 @@
                             <i class="fas fa-shopping-bag text-dark text-lg"></i>
                             <span id="cartCount" class="absolute -top-1 -right-1 bg-burgundy text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
                         </button>
-                        <button class="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <button id="mobileMenuBtn" class="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors">
                             <i class="fas fa-bars text-dark text-lg"></i>
                         </button>
                     </div>
@@ -137,13 +364,25 @@
             </div>
         </nav>
 
+        <!-- قائمة التنقل للهاتف -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed top-20 right-0 w-full bg-white shadow-lg z-30 transform -translate-y-full">
+            <div class="flex flex-col p-4 space-y-4">
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">الرئيسية</a>
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">الفئات</a>
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">هدايا فاخرة</a>
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">هدايا رجال الأعمال</a>
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">هدايا نسائية</a>
+                <a href="#" class="text-dark hover:text-primary font-medium transition-colors py-2">اتصل بنا</a>
+            </div>
+        </div>
+
         <!-- قسم البطل -->
         <section class="pt-32 pb-20 bg-gradient-to-br from-light to-gold-light/20">
             <div class="container mx-auto px-4">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <!-- النص -->
                     <div class="text-right">
-                        <h1 class="text-5xl lg:text-6xl playfair font-bold text-dark mb-6">
+                        <h1 class="text-4xl lg:text-6xl playfair font-bold text-dark mb-6">
                             <span class="block">هدايا فاخرة</span>
                             <span class="gradient-text">تعبر عن التميز</span>
                         </h1>
@@ -426,18 +665,32 @@
         </footer>
     </div>
 
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+
     <script>
         // ==================== تهيئة Firebase ====================
-        // قم باستبدال هذه المعلومات بمعلومات مشروع Firebase الخاص بك
         const firebaseConfig = {
-  apiKey: "AIzaSyBhuvfhNeumOBcDeeDoj884YAMMObT2D5U",
-  authDomain: "store-edf0a.firebaseapp.com",
-  projectId: "store-edf0a",
-  storageBucket: "store-edf0a.firebasestorage.app",
-  messagingSenderId: "520046449398",
-  appId: "1:520046449398:web:dca21f13cb567ea960d2d7",
-  measurementId: "G-31M9W1PM3D"
-};
+            apiKey: "AIzaSyBhuvfhNeumOBcDeeDoj884YAMMObT2D5U",
+            authDomain: "store-edf0a.firebaseapp.com",
+            projectId: "store-edf0a",
+            storageBucket: "store-edf0a.firebasestorage.app",
+            messagingSenderId: "520046449398",
+            appId: "1:520046449398:web:dca21f13cb567ea960d2d7",
+            measurementId: "G-31M9W1PM3D"
+        };
 
         // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
@@ -453,8 +706,8 @@
 
         // ==================== عناصر DOM ====================
         const loadingScreen = document.getElementById('loadingScreen');
-        const loadingProgress = document.getElementById('loadingProgress');
-        const mainContent = document.getElementById('mainContent');
+        const loadingProgress = document.querySelector('.loading-progress-bar');
+        const mainContent = document.querySelector('.main-content');
         const cartButton = document.getElementById('cartButton');
         const cartSidebar = document.getElementById('cartSidebar');
         const closeCart = document.getElementById('closeCart');
@@ -475,26 +728,43 @@
         const toastMessage = document.getElementById('toastMessage');
         const toastIcon = document.getElementById('toastIcon');
         const closeToast = document.getElementById('closeToast');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const installBtn = document.getElementById('installBtn');
+        const deliveryCar = document.querySelector('.delivery-car');
+
+        // ==================== PWA Installation ====================
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.hidden = false;
+            
+            installBtn.addEventListener('click', async () => {
+                installBtn.hidden = true;
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                }
+            });
+        });
 
         // ==================== إدارة التحميل ====================
         function startLoading() {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 10;
-                loadingProgress.style.width = `${progress}%`;
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        loadingScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingScreen.style.display = 'none';
-                            mainContent.classList.remove('hidden');
-                            initializeSite();
-                        }, 300);
-                    }, 300);
-                }
-            }, 200);
+            setTimeout(() => {
+                loadingProgress.style.width = '100%';
+            }, 100);
+
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.classList.add('loaded');
+                    initializeSite();
+                }, 800);
+            }, 3000);
         }
 
         // ==================== تهيئة الموقع ====================
@@ -505,7 +775,6 @@
                 updateCartUI();
                 setupEventListeners();
                 
-                // إضافة تأثيرات التمرير
                 setupScrollAnimations();
                 
             } catch (error) {
@@ -535,11 +804,30 @@
             closeToast.addEventListener('click', () => {
                 toast.classList.add('hidden');
             });
+            
+            // القائمة المتنقلة
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            
+            // إغلاق القائمة عند النقر على رابط
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('translate-y-0');
+                    mobileMenu.classList.add('-translate-y-full');
+                });
+            });
+        }
+
+        function toggleMobileMenu() {
+            if (mobileMenu.classList.contains('-translate-y-full')) {
+                mobileMenu.classList.remove('-translate-y-full');
+                mobileMenu.classList.add('translate-y-0');
+            } else {
+                mobileMenu.classList.remove('translate-y-0');
+                mobileMenu.classList.add('-translate-y-full');
+            }
         }
 
         // ==================== Cloud Firestore Functions ====================
-
-        // تحميل الفئات من Firestore
         async function loadCategories() {
             try {
                 const categoriesRef = db.collection('categories');
@@ -585,10 +873,8 @@
             }
         }
 
-        // تحميل المنتجات من Firestore
         async function loadProducts() {
             try {
-                // التغيير الوحيد هنا: من products إلى users
                 const productsRef = db.collection('users');
                 const snapshot = await productsRef.orderBy('created_at', 'desc').get();
                 
@@ -618,7 +904,7 @@
             
             categories.forEach(category => {
                 const categoryCard = document.createElement('div');
-                categoryCard.className = 'bg-white rounded-2xl overflow-hidden shadow-lg hover-lift cursor-pointer';
+                categoryCard.className = 'bg-white rounded-2xl overflow-hidden shadow-lg hover-lift cursor-pointer animate-fadeInUp';
                 categoryCard.onclick = () => filterByCategory(category.name);
                 
                 categoryCard.innerHTML = `
@@ -647,6 +933,11 @@
             const buttons = productsFilter.querySelectorAll('button');
             buttons.forEach(btn => {
                 if (btn.textContent === categoryName || (categoryName === "الكل" && btn.textContent === "الكل")) {
+                    btn.classList.add('intense-glow');
+                    setTimeout(() => {
+                        btn.classList.remove('intense-glow');
+                        btn.classList.add('electro-glow');
+                    }, 3000);
                     btn.classList.add('bg-primary', 'text-white');
                     btn.classList.remove('bg-gray-100', 'text-gray-700');
                 } else {
@@ -657,17 +948,14 @@
             
             displayProducts();
             
-            // التمرير إلى المنتجات
             document.getElementById('productsGrid').scrollIntoView({ behavior: 'smooth' });
         }
 
         // ==================== عرض المنتجات ====================
         function displayProducts() {
-            // إخفاء حالة التحميل
             loadingProducts.classList.add('hidden');
             productsGrid.classList.remove('hidden');
             
-            // إعداد أزرار التصفية
             const uniqueCategories = ["الكل", ...new Set(products.map(p => p.category))];
             productsFilter.innerHTML = '';
             
@@ -679,7 +967,6 @@
                 productsFilter.appendChild(filterBtn);
             });
             
-            // تصفية المنتجات
             const filteredProducts = currentCategory === "الكل" 
                 ? products 
                 : products.filter(product => product.category === currentCategory);
@@ -694,12 +981,10 @@
             
             emptyState.classList.add('hidden');
             
-            // عرض المنتجات
             filteredProducts.forEach(product => {
                 const productCard = document.createElement('div');
-                productCard.className = 'bg-white rounded-2xl overflow-hidden shadow-lg hover-lift product-card';
+                productCard.className = 'bg-white rounded-2xl overflow-hidden shadow-lg hover-lift product-card animate-fadeInUp';
                 
-                // إنشاء نجوم التقييم
                 const ratingStars = Array.from({length: 5}, (_, i) => {
                     if (i < Math.floor(product.rating)) {
                         return '<i class="fas fa-star text-yellow-400"></i>';
@@ -710,7 +995,6 @@
                     }
                 }).join('');
                 
-                // تنسيق السعر
                 const priceFormatted = new Intl.NumberFormat('ar-SA').format(product.price);
                 const originalPriceFormatted = product.original_price 
                     ? new Intl.NumberFormat('ar-SA').format(product.original_price)
@@ -746,7 +1030,7 @@
                             </div>
                         </div>
                         
-                        <button onclick="addToCart('${product.id}')" 
+                        <button onclick="addToCart('${product.id}', this)" 
                                 class="w-full py-3 bg-gradient-to-r from-secondary to-primary text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
                             <i class="fas fa-shopping-bag"></i>
                             أضف إلى السلة
@@ -759,7 +1043,7 @@
         }
 
         // ==================== إدارة السلة ====================
-        window.addToCart = function(productId) {
+        window.addToCart = function(productId, button) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
             
@@ -777,11 +1061,19 @@
                 });
             }
             
+            // تأثير الضوء على المنتج
+            const productCard = button.closest('.product-card');
+            if (productCard) {
+                productCard.classList.add('selected');
+                setTimeout(() => {
+                    productCard.classList.remove('selected');
+                }, 1500);
+            }
+            
             updateCartUI();
             saveCartToLocalStorage();
             showToast('تمت الإضافة', 'تم إضافة المنتج إلى السلة بنجاح', 'success');
             
-            // تأثير على زر السلة
             cartButton.classList.add('pulse-gold');
             setTimeout(() => cartButton.classList.remove('pulse-gold'), 600);
         };
@@ -808,7 +1100,7 @@
                     const itemFormatted = new Intl.NumberFormat('ar-SA').format(itemTotal);
                     
                     const cartItem = document.createElement('div');
-                    cartItem.className = 'flex gap-4 p-4 bg-gray-50 rounded-xl mb-4';
+                    cartItem.className = 'flex gap-4 p-4 bg-gray-50 rounded-xl mb-4 animate-fadeInUp';
                     
                     cartItem.innerHTML = `
                         <img src="${item.image_url}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg">
@@ -838,7 +1130,6 @@
                 });
             }
             
-            // تحديث المجموع
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const totalFormatted = new Intl.NumberFormat('ar-SA').format(total);
             cartTotal.textContent = `${totalFormatted} ر.س`;
@@ -897,23 +1188,37 @@
                 return;
             }
             
-            let message = 'مرحباً، أريد طلب الهدايا التالية من Hadia Plus:\n\n';
+            // أنيميشن الشاحنة
+            deliveryCar.classList.add('active');
             
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                message += `${index + 1}. ${item.name} (${item.quantity}) - ${itemTotal} ر.س\n`;
-            });
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const totalFormatted = new Intl.NumberFormat('ar-SA').format(total);
-            message += `\nالمجموع: ${totalFormatted} ر.س`;
-            message += `\n\nأرجو التواصل لتأكيد الطلب والتفاصيل.`;
-            
-            const phoneNumber = '0924299798';
-            const encodedMessage = encodeURIComponent(message);
-            const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-            
-            window.open(url, '_blank');
+            setTimeout(() => {
+                deliveryCar.classList.add('delivering');
+                
+                setTimeout(() => {
+                    let message = 'مرحباً، أريد طلب الهدايا التالية من Hadia Plus:\n\n';
+                    
+                    cart.forEach((item, index) => {
+                        const itemTotal = item.price * item.quantity;
+                        message += `${index + 1}. ${item.name} (${item.quantity}) - ${itemTotal} ر.س\n`;
+                    });
+                    
+                    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    const totalFormatted = new Intl.NumberFormat('ar-SA').format(total);
+                    message += `\nالمجموع: ${totalFormatted} ر.س`;
+                    message += `\n\nأرجو التواصل لتأكيد الطلب والتفاصيل.`;
+                    
+                    const phoneNumber = '0924299798';
+                    const encodedMessage = encodeURIComponent(message);
+                    const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                    
+                    // إعادة تعيين موقع الشاحنة
+                    setTimeout(() => {
+                        deliveryCar.classList.remove('active', 'delivering');
+                    }, 500);
+                    
+                    window.open(url, '_blank');
+                }, 1500);
+            }, 1000);
         }
 
         // ==================== إشعارات ====================
