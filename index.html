@@ -380,13 +380,12 @@
             transition: all 0.3s ease;
         }
 
-        /* ===== التعديلات الجديدة للسلة ===== */
-        /* السلة الجانبية - إصلاح مشكلة الديسكتوب */
+        /* ===== التعديلات الجديدة للسلة - الإصلاح الكامل ===== */
         #cartSidebar {
             position: fixed;
             top: 0;
-            right: -400px; /* بداية مخفية خارج الشاشة على اليمين */
-            width: 400px;
+            right: -450px;
+            width: 450px;
             height: 100vh;
             background: white;
             box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
@@ -398,7 +397,7 @@
         }
 
         #cartSidebar.open {
-            right: 0; /* عند الفتح تظهر من الجانب الأيمن */
+            right: 0;
         }
 
         /* طبقة التعتيم */
@@ -420,6 +419,17 @@
             visibility: visible;
         }
 
+        /* رأس السلة */
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
         /* محتويات السلة مع تمرير */
         .cart-content {
             flex: 1;
@@ -428,7 +438,7 @@
         }
 
         .cart-items-container {
-            max-height: calc(100vh - 250px);
+            max-height: calc(100vh - 300px);
             overflow-y: auto;
             padding-right: 10px;
         }
@@ -442,17 +452,7 @@
             border-radius: 3px;
         }
 
-        /* رأس السلة */
-        .cart-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            background: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        /* تذييل السلة */
+        /* تذييل السلة - تم التعديل هنا */
         .cart-footer {
             padding: 1.5rem;
             border-top: 1px solid #e5e7eb;
@@ -460,6 +460,80 @@
             position: sticky;
             bottom: 0;
             z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-shrink: 0;
+            /* إضافة تأثير الضبابية الخلفية */
+            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* تحسين زر واتساب */
+        #whatsappOrder {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            margin-top: auto;
+            min-height: 50px;
+        }
+
+        #whatsappOrder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        #whatsappOrder:hover::before {
+            left: 100%;
+        }
+
+        #whatsappOrder:hover {
+            background: linear-gradient(135deg, #128C7E, #075E54);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        /* زر مواصلة التسوق */
+        #continueShopping {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #8B7355;
+            color: #8B7355;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            min-height: 50px;
+        }
+
+        #continueShopping:hover {
+            background: #8B7355;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 115, 85, 0.3);
         }
 
         /* تحسينات للهاتف */
@@ -498,6 +572,10 @@
             .modern-progress {
                 width: 250px;
             }
+            
+            .cart-items-container {
+                max-height: calc(100vh - 280px);
+            }
         }
 
         @media (max-width: 480px) {
@@ -526,6 +604,17 @@
             .modern-progress {
                 width: 200px;
             }
+            
+            .cart-footer {
+                padding: 1rem;
+            }
+            
+            #whatsappOrder,
+            #continueShopping {
+                padding: 12px 16px;
+                font-size: 14px;
+                min-height: 44px;
+            }
         }
 
         /* تحسينات عامة للديسكتوب */
@@ -537,6 +626,19 @@
             .product-card {
                 transition: all 0.3s ease;
             }
+        }
+
+        /* Empty Cart State */
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-cart i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
     </style>
     
@@ -802,7 +904,7 @@
             </div>
         </section>
 
-        <!-- السلة الجانبية -->
+        <!-- السلة الجانبية - التصميم المحسن -->
         <div id="cartSidebar">
             <div class="cart-header">
                 <div class="flex items-center justify-between">
@@ -817,7 +919,7 @@
             <div class="cart-content">
                 <div id="cartItems" class="cart-items-container">
                     <!-- سيتم إضافة عناصر السلة هنا -->
-                    <div class="text-center py-12">
+                    <div id="emptyCartMessage" class="text-center py-12">
                         <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-shopping-bag text-gray-400 text-3xl"></i>
                         </div>
@@ -827,7 +929,7 @@
                 </div>
             </div>
             
-            <!-- تذييل السلة -->
+            <!-- تذييل السلة مع الأزرار الثابتة -->
             <div class="cart-footer">
                 <div class="flex justify-between items-center mb-6">
                     <span class="text-lg font-bold text-dark">المجموع:</span>
@@ -984,7 +1086,7 @@
         // ==================== حالة التطبيق ====================
         let products = [];
         let categories = [];
-        let cart = JSON.parse(localStorage.getItem('hadiaPlusCart')) || []; // ✅ سلة فارغة تماماً
+        let cart = JSON.parse(localStorage.getItem('hadiaPlusCart')) || [];
         let currentCategory = "الكل";
 
         // ==================== عناصر DOM ====================
@@ -1016,6 +1118,7 @@
         const mobileMenu = document.getElementById('mobileMenu');
         const installBtn = document.getElementById('installBtn');
         const deliveryCar = document.querySelector('.delivery-car');
+        const emptyCartMessage = document.getElementById('emptyCartMessage');
 
         // ==================== PWA Installation ====================
         let deferredPrompt;
@@ -1079,7 +1182,7 @@
             try {
                 await loadCategories();
                 await loadProducts();
-                updateCartUI(); // ✅ سيتم عرض السلة فارغة
+                updateCartUI();
                 setupEventListeners();
                 
                 setupScrollAnimations();
@@ -1176,7 +1279,7 @@
                         });
                     });
                 } else {
-                    // ✅ فئات افتراضية فقط للعرض، لا تخزن في السلة
+                    // فئات افتراضية
                     categories = [
                         {
                             id: "1",
@@ -1216,7 +1319,6 @@
                     products = [];
                     snapshot.forEach(doc => {
                         const productData = doc.data();
-                        // ✅ تأكد أن المنتجات تأتي من Firebase فقط
                         products.push({
                             id: doc.id,
                             name: productData.name || "منتج بدون اسم",
@@ -1230,7 +1332,6 @@
                         });
                     });
                 } else {
-                    // ✅ لا توجد منتجات افتراضية، السلة ستبقى فارغة
                     products = [];
                 }
                 
@@ -1385,7 +1486,7 @@
             });
         }
 
-        // ==================== إدارة السلة (تبدأ فارغة تماماً) ====================
+        // ==================== إدارة السلة ====================
         window.addToCart = function(productId, button) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
