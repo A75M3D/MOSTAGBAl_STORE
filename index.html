@@ -452,7 +452,7 @@
             border-radius: 3px;
         }
 
-        /* تذييل السلة - تم التعديل هنا */
+        /* تذييل السلة - تم التعديل هنا لتبديل الأزرار */
         .cart-footer {
             padding: 1.5rem;
             border-top: 1px solid #e5e7eb;
@@ -464,12 +464,11 @@
             flex-direction: column;
             gap: 15px;
             flex-shrink: 0;
-            /* إضافة تأثير الضبابية الخلفية */
             backdrop-filter: blur(5px);
             background: rgba(255, 255, 255, 0.95);
         }
 
-        /* تحسين زر واتساب */
+        /* تحسين زر واتساب - الآن في الأعلى */
         #whatsappOrder {
             width: 100%;
             padding: 15px 20px;
@@ -488,8 +487,8 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-            margin-top: auto;
             min-height: 50px;
+            order: 1; /* يجعل زر واتساب يأتي أولاً */
         }
 
         #whatsappOrder::before {
@@ -514,7 +513,7 @@
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
         }
 
-        /* زر مواصلة التسوق */
+        /* زر مواصلة التسوق - الآن في الأسفل */
         #continueShopping {
             width: 100%;
             padding: 15px 20px;
@@ -527,6 +526,7 @@
             transition: all 0.3s ease;
             background: white;
             min-height: 50px;
+            order: 2; /* يجعل زر مواصلة التسوق يأتي ثانياً */
         }
 
         #continueShopping:hover {
@@ -929,20 +929,24 @@
                 </div>
             </div>
             
-            <!-- تذييل السلة مع الأزرار الثابتة -->
+            <!-- تذييل السلة مع الأزرار المقلوبة -->
             <div class="cart-footer">
                 <div class="flex justify-between items-center mb-6">
                     <span class="text-lg font-bold text-dark">المجموع:</span>
                     <span id="cartTotal" class="text-2xl font-bold text-burgundy">0 ر.س</span>
                 </div>
                 
+                <!-- الأزرار مقلوبة: واتساب أولاً، ثم مواصلة التسوق -->
                 <div class="space-y-4">
-                    <button id="continueShopping" class="w-full py-3 border-2 border-primary text-primary rounded-xl font-semibold hover:bg-primary hover:text-white transition-colors">
-                        مواصلة التسوق
-                    </button>
+                    <!-- زر واتساب أولاً -->
                     <button id="whatsappOrder" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:shadow-lg hover-lift transition-all flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp text-xl"></i>
                         طلب عبر واتساب
+                    </button>
+                    
+                    <!-- زر مواصلة التسوق ثانياً -->
+                    <button id="continueShopping" class="w-full py-3 border-2 border-primary text-primary rounded-xl font-semibold hover:bg-primary hover:text-white transition-colors">
+                        مواصلة التسوق
                     </button>
                 </div>
             </div>
