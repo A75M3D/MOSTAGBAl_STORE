@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم Hadia Plus - إدارة المنتجات</title>
+    <title>لوحة تحكم متجر المستقبل - إدارة المنتجات</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -37,10 +37,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#8B7355',
-                        secondary: '#D4AF37',
-                        dark: '#2C3E50',
-                        light: '#FDF6E3',
+                        primary: '#00c6ff',
+                        secondary: '#ff2d75',
+                        dark: '#0a0a0a',
+                        light: '#f0f2f5',
                     },
                     fontFamily: {
                         'cairo': ['Cairo', 'sans-serif']
@@ -55,7 +55,7 @@
     <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-secondary mb-4"></div>
         <div class="text-2xl font-bold text-dark">جاري التحميل...</div>
-        <div class="mt-2 text-gray-500">لوحة تحكم Hadia Plus</div>
+        <div class="mt-2 text-gray-500">لوحة تحكم متجر المستقبل</div>
     </div>
 
     <!-- المحتوى الرئيسي -->
@@ -73,9 +73,9 @@
                         <div class="flex items-center mr-4">
                             <div class="flex items-center">
                                 <div class="h-8 w-8 rounded-full bg-gradient-to-r from-secondary to-primary flex items-center justify-center">
-                                    <i class="fas fa-gift text-white"></i>
+                                    <i class="fas fa-tshirt text-white"></i> <!-- أيقونة ملابس بدلاً من الهدية -->
                                 </div>
-                                <span class="mr-2 text-xl font-bold text-dark">Hadia Plus</span>
+                                <span class="mr-2 text-xl font-bold text-dark">متجر المستقبل</span>
                                 <span class="text-xs bg-primary text-white px-2 py-1 rounded-full">Admin</span>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between">
                         <div>
                             <h1 class="text-2xl font-bold text-gray-900">إدارة المنتجات</h1>
-                            <p class="text-gray-600 mt-1">إدارة وعرض جميع منتجات المتجر</p>
+                            <p class="text-gray-600 mt-1">إدارة وعرض جميع منتجات الملابس والإكسسوارات</p> <!-- وصف معدل -->
                         </div>
                         
                         <div class="mt-4 sm:mt-0 flex space-x-3 space-x-reverse">
@@ -187,13 +187,7 @@
                         <div class="flex space-x-3 space-x-reverse">
                             <select id="categoryFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-secondary focus:border-transparent">
                                 <option value="">جميع الفئات</option>
-                                <option value="هدايا رجال الأعمال">هدايا رجال الأعمال</option>
-                                <option value="هدايا نسائية فاخرة">هدايا نسائية فاخرة</option>
-                                <option value="هدايا الزفاف">هدايا الزفاف</option>
-                                <option value="هدايا المناسبات">هدايا المناسبات</option>
-                                <option value="هدايا الشركات">هدايا الشركات</option>
-                                <option value="هدايا الأطفال">هدايا الأطفال</option>
-                                <option value="غير مصنف">غير مصنف</option>
+                                <!-- الفئات ستُحمّل ديناميكياً من Firebase -->
                             </select>
                             
                             <select id="sortFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-secondary focus:border-transparent">
@@ -237,10 +231,10 @@
                     <!-- حالة عدم وجود منتجات -->
                     <div id="emptyProducts" class="hidden p-12 text-center">
                         <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-box-open text-gray-400 text-3xl"></i>
+                            <i class="fas fa-tshirt text-gray-400 text-3xl"></i> <!-- أيقونة ملابس -->
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">لا توجد منتجات</h3>
-                        <p class="text-gray-500 mb-6">لم يتم إضافة أي منتجات بعد. ابدأ بإضافة منتج جديد.</p>
+                        <p class="text-gray-500 mb-6">لم يتم إضافة أي منتجات ملابس بعد. ابدأ بإضافة منتج جديد.</p>
                         <button id="addFirstProductBtn" class="px-6 py-2 bg-gradient-to-r from-secondary to-primary text-white rounded-lg hover:opacity-90 transition-all flex items-center mx-auto">
                             <i class="fas fa-plus ml-2"></i>
                             إضافة أول منتج
@@ -271,27 +265,24 @@
                                 <input type="text" id="modalProductName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="أدخل اسم المنتج">
                             </div>
                             
-                            <div>
-                                <label for="modalProductPrice" class="block text-sm font-medium text-gray-700 mb-1">السعر (ر.س) *</label>
-                                <input type="number" id="modalProductPrice" required min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="0.00">
-                            </div>
-                            
-                            <div>
+                            <!-- السعر الأصلي أولاً وبالعرض الكامل -->
+                            <div class="md:col-span-2">
                                 <label for="modalProductOriginalPrice" class="block text-sm font-medium text-gray-700 mb-1">السعر الأصلي (ر.س)</label>
                                 <input type="number" id="modalProductOriginalPrice" min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="0.00 (اختياري)">
                             </div>
                             
+                            <!-- السعر تحته مباشرة وبالعرض الكامل -->
+                            <div class="md:col-span-2">
+                                <label for="modalProductPrice" class="block text-sm font-medium text-gray-700 mb-1">السعر (ر.س) *</label>
+                                <input type="number" id="modalProductPrice" required min="0" step="0.01" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="0.00">
+                            </div>
+                            
+                            <!-- الفئة والتقييم في صف واحد -->
                             <div>
                                 <label for="modalProductCategory" class="block text-sm font-medium text-gray-700 mb-1">الفئة *</label>
                                 <select id="modalProductCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all">
                                     <option value="">اختر الفئة</option>
-                                    <option value="هدايا رجال الأعمال">هدايا رجال الأعمال</option>
-                                    <option value="هدايا نسائية فاخرة">هدايا نسائية فاخرة</option>
-                                    <option value="هدايا الزفاف">هدايا الزفاف</option>
-                                    <option value="هدايا المناسبات">هدايا المناسبات</option>
-                                    <option value="هدايا الشركات">هدايا الشركات</option>
-                                    <option value="هدايا الأطفال">هدايا الأطفال</option>
-                                    <option value="غير مصنف">غير مصنف</option>
+                                    <!-- الفئات ستُحمّل ديناميكياً من Firebase -->
                                 </select>
                             </div>
                             
@@ -314,7 +305,7 @@
                             
                             <div class="col-span-2">
                                 <label for="modalProductDescription" class="block text-sm font-medium text-gray-700 mb-1">الوصف *</label>
-                                <textarea id="modalProductDescription" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="أدخل وصف المنتج"></textarea>
+                                <textarea id="modalProductDescription" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all" placeholder="أدخل وصف المنتج (خامة، مقاس، لون...)"></textarea>
                             </div>
                             
                             <div class="col-span-2">
@@ -345,7 +336,7 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
 
     <!-- نافذة التأكيد -->
     <div id="confirmModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
@@ -402,14 +393,14 @@
     <script>
         // ==================== تهيئة Firebase ====================
         const firebaseConfig = {
-  apiKey: "AIzaSyBhuvfhNeumOBcDeeDoj884YAMMObT2D5U",
-  authDomain: "store-edf0a.firebaseapp.com",
-  projectId: "store-edf0a",
-  storageBucket: "store-edf0a.firebasestorage.app",
-  messagingSenderId: "520046449398",
-  appId: "1:520046449398:web:dca21f13cb567ea960d2d7",
-  measurementId: "G-31M9W1PM3D"
-};
+            apiKey: "AIzaSyBhuvfhNeumOBcDeeDoj884YAMMObT2D5U",
+            authDomain: "store-edf0a.firebaseapp.com",
+            projectId: "store-edf0a",
+            storageBucket: "store-edf0a.firebasestorage.app",
+            messagingSenderId: "520046449398",
+            appId: "1:520046449398:web:dca21f13cb567ea960d2d7",
+            measurementId: "G-31M9W1PM3D"
+        };
 
         // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
@@ -420,6 +411,7 @@
         // ==================== حالة التطبيق ====================
         let products = [];
         let filteredProducts = [];
+        let categories = []; // لتخزين الفئات من Firebase
         let deleteProductId = null;
         let isSaving = false; // متغير لمنع الحفظ المزدوج
 
@@ -430,6 +422,7 @@
 
         async function initializePage() {
             try {
+                await loadCategories(); // تحميل الفئات أولاً
                 await loadProducts();
                 setupEventListeners();
                 updateStatistics();
@@ -453,6 +446,80 @@
             }
         }
 
+        // ==================== تحميل الفئات من Firebase ====================
+        async function loadCategories() {
+            try {
+                const categoriesRef = db.collection('categories');
+                const snapshot = await categoriesRef.get();
+                
+                if (!snapshot.empty) {
+                    categories = [];
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        categories.push({
+                            id: doc.id,
+                            name: data.name || 'غير مصنف'
+                        });
+                    });
+                } else {
+                    // فئات افتراضية لمتجر ملابس
+                    categories = [
+                        { id: '1', name: 'رجالي' },
+                        { id: '2', name: 'نسائي' },
+                        { id: '3', name: 'أطفال' },
+                        { id: '4', name: 'أحذية' },
+                        { id: '5', name: 'إكسسوارات' },
+                        { id: '6', name: 'عروض خاصة' },
+                        { id: '7', name: 'غير مصنف' }
+                    ];
+                }
+                
+                // تحديث القوائم المنسدلة للفئات
+                populateCategoryDropdowns();
+                
+            } catch (error) {
+                console.error('خطأ في تحميل الفئات:', error);
+                // فئات افتراضية لمتجر ملابس في حال فشل التحميل
+                categories = [
+                    { id: '1', name: 'رجالي' },
+                    { id: '2', name: 'نسائي' },
+                    { id: '3', name: 'أطفال' },
+                    { id: '4', name: 'أحذية' },
+                    { id: '5', name: 'إكسسوارات' },
+                    { id: '6', name: 'عروض خاصة' },
+                    { id: '7', name: 'غير مصنف' }
+                ];
+                populateCategoryDropdowns();
+            }
+        }
+
+        // ==================== ملء قوائم الفئات ====================
+        function populateCategoryDropdowns() {
+            // قائمة الفلتر
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (categoryFilter) {
+                categoryFilter.innerHTML = '<option value="">جميع الفئات</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.name;
+                    option.textContent = cat.name;
+                    categoryFilter.appendChild(option);
+                });
+            }
+            
+            // قائمة النموذج
+            const modalCategory = document.getElementById('modalProductCategory');
+            if (modalCategory) {
+                modalCategory.innerHTML = '<option value="">اختر الفئة</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.name;
+                    option.textContent = cat.name;
+                    modalCategory.appendChild(option);
+                });
+            }
+        }
+
         // ==================== Cloud Firestore Functions ====================
 
         // تحميل المنتجات من Firestore
@@ -471,18 +538,9 @@
                         let originalPrice = data.original_price;
                         let rating = data.rating;
                         
-                        // إذا كانت category غير معروفة، نضعها في "غير مصنف"
-                        const validCategories = [
-                            'هدايا رجال الأعمال',
-                            'هدايا نسائية فاخرة', 
-                            'هدايا الزفاف',
-                            'هدايا المناسبات',
-                            'هدايا الشركات',
-                            'هدايا الأطفال',
-                            'غير مصنف'
-                        ];
-                        
-                        if (!validCategories.includes(category)) {
+                        // التحقق من أن الفئة موجودة في قائمة الفئات، وإلا وضعها في "غير مصنف"
+                        const categoryExists = categories.some(c => c.name === category);
+                        if (!categoryExists) {
                             category = 'غير مصنف';
                         }
                         
@@ -572,7 +630,11 @@
                     const originalPrice = parseFloat(productData.original_price);
                     if (!isNaN(originalPrice)) {
                         productToSave.original_price = originalPrice;
+                    } else {
+                        productToSave.original_price = null;
                     }
+                } else {
+                    productToSave.original_price = null;
                 }
 
                 // إضافة تاريخ الإنشاء للمنتجات الجديدة
@@ -654,7 +716,7 @@
                 const originalPriceFormatted = product.original_price ? 
                     new Intl.NumberFormat('ar-SA').format(product.original_price) : '';
                 
-                // تنسيق التاريخ - مع التحقق من أن created_at هو Date
+                // تنسيق التاريخ
                 let dateFormatted = 'غير محدد';
                 if (product.created_at && product.created_at.toLocaleDateString) {
                     try {
@@ -751,13 +813,13 @@
             filteredProducts.sort((a, b) => {
                 switch (sort) {
                     case 'newest':
-                        return b.created_at - a.created_at;
+                        return (b.created_at || 0) - (a.created_at || 0);
                     case 'oldest':
-                        return a.created_at - b.created_at;
+                        return (a.created_at || 0) - (b.created_at || 0);
                     case 'price-high':
-                        return b.price - a.price;
+                        return (b.price || 0) - (a.price || 0);
                     case 'price-low':
-                        return a.price - b.price;
+                        return (a.price || 0) - (b.price || 0);
                     case 'name':
                         return (a.name || '').localeCompare(b.name || '', 'ar');
                     default:
@@ -935,9 +997,7 @@
             // حفظ المنتج - منع الإرسال المزدوج
             const productForm = document.getElementById('productForm');
             if (productForm) {
-                // إزالة أي مستمع سابق لمنع التكرار
                 productForm.removeEventListener('submit', handleFormSubmit);
-                // إضافة المستمع الجديد
                 productForm.addEventListener('submit', handleFormSubmit);
             }
             
