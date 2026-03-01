@@ -14,7 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        /* جميع الأنماط الأصلية (بدون تغيير) */
+        /* جميع الأنماط الأصلية (بدون تغيير) مع إضافة أنماط التحميل */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -96,6 +96,37 @@
 
         .main-content.loaded {
             display: block;
+        }
+
+        /* أنماط إضافية للتحميل الداخلي */
+        .products-loader {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .products-loader i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .load-more-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .load-more-btn.loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
         }
 
         :root {
@@ -689,7 +720,7 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Load More Button (جديد) */
+        /* Load More Button */
         .load-more-container {
             text-align: center;
             margin: 40px 0;
@@ -706,6 +737,10 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: var(--shadow);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .load-more-btn:hover:not(:disabled) {
             background: var(--primary);
@@ -716,6 +751,10 @@
         .load-more-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+        .load-more-btn.loading {
+            opacity: 0.8;
+            cursor: wait;
         }
 
         /* Cart Sidebar */
@@ -1279,9 +1318,18 @@
                 <!-- سيتم عرض المنتجات هنا -->
             </div>
 
-            <!-- زر تحميل المزيد (جديد) -->
+            <!-- مؤشر تحميل المنتجات (يظهر أثناء الجلب الأول) -->
+            <div id="productsLoader" class="products-loader" style="display: none;">
+                <i class="fas fa-circle-notch"></i>
+                <p>جاري تحميل المنتجات...</p>
+            </div>
+
+            <!-- زر تحميل المزيد -->
             <div class="load-more-container">
-                <button class="load-more-btn" id="loadMoreBtn" style="display: none;">تحميل المزيد</button>
+                <button class="load-more-btn" id="loadMoreBtn" style="display: none;">
+                    <i class="fas fa-spinner" style="display: none;"></i>
+                    تحميل المزيد
+                </button>
             </div>
 
             <div id="emptyState" class="empty-state" style="display: none;">
@@ -1396,17 +1444,24 @@
 
         // ==================== حالة التطبيق ====================
         let cart = JSON.parse(localStorage.getItem('futureStoreCart')) || [];
-        let products = [];           // جميع المنتجات المحملة (قد لا تكون كلها)
+        let products = [];
         let categories = [];
         let currentCategory = "الكل";
 
         // متغيرات Pagination
-        let lastVisible = null;       // آخر منتج تم تحميله
-        let loadingMore = false;      // لمنع التحميل المتكرر
-        let hasMore = true;           // هل هناك المزيد من المنتجات في Firestore؟
+        let lastVisible = null;
+        let loadingMore = false;
+        let hasMore = true;
 
-        // مدة صلاحية الكاش (بالمللي ثانية) - ساعة واحدة
-        const CACHE_DURATION = 72 * 60 * 60 * 1000; // 3600000 ms
+        // مدة صلاحية الكاش - 72 ساعة
+        const CACHE_DURATION = 72 * 60 * 60 * 1000; // 259,200,000 ms
+        // حد التحميل الخلفي (قبل ساعتين من انتهاء الصلاحية)
+        const REFRESH_THRESHOLD = 70 * 60 * 60 * 1000; // 252,000,000 ms
+
+        // متغيرات التحميل
+        let isLoading = false;
+        let lastLoadTime = 0;
+        const LOAD_COOLDOWN = 5000; // 5 ثواني
 
         // عناصر DOM
         const loadingScreen = document.getElementById('loadingScreen');
@@ -1426,6 +1481,7 @@
         const continueShopping = document.getElementById('continueShopping');
         const whatsappOrder = document.getElementById('whatsappOrder');
         const productsGrid = document.getElementById('productsGrid');
+        const productsLoader = document.getElementById('productsLoader');
         const emptyState = document.getElementById('emptyState');
         const shopNowBtn = document.getElementById('shopNowBtn');
         const toast = document.getElementById('toast');
@@ -1435,6 +1491,7 @@
         const installBtn = document.getElementById('installBtn');
         const categoriesGrid = document.getElementById('categoriesGrid');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const loadMoreSpinner = loadMoreBtn.querySelector('i');
 
         // بدء التحميل
         function startLoading() {
@@ -1460,9 +1517,9 @@
 
         // تهيئة الموقع
         async function initializeSite() {
-            await loadCategories();           // تحميل الفئات أولاً
-            await loadInitialProducts();      // تحميل الدفعة الأولى من المنتجات (مع الكاش)
-            loadCartFromLocalStorage();       // تحميل السلة المحفوظة
+            await loadCategories();
+            await loadInitialProducts();
+            loadCartFromLocalStorage();
             updateCartUI();
             setupEventListeners();
         }
@@ -1479,16 +1536,13 @@
             whatsappOrder.addEventListener('click', sendWhatsAppOrder);
             
             shopNowBtn.addEventListener('click', () => {
-                productsGrid.scrollIntoView({ 
-                    behavior: 'smooth' 
-                });
+                productsGrid.scrollIntoView({ behavior: 'smooth' });
             });
             
             mobileMenuBtn.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
             });
 
-            // زر تحميل المزيد
             loadMoreBtn.addEventListener('click', loadMoreProducts);
         }
 
@@ -1520,7 +1574,6 @@
             cartSidebar.classList.add('open');
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
             setTimeout(() => {
                 cartItems.scrollTop = 0;
             }, 100);
@@ -1712,7 +1765,7 @@
             }, 1000);
         }
 
-        // تحميل الفئات من Firebase (أو استخدام الافتراضية) - بدون تغيير
+        // تحميل الفئات من Firebase (أو استخدام الافتراضية)
         async function loadCategories() {
             try {
                 const categoriesRef = db.collection('categories');
@@ -1743,7 +1796,6 @@
                 
             } catch (error) {
                 console.error('خطأ في تحميل الفئات:', error);
-                // في حال الخطأ، استخدم الفئات الافتراضية
                 categories = [
                     { id: '1', name: 'عروض خاصة', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', description: 'أحدث الأجهزة الإلكترونية والتقنيات الحديثة' },
                     { id: '2', name: 'رجالي', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', description: 'أزياء عصرية للرجال' },
@@ -1754,7 +1806,7 @@
             }
         }
 
-        // عرض الفئات كبطاقات - بدون تغيير
+        // عرض الفئات كبطاقات
         function displayCategories() {
             categoriesGrid.innerHTML = '';
             
@@ -1779,14 +1831,11 @@
             });
         }
 
-        // تصفية المنتجات حسب الفئة - تم التعديل لإعادة تعيين pagination
+        // تصفية المنتجات حسب الفئة
         function filterByCategory(categoryName) {
             currentCategory = categoryName;
-            // إعادة تعيين pagination
             resetPagination();
-            // إعادة تحميل المنتجات من Firestore أو الكاش
-            loadInitialProducts(true); // force reload
-            // تمرير سلس إلى قسم المنتجات
+            loadInitialProducts(true);
             productsGrid.scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -1799,7 +1848,7 @@
             loadMoreBtn.style.display = 'none';
         }
 
-        // دوال الكاش - معدلة لتأخذ الفئة بعين الاعتبار
+        // دوال الكاش
         function cacheProducts(productsArray) {
             const cacheData = {
                 products: productsArray,
@@ -1826,25 +1875,91 @@
             }
         }
 
-        // تحميل الدفعة الأولى من المنتجات (مع الكاش)
+        // تحميل الدفعة الأولى من المنتجات (مع كاش)
         async function loadInitialProducts(forceReload = false) {
-            if (!forceReload) {
-                const cached = getCachedProducts();
-                if (cached) {
-                    products = cached;
-                    displayProducts(); // عرض المنتجات من الكاش
-                    // تحميل في الخلفية لتحديث الكاش
-                    loadProductsFromFirestore(true);
-                    return;
-                }
+            // منع التحميل المتكرر
+            const now = Date.now();
+            if (!forceReload && now - lastLoadTime < LOAD_COOLDOWN) {
+                return;
             }
-            await loadProductsFromFirestore(false);
+            lastLoadTime = now;
+
+            // إظهار مؤشر التحميل إذا لم يكن هناك منتجات معروضة
+            if (productsGrid.children.length === 0) {
+                productsLoader.style.display = 'block';
+                productsGrid.style.display = 'none';
+            }
+
+            const cached = getCachedProducts();
+            
+            if (cached && !forceReload) {
+                products = cached;
+                displayProducts();
+                productsLoader.style.display = 'none';
+                productsGrid.style.display = 'grid';
+                
+                // التحقق من عمر الكاش: إذا كان قارب على الانتهاء (أقل من ساعتين متبقية)، قم بتحديثه في الخلفية
+                const cacheData = JSON.parse(localStorage.getItem('futureStoreProducts'));
+                if (cacheData) {
+                    const cacheAge = now - cacheData.timestamp;
+                    if (cacheAge > REFRESH_THRESHOLD) {
+                        // تحديث في الخلفية بدون انتظار
+                        refreshProductsInBackground();
+                    }
+                }
+            } else {
+                await loadProductsFromFirestore(false);
+                productsLoader.style.display = 'none';
+                productsGrid.style.display = 'grid';
+            }
         }
 
-        // تحميل المنتجات من Firestore مع Pagination (دون فلتر - نحمل كل المنتجات)
+        // تحديث المنتجات في الخلفية
+        async function refreshProductsInBackground() {
+            try {
+                const query = db.collection('users').orderBy('created_at', 'desc').limit(20);
+                const snapshot = await query.get();
+                if (!snapshot.empty) {
+                    const newProducts = processProductsSnapshot(snapshot);
+                    products = newProducts;
+                    cacheProducts(products);
+                    displayProducts(); // تحديث العرض
+                }
+            } catch (error) {
+                console.error('خطأ في التحديث الخلفي:', error);
+            }
+        }
+
+        // معالجة بيانات المنتجات من السناب شوت
+        function processProductsSnapshot(snapshot) {
+            return snapshot.docs.map(doc => {
+                const productData = doc.data();
+                return {
+                    id: doc.id,
+                    name: productData.name || "منتج بدون اسم",
+                    category: productData.category || "غير مصنف",
+                    price: productData.price || 0,
+                    description: productData.description || "",
+                    image_url: productData.image_url || "https://via.placeholder.com/300",
+                    rating: productData.rating || (Math.random() * 2 + 3).toFixed(1),
+                    original_price: productData.original_price || null,
+                    colors: productData.colors || []
+                };
+            });
+        }
+
+        // تحميل المنتجات من Firestore مع Pagination (باستخدام مجموعة users)
         async function loadProductsFromFirestore(replace = false) {
             if (loadingMore) return;
             loadingMore = true;
+            isLoading = true;
+
+            // تفعيل حالة التحميل في الزر
+            if (!replace) {
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.classList.add('loading');
+                loadMoreSpinner.style.display = 'inline-block';
+            }
             
             try {
                 let query = db.collection('users').orderBy('created_at', 'desc').limit(20);
@@ -1856,20 +1971,7 @@
                 const snapshot = await query.get();
                 
                 if (!snapshot.empty) {
-                    const newProducts = snapshot.docs.map(doc => {
-                        const productData = doc.data();
-                        return {
-                            id: doc.id,
-                            name: productData.name || "منتج بدون اسم",
-                            category: productData.category || "غير مصنف",
-                            price: productData.price || 0,
-                            description: productData.description || "",
-                            image_url: productData.image_url || "https://via.placeholder.com/300",
-                            rating: productData.rating || (Math.random() * 2 + 3).toFixed(1),
-                            original_price: productData.original_price || null,
-                            colors: productData.colors || []
-                        };
-                    });
+                    const newProducts = processProductsSnapshot(snapshot);
                     
                     lastVisible = snapshot.docs[snapshot.docs.length - 1];
                     hasMore = snapshot.docs.length === 20;
@@ -1910,6 +2012,11 @@
                 }
             } finally {
                 loadingMore = false;
+                isLoading = false;
+                // إعادة الزر إلى حالته الطبيعية
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.classList.remove('loading');
+                loadMoreSpinner.style.display = 'none';
             }
         }
 
@@ -1919,7 +2026,7 @@
             await loadProductsFromFirestore(false);
         }
 
-        // دالة لعرض المنتجات (مع مراعاة الفئة المحددة) - كما هي في الكود الأصلي
+        // دالة عرض المنتجات
         function displayProducts() {
             // تصفية المنتجات حسب الفئة الحالية
             const filteredProducts = currentCategory === "الكل" 
