@@ -187,7 +187,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 80%, rgba(0, 198, 255, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(123, 66, 246, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(255, 45, 117, 0.1) 0%, transparent 50%);
@@ -195,7 +195,7 @@
         }
 
         .light-theme body::before {
-            background: 
+            background:
                 radial-gradient(circle at 20% 80%, rgba(0, 102, 204, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(90, 45, 190, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(230, 0, 92, 0.05) 0%, transparent 50%);
@@ -208,7 +208,6 @@
             padding: 0 20px;
         }
 
-        /* Header Styles */
         header {
             background: var(--glass-bg);
             backdrop-filter: var(--blur);
@@ -323,7 +322,6 @@
             z-index: 10;
         }
 
-        /* Hero Section */
         .hero {
             padding: 150px 0 120px;
             text-align: center;
@@ -441,7 +439,6 @@
             border: 1px solid var(--primary-light);
         }
 
-        /* Categories Section */
         .categories-section {
             padding: 80px 0;
         }
@@ -525,7 +522,6 @@
             transform: translateX(-5px);
         }
 
-        /* Products Section */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -562,21 +558,11 @@
         }
 
         @keyframes intenseGlow {
-            0% {
-                box-shadow: 0 0 5px rgba(0, 198, 255, 0.5);
-            }
-            25% {
-                box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(0, 198, 255, 1), 0 0 40px rgba(123, 66, 246, 0.8), 0 0 60px rgba(255, 45, 117, 0.6);
-            }
-            75% {
-                box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6);
-            }
-            100% {
-                box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            }
+            0% { box-shadow: 0 0 5px rgba(0, 198, 255, 0.5); }
+            25% { box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(0, 198, 255, 1), 0 0 40px rgba(123, 66, 246, 0.8), 0 0 60px rgba(255, 45, 117, 0.6); }
+            75% { box-shadow: 0 0 20px rgba(0, 198, 255, 0.8), 0 0 30px rgba(123, 66, 246, 0.6); }
+            100% { box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         }
 
         .product-image {
@@ -720,7 +706,6 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Load More Button */
         .load-more-container {
             text-align: center;
             margin: 40px 0;
@@ -757,7 +742,6 @@
             cursor: wait;
         }
 
-        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -1095,7 +1079,6 @@
             margin-bottom: 30px;
         }
 
-        /* Mobile Menu Button */
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -1203,13 +1186,17 @@
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
             z-index: 10000;
-            display: flex;
+            display: none; /* يبدأ مخفي */
             align-items: center;
             gap: 15px;
             animation: slideIn 0.4s ease;
             max-width: 350px;
             width: auto;
             transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .install-notification:not([hidden]) {
+            display: flex !important;
         }
 
         .install-notification.hidden {
@@ -1304,8 +1291,8 @@
     </style>
 </head>
 <body class="dark-theme">
-    <!-- إشعار التثبيت العائم -->
-    <div id="installNotification" class="install-notification" hidden>
+    <!-- إشعار التثبيت العائم - مخفي افتراضياً -->
+    <div id="installNotification" class="install-notification" hidden style="display:none">
         <div class="install-notification-content">
             <div class="install-icon">
                 <i class="fas fa-download"></i>
@@ -1530,7 +1517,6 @@
             measurementId: "G-31M9W1PM3D"
         };
 
-        // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -1539,17 +1525,11 @@
         let products = [];
         let categories = [];
         let currentCategory = "الكل";
-
-        // متغيرات Pagination
         let lastVisible = null;
         let loadingMore = false;
         let hasMore = true;
-
-        // مدة صلاحية الكاش - 72 ساعة
         const CACHE_DURATION = 72 * 60 * 60 * 1000;
         const REFRESH_THRESHOLD = 70 * 60 * 60 * 1000;
-
-        // متغيرات التحميل
         let isLoading = false;
         let lastLoadTime = 0;
         const LOAD_COOLDOWN = 5000;
@@ -1590,16 +1570,23 @@
             const installClose = document.getElementById('installClose');
             let deferredPrompt = null;
             let notificationDismissed = sessionStorage.getItem('installDismissed') === 'true';
+            let appInstalled = false;
 
             function isAppInstalled() {
                 if (localStorage.getItem('futureStoreAppInstalled') === 'true') return true;
-                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return true;
+                if (window.matchMedia('(display-mode: standalone)').matches || 
+                    window.matchMedia('(display-mode: fullscreen)').matches ||
+                    window.navigator.standalone === true) {
+                    localStorage.setItem('futureStoreAppInstalled', 'true');
+                    return true;
+                }
                 return false;
             }
 
             function showNotification() {
-                if (isAppInstalled() || notificationDismissed) return;
+                if (appInstalled || isAppInstalled() || notificationDismissed) return;
                 installNotification.hidden = false;
+                installNotification.style.display = 'flex';
                 installNotification.classList.remove('hidden');
                 setTimeout(() => {
                     if (!installNotification.hidden && !notificationDismissed) {
@@ -1614,40 +1601,49 @@
                 installNotification.classList.add('hidden');
                 setTimeout(() => {
                     installNotification.hidden = true;
+                    installNotification.style.display = 'none';
                 }, 300);
             }
 
             if (isAppInstalled()) {
+                appInstalled = true;
+                installNotification.style.display = 'none';
                 installNotification.hidden = true;
-            } else {
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    showNotification();
-                });
+                return;
             }
 
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                if (isAppInstalled() || appInstalled) return;
+                deferredPrompt = e;
+                showNotification();
+            });
+
             window.addEventListener('appinstalled', () => {
+                appInstalled = true;
                 localStorage.setItem('futureStoreAppInstalled', 'true');
                 hideNotification();
                 deferredPrompt = null;
                 showToast('تم تثبيت التطبيق بنجاح!');
+                installNotification.style.display = 'none';
             });
 
             installAction.addEventListener('click', async () => {
-                if (deferredPrompt) {
+                if (deferredPrompt && !appInstalled) {
                     hideNotification();
                     deferredPrompt.prompt();
                     const result = await deferredPrompt.userChoice;
                     if (result.outcome === 'accepted') {
+                        appInstalled = true;
                         localStorage.setItem('futureStoreAppInstalled', 'true');
                         showToast('تم تثبيت التطبيق بنجاح!');
+                        installNotification.style.display = 'none';
                     }
                     deferredPrompt = null;
                 } else {
-                    // إذا لم يتوفر prompt، نوجه المستخدم للتعليمات
-                    showToast('التثبيت غير متاح حالياً. استخدم القائمة ثم "تثبيت التطبيق"', true);
+                    showToast('التطبيق مثبت بالفعل', true);
                     hideNotification();
+                    installNotification.style.display = 'none';
                 }
             });
 
@@ -1656,9 +1652,16 @@
                 notificationDismissed = true;
                 sessionStorage.setItem('installDismissed', 'true');
             });
+
+            window.addEventListener('load', () => {
+                if (isAppInstalled()) {
+                    appInstalled = true;
+                    installNotification.style.display = 'none';
+                    installNotification.hidden = true;
+                }
+            });
         }
 
-        // ==================== تسجيل Service Worker ====================
         function registerServiceWorker() {
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
@@ -1681,7 +1684,6 @@
             }
         }
 
-        // استدعاء إعداد PWA وتسجيل SW فوراً
         setupPwaInstallation();
         registerServiceWorker();
 
@@ -1707,7 +1709,6 @@
             }, 4500);
         }
 
-        // تهيئة الموقع
         async function initializeSite() {
             await loadCategories();
             await loadInitialProducts();
@@ -1716,32 +1717,25 @@
             setupEventListeners();
         }
 
-        // إعداد مستمعي الأحداث
         function setupEventListeners() {
             themeToggle.addEventListener('click', toggleTheme);
-            
             cartButton.addEventListener('click', openCart);
             closeCart.addEventListener('click', closeCartSidebar);
             overlay.addEventListener('click', closeCartSidebar);
             continueShopping.addEventListener('click', closeCartSidebar);
-            
             whatsappOrder.addEventListener('click', sendWhatsAppOrder);
-            
             shopNowBtn.addEventListener('click', () => {
                 productsGrid.scrollIntoView({ behavior: 'smooth' });
             });
-            
             mobileMenuBtn.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
             });
-
             loadMoreBtn.addEventListener('click', loadMoreProducts);
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
             document.body.classList.toggle('light-theme');
-            
             const icon = themeToggle.querySelector('i');
             if (document.body.classList.contains('light-theme')) {
                 icon.classList.remove('fa-moon');
@@ -1779,7 +1773,6 @@
 
         function addToCart(product, button) {
             const existingItem = cart.find(item => item.id === product.id);
-            
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
@@ -1791,7 +1784,6 @@
                     quantity: 1
                 });
             }
-            
             const productCard = button.closest('.product-card');
             if (productCard) {
                 productCard.classList.add('selected');
@@ -1799,11 +1791,9 @@
                     productCard.classList.remove('selected');
                 }, 1500);
             }
-            
             updateCartUI();
             saveCartToLocalStorage();
             showToast('تم إضافة المنتج إلى السلة');
-            
             cartButton.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 cartButton.style.transform = 'scale(1)';
@@ -1813,9 +1803,7 @@
         function updateCartUI() {
             const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
             cartCount.textContent = totalItems;
-            
             cartItems.innerHTML = '';
-            
             if (cart.length === 0) {
                 cartItems.innerHTML = `
                     <div class="empty-state">
@@ -1827,7 +1815,6 @@
                 cart.forEach((item, index) => {
                     const cartItemElement = document.createElement('div');
                     cartItemElement.className = 'cart-item';
-                    
                     cartItemElement.innerHTML = `
                         <img src="${item.image_url || 'https://via.placeholder.com/80'}" alt="${item.name}" class="cart-item-image" loading="lazy">
                         <div class="cart-item-details">
@@ -1844,26 +1831,22 @@
                         </div>
                     `;
                     cartItems.appendChild(cartItemElement);
-                    
                     setTimeout(() => {
                         cartItemElement.style.opacity = '1';
                     }, index * 100);
                 });
-                
                 document.querySelectorAll('.decrease').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const id = btn.getAttribute('data-id');
                         decreaseQuantity(id);
                     });
                 });
-                
                 document.querySelectorAll('.increase').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const id = btn.getAttribute('data-id');
                         increaseQuantity(id);
                     });
                 });
-                
                 document.querySelectorAll('.remove-item').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const id = btn.getAttribute('data-id');
@@ -1871,7 +1854,6 @@
                     });
                 });
             }
-            
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotal.textContent = `${total.toFixed(2)} ج.س`;
         }
@@ -1928,41 +1910,31 @@
                 showToast('سلة التسوق فارغة', true);
                 return;
             }
-            
             deliveryCar.classList.add('active');
-            
             setTimeout(() => {
                 deliveryCar.classList.add('delivering');
-                
                 setTimeout(() => {
                     let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                    
                     cart.forEach(item => {
                         message += `- ${item.name} (${item.quantity}) - ${item.price * item.quantity} ج.س\n`;
                     });
-                    
                     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                     message += `\nالمجموع: ${total.toFixed(2)} ج.س`;
-                    
                     const phoneNumber = '0924299798';
                     const encodedMessage = encodeURIComponent(message);
                     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-                    
                     setTimeout(() => {
                         deliveryCar.classList.remove('active', 'delivering');
                     }, 500);
-                    
                     window.open(url, '_blank');
                 }, 1500);
             }, 1000);
         }
 
-        // تحميل الفئات من Firebase (أو استخدام الافتراضية)
         async function loadCategories() {
             try {
                 const categoriesRef = db.collection('categories');
                 const snapshot = await categoriesRef.get();
-                
                 if (!snapshot.empty) {
                     categories = [];
                     snapshot.forEach(doc => {
@@ -1982,9 +1954,7 @@
                         { id: '4', name: 'أطفال', image: 'https://i.ibb.co/jvT61RLh/6ef108a62d16b6a54b0b75ebddf1b88b.jpg', description: 'تشكيلة واسعة من الأحذية' },
                     ];
                 }
-                
                 displayCategories();
-                
             } catch (error) {
                 console.error('خطأ في تحميل الفئات:', error);
                 categories = [
@@ -1999,12 +1969,10 @@
 
         function displayCategories() {
             categoriesGrid.innerHTML = '';
-            
             categories.forEach(category => {
                 const categoryCard = document.createElement('div');
                 categoryCard.className = 'category-card';
                 categoryCard.onclick = () => filterByCategory(category.name);
-                
                 categoryCard.innerHTML = `
                     <img src="${category.image}" alt="${category.name}" class="category-image" loading="lazy">
                     <div class="category-content">
@@ -2016,7 +1984,6 @@
                         </div>
                     </div>
                 `;
-                
                 categoriesGrid.appendChild(categoryCard);
             });
         }
@@ -2048,7 +2015,6 @@
         function getCachedProducts() {
             const cached = localStorage.getItem('futureStoreProducts');
             if (!cached) return null;
-            
             try {
                 const data = JSON.parse(cached);
                 if (data.category === currentCategory && Date.now() - data.timestamp < CACHE_DURATION) {
@@ -2068,20 +2034,16 @@
                 return;
             }
             lastLoadTime = now;
-
             if (productsGrid.children.length === 0) {
                 productsLoader.style.display = 'block';
                 productsGrid.style.display = 'none';
             }
-
             const cached = getCachedProducts();
-            
             if (cached && !forceReload) {
                 products = cached;
                 displayProducts();
                 productsLoader.style.display = 'none';
                 productsGrid.style.display = 'grid';
-                
                 const cacheData = JSON.parse(localStorage.getItem('futureStoreProducts'));
                 if (cacheData) {
                     const cacheAge = now - cacheData.timestamp;
@@ -2132,43 +2094,33 @@
             if (loadingMore) return;
             loadingMore = true;
             isLoading = true;
-
             if (!replace) {
                 loadMoreBtn.disabled = true;
                 loadMoreBtn.classList.add('loading');
                 loadMoreSpinner.style.display = 'inline-block';
             }
-            
             try {
                 let query = db.collection('users').orderBy('created_at', 'desc').limit(20);
-                
                 if (lastVisible) {
                     query = query.startAfter(lastVisible);
                 }
-                
                 const snapshot = await query.get();
-                
                 if (!snapshot.empty) {
                     const newProducts = processProductsSnapshot(snapshot);
-                    
                     lastVisible = snapshot.docs[snapshot.docs.length - 1];
                     hasMore = snapshot.docs.length === 20;
-                    
                     if (replace) {
                         products = newProducts;
                     } else {
                         products = [...products, ...newProducts];
                     }
-                    
                     cacheProducts(products);
                     displayProducts();
-                    
                     if (hasMore) {
                         loadMoreBtn.style.display = 'inline-block';
                     } else {
                         loadMoreBtn.style.display = 'none';
                     }
-                    
                 } else {
                     if (replace) {
                         products = [];
@@ -2177,7 +2129,6 @@
                     hasMore = false;
                     loadMoreBtn.style.display = 'none';
                 }
-                
             } catch (error) {
                 console.error('خطأ في تحميل المنتجات:', error);
                 showToast('حدث خطأ في تحميل المنتجات', true);
@@ -2202,52 +2153,42 @@
             const filteredProducts = currentCategory === "الكل" 
                 ? products 
                 : products.filter(product => product.category === currentCategory);
-            
             if (filteredProducts.length === 0) {
                 emptyState.style.display = 'block';
                 productsGrid.innerHTML = '';
                 return;
             }
-            
             emptyState.style.display = 'none';
             productsGrid.innerHTML = '';
-            
             filteredProducts.forEach((product, index) => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                
                 const ratingValue = parseFloat(product.rating) || 0;
                 const fullStars = Math.floor(ratingValue);
                 const halfStar = ratingValue % 1 >= 0.5;
                 const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-                
                 let ratingStars = '';
                 for (let i = 0; i < fullStars; i++) ratingStars += '<i class="fas fa-star"></i>';
                 if (halfStar) ratingStars += '<i class="fas fa-star-half-alt"></i>';
                 for (let i = 0; i < emptyStars; i++) ratingStars += '<i class="far fa-star"></i>';
-                
                 productCard.innerHTML = `
                     <img src="${product.image_url}" alt="${product.name}" class="product-image" loading="lazy">
                     <div class="product-content">
                         <div class="product-category">${product.category}</div>
                         <h3 class="product-title">${product.name}</h3>
-                        
                         <div class="product-rating">
                             <div>${ratingStars}</div>
                             <span class="rating-count">${product.rating}</span>
                         </div>
-                        
                         <div class="product-colors">
                             ${(product.colors || []).map(color => 
                                 `<div class="color-dot" style="background-color: ${getColorHex(color)}" title="${color}"></div>`
                             ).join('')}
                         </div>
-                        
                         <div class="product-price">
                             <span class="current-price">${product.price} ج.س</span>
                             ${product.original_price ? `<span class="original-price">${product.original_price} ج.س</span>` : ''}
                         </div>
-                        
                         <div class="product-actions">
                             <button class="add-to-cart" data-id="${product.id}">
                                 <i class="fas fa-shopping-cart"></i>
@@ -2258,13 +2199,10 @@
                         </div>
                     </div>
                 `;
-                
                 productsGrid.appendChild(productCard);
-                
                 setTimeout(() => {
                     productCard.style.opacity = '1';
                 }, index * 100);
-                
                 productCard.querySelector('.add-to-cart').addEventListener('click', (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
                     addToCart(product, e.currentTarget);
@@ -2291,26 +2229,21 @@
                 'برتقالي': '#FFA500',
                 'أزرق فاتح': '#ADD8E6'
             };
-            
             return colorMap[colorName] || '#CCCCCC';
         }
 
         function showToast(message, isError = false) {
             toast.textContent = message;
             toast.className = 'toast';
-            
             if (isError) {
                 toast.classList.add('error');
             }
-            
             toast.classList.add('show');
-            
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
 
-        // بدء التحميل عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', startLoading);
     </script>
 
