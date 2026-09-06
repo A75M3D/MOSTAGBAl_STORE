@@ -1192,134 +1192,42 @@
             }
         }
 
-        /* أنماط إشعار التثبيت العائم */
-        .install-notification {
+        /* زر التثبيت */
+        .install-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            background: linear-gradient(135deg, #2563eb, #1e3a8a);
             color: #fff;
-            padding: 15px 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 15px;
-            animation: slideIn 0.4s ease;
-            max-width: 350px;
-            width: auto;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            gap: 8px;
         }
 
-        .install-notification.hidden {
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
+        .install-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
         }
 
-        .install-notification-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .install-icon {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .install-text {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .install-text strong {
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-
-        .install-text span {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .install-action {
-            background: #fff;
-            color: #1e3a8a;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .install-action:hover {
-            background: #f0f0f0;
-            transform: scale(1.05);
-        }
-
-        .install-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-
-        .install-close:hover {
-            opacity: 1;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .install-notification {
-                right: 10px;
-                left: 10px;
-                max-width: none;
-                bottom: 10px;
-            }
+        .install-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body class="dark-theme">
-    <!-- إشعار التثبيت العائم -->
-    <div id="installNotification" class="install-notification" hidden>
-        <div class="install-notification-content">
-            <div class="install-icon">
-                <i class="fas fa-download"></i>
-            </div>
-            <div class="install-text">
-                <strong>تثبيت التطبيق</strong>
-                <span>احصل على تجربة أفضل</span>
-            </div>
-            <button class="install-action" id="installAction">تثبيت</button>
-            <button class="install-close" id="installClose">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
+    <button id="installBtn" hidden class="install-btn">
+        <i class="fas fa-download"></i>
+        تثبيت التطبيق
+    </button>
 
     <!-- شاشة التحميل مع الشاحنة -->
     <div id="loadingScreen">
@@ -1580,84 +1488,10 @@
         const deliveryCar = document.querySelector('.delivery-car');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
+        const installBtn = document.getElementById('installBtn');
         const categoriesGrid = document.getElementById('categoriesGrid');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         const loadMoreSpinner = loadMoreBtn.querySelector('i');
-
-        // ==================== إعداد تثبيت PWA (إشعار عائم) ====================
-        function setupPwaInstallation() {
-            const installNotification = document.getElementById('installNotification');
-            const installAction = document.getElementById('installAction');
-            const installClose = document.getElementById('installClose');
-            let deferredPrompt;
-            let notificationDismissed = sessionStorage.getItem('installDismissed') === 'true';
-
-            function isAppInstalled() {
-                if (localStorage.getItem('futureStoreAppInstalled') === 'true') return true;
-                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return true;
-                return false;
-            }
-
-            function showNotification() {
-                if (isAppInstalled() || notificationDismissed) return;
-                installNotification.hidden = false;
-                installNotification.classList.remove('hidden');
-                // إخفاء تلقائي بعد 8 ثوانٍ إذا لم يتفاعل المستخدم
-                setTimeout(() => {
-                    if (!installNotification.hidden && !notificationDismissed) {
-                        hideNotification();
-                        notificationDismissed = true;
-                        sessionStorage.setItem('installDismissed', 'true');
-                    }
-                }, 8000);
-            }
-
-            function hideNotification() {
-                installNotification.classList.add('hidden');
-                setTimeout(() => {
-                    installNotification.hidden = true;
-                }, 300);
-            }
-
-            if (isAppInstalled()) {
-                installNotification.hidden = true;
-            } else {
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    showNotification();
-                });
-            }
-
-            window.addEventListener('appinstalled', () => {
-                localStorage.setItem('futureStoreAppInstalled', 'true');
-                hideNotification();
-                deferredPrompt = null;
-                showToast('تم تثبيت التطبيق بنجاح!');
-            });
-
-            installAction.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    hideNotification();
-                    deferredPrompt.prompt();
-                    const result = await deferredPrompt.userChoice;
-                    if (result.outcome === 'accepted') {
-                        localStorage.setItem('futureStoreAppInstalled', 'true');
-                        showToast('تم تثبيت التطبيق بنجاح!');
-                    }
-                    deferredPrompt = null;
-                }
-            });
-
-            installClose.addEventListener('click', () => {
-                hideNotification();
-                notificationDismissed = true;
-                sessionStorage.setItem('installDismissed', 'true');
-            });
-        }
-
-        // استدعاء إعداد PWA فوراً (قبل بدء التحميل) لضمان التقاط حدث beforeinstallprompt
-        setupPwaInstallation();
 
         // بدء التحميل
         function startLoading() {
@@ -1688,6 +1522,7 @@
             loadCartFromLocalStorage();
             updateCartUI();
             setupEventListeners();
+            setupPwaInstallation();
         }
 
         // إعداد مستمعي الأحداث
@@ -1710,6 +1545,61 @@
             });
 
             loadMoreBtn.addEventListener('click', loadMoreProducts);
+        }
+
+        // ==================== إعداد تثبيت PWA ====================
+        function setupPwaInstallation() {
+            let deferredPrompt;
+
+            // التحقق من تثبيت التطبيق مسبقاً
+            function isAppInstalled() {
+                // التحقق من localStorage
+                if (localStorage.getItem('futureStoreAppInstalled') === 'true') {
+                    return true;
+                }
+                
+                // التحقق من وضع العرض
+                if (window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true) {
+                    return true;
+                }
+                
+                return false;
+            }
+
+            // إخفاء الزر إذا كان التطبيق مثبتاً بالفعل
+            if (isAppInstalled()) {
+                installBtn.hidden = true;
+            } else {
+                // الاستماع لحدث beforeinstallprompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installBtn.hidden = false;
+                });
+            }
+
+            // الاستماع لحدث تثبيت التطبيق
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('futureStoreAppInstalled', 'true');
+                installBtn.hidden = true;
+                deferredPrompt = null;
+                showToast('تم تثبيت التطبيق بنجاح!');
+            });
+
+            // معالجة النقر على زر التثبيت
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    installBtn.hidden = true;
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        localStorage.setItem('futureStoreAppInstalled', 'true');
+                        showToast('تم تثبيت التطبيق بنجاح!');
+                    }
+                    deferredPrompt = null;
+                }
+            });
         }
 
         function toggleTheme() {
