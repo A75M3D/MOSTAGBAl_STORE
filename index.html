@@ -1192,42 +1192,134 @@
             }
         }
 
-        /* زر التثبيت */
-        .install-btn {
+        /* أنماط إشعار التثبيت العائم */
+        .install-notification {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #2563eb, #1e3a8a);
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: #fff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-            transition: all 0.3s ease;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 15px;
+            animation: slideIn 0.4s ease;
+            max-width: 350px;
+            width: auto;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-        .install-btn:hover {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
+        .install-notification.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
         }
 
-        .install-btn:active {
-            transform: scale(0.98);
+        .install-notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .install-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .install-text {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .install-text strong {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .install-text span {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .install-action {
+            background: #fff;
+            color: #1e3a8a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .install-action:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .install-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .install-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .install-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                bottom: 10px;
+            }
         }
     </style>
 </head>
 <body class="dark-theme">
-    <button id="installBtn" hidden class="install-btn">
-        <i class="fas fa-download"></i>
-        تثبيت التطبيق
-    </button>
+    <!-- إشعار التثبيت العائم -->
+    <div id="installNotification" class="install-notification" hidden>
+        <div class="install-notification-content">
+            <div class="install-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="install-text">
+                <strong>تثبيت التطبيق</strong>
+                <span>احصل على تجربة أفضل</span>
+            </div>
+            <button class="install-action" id="installAction">تثبيت</button>
+            <button class="install-close" id="installClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
 
     <!-- شاشة التحميل مع الشاحنة -->
     <div id="loadingScreen">
@@ -1318,7 +1410,7 @@
                 <!-- سيتم عرض المنتجات هنا -->
             </div>
 
-            <!-- مؤشر تحميل المنتجات (يظهر أثناء الجلب الأول) -->
+            <!-- مؤشر تحميل المنتجات -->
             <div id="productsLoader" class="products-loader" style="display: none;">
                 <i class="fas fa-circle-notch"></i>
                 <p>جاري تحميل المنتجات...</p>
@@ -1454,14 +1546,13 @@
         let hasMore = true;
 
         // مدة صلاحية الكاش - 72 ساعة
-        const CACHE_DURATION = 72 * 60 * 60 * 1000; // 259,200,000 ms
-        // حد التحميل الخلفي (قبل ساعتين من انتهاء الصلاحية)
-        const REFRESH_THRESHOLD = 70 * 60 * 60 * 1000; // 252,000,000 ms
+        const CACHE_DURATION = 72 * 60 * 60 * 1000;
+        const REFRESH_THRESHOLD = 70 * 60 * 60 * 1000;
 
         // متغيرات التحميل
         let isLoading = false;
         let lastLoadTime = 0;
-        const LOAD_COOLDOWN = 5000; // 5 ثواني
+        const LOAD_COOLDOWN = 5000;
 
         // عناصر DOM
         const loadingScreen = document.getElementById('loadingScreen');
@@ -1488,10 +1579,111 @@
         const deliveryCar = document.querySelector('.delivery-car');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navLinks = document.getElementById('navLinks');
-        const installBtn = document.getElementById('installBtn');
         const categoriesGrid = document.getElementById('categoriesGrid');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         const loadMoreSpinner = loadMoreBtn.querySelector('i');
+
+        // ==================== إعداد تثبيت PWA (إشعار عائم) ====================
+        function setupPwaInstallation() {
+            const installNotification = document.getElementById('installNotification');
+            const installAction = document.getElementById('installAction');
+            const installClose = document.getElementById('installClose');
+            let deferredPrompt = null;
+            let notificationDismissed = sessionStorage.getItem('installDismissed') === 'true';
+
+            function isAppInstalled() {
+                if (localStorage.getItem('futureStoreAppInstalled') === 'true') return true;
+                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return true;
+                return false;
+            }
+
+            function showNotification() {
+                if (isAppInstalled() || notificationDismissed) return;
+                installNotification.hidden = false;
+                installNotification.classList.remove('hidden');
+                setTimeout(() => {
+                    if (!installNotification.hidden && !notificationDismissed) {
+                        hideNotification();
+                        notificationDismissed = true;
+                        sessionStorage.setItem('installDismissed', 'true');
+                    }
+                }, 8000);
+            }
+
+            function hideNotification() {
+                installNotification.classList.add('hidden');
+                setTimeout(() => {
+                    installNotification.hidden = true;
+                }, 300);
+            }
+
+            if (isAppInstalled()) {
+                installNotification.hidden = true;
+            } else {
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    showNotification();
+                });
+            }
+
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('futureStoreAppInstalled', 'true');
+                hideNotification();
+                deferredPrompt = null;
+                showToast('تم تثبيت التطبيق بنجاح!');
+            });
+
+            installAction.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    hideNotification();
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        localStorage.setItem('futureStoreAppInstalled', 'true');
+                        showToast('تم تثبيت التطبيق بنجاح!');
+                    }
+                    deferredPrompt = null;
+                } else {
+                    // إذا لم يتوفر prompt، نوجه المستخدم للتعليمات
+                    showToast('التثبيت غير متاح حالياً. استخدم القائمة ثم "تثبيت التطبيق"', true);
+                    hideNotification();
+                }
+            });
+
+            installClose.addEventListener('click', () => {
+                hideNotification();
+                notificationDismissed = true;
+                sessionStorage.setItem('installDismissed', 'true');
+            });
+        }
+
+        // ==================== تسجيل Service Worker ====================
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(function(registration) {
+                            console.log('✅ Service Worker registered with scope:', registration.scope);
+                            registration.addEventListener('updatefound', () => {
+                                const newWorker = registration.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                        console.log('📦 New content available - please refresh!');
+                                    }
+                                });
+                            });
+                        })
+                        .catch(function(error) {
+                            console.log('❌ Service Worker registration failed:', error);
+                        });
+                });
+            }
+        }
+
+        // استدعاء إعداد PWA وتسجيل SW فوراً
+        setupPwaInstallation();
+        registerServiceWorker();
 
         // بدء التحميل
         function startLoading() {
@@ -1522,7 +1714,6 @@
             loadCartFromLocalStorage();
             updateCartUI();
             setupEventListeners();
-            setupPwaInstallation();
         }
 
         // إعداد مستمعي الأحداث
@@ -1545,61 +1736,6 @@
             });
 
             loadMoreBtn.addEventListener('click', loadMoreProducts);
-        }
-
-        // ==================== إعداد تثبيت PWA ====================
-        function setupPwaInstallation() {
-            let deferredPrompt;
-
-            // التحقق من تثبيت التطبيق مسبقاً
-            function isAppInstalled() {
-                // التحقق من localStorage
-                if (localStorage.getItem('futureStoreAppInstalled') === 'true') {
-                    return true;
-                }
-                
-                // التحقق من وضع العرض
-                if (window.matchMedia('(display-mode: standalone)').matches || 
-                    window.navigator.standalone === true) {
-                    return true;
-                }
-                
-                return false;
-            }
-
-            // إخفاء الزر إذا كان التطبيق مثبتاً بالفعل
-            if (isAppInstalled()) {
-                installBtn.hidden = true;
-            } else {
-                // الاستماع لحدث beforeinstallprompt
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    installBtn.hidden = false;
-                });
-            }
-
-            // الاستماع لحدث تثبيت التطبيق
-            window.addEventListener('appinstalled', () => {
-                localStorage.setItem('futureStoreAppInstalled', 'true');
-                installBtn.hidden = true;
-                deferredPrompt = null;
-                showToast('تم تثبيت التطبيق بنجاح!');
-            });
-
-            // معالجة النقر على زر التثبيت
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    installBtn.hidden = true;
-                    deferredPrompt.prompt();
-                    const result = await deferredPrompt.userChoice;
-                    if (result.outcome === 'accepted') {
-                        localStorage.setItem('futureStoreAppInstalled', 'true');
-                        showToast('تم تثبيت التطبيق بنجاح!');
-                    }
-                    deferredPrompt = null;
-                }
-            });
         }
 
         function toggleTheme() {
@@ -1839,7 +1975,6 @@
                         });
                     });
                 } else {
-                    // فئات افتراضية لمتجر المستقبل
                     categories = [
                         { id: '1', name: 'عروض خاصة', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', description: 'أحدث الأجهزة الإلكترونية والتقنيات الحديثة' },
                         { id: '2', name: 'رجالي', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', description: 'أزياء عصرية للرجال' },
@@ -1862,7 +1997,6 @@
             }
         }
 
-        // عرض الفئات كبطاقات
         function displayCategories() {
             categoriesGrid.innerHTML = '';
             
@@ -1887,7 +2021,6 @@
             });
         }
 
-        // تصفية المنتجات حسب الفئة
         function filterByCategory(categoryName) {
             currentCategory = categoryName;
             resetPagination();
@@ -1895,7 +2028,6 @@
             productsGrid.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // إعادة تعيين حالة التصفح
         function resetPagination() {
             lastVisible = null;
             hasMore = true;
@@ -1904,7 +2036,6 @@
             loadMoreBtn.style.display = 'none';
         }
 
-        // دوال الكاش
         function cacheProducts(productsArray) {
             const cacheData = {
                 products: productsArray,
@@ -1931,16 +2062,13 @@
             }
         }
 
-        // تحميل الدفعة الأولى من المنتجات (مع كاش)
         async function loadInitialProducts(forceReload = false) {
-            // منع التحميل المتكرر
             const now = Date.now();
             if (!forceReload && now - lastLoadTime < LOAD_COOLDOWN) {
                 return;
             }
             lastLoadTime = now;
 
-            // إظهار مؤشر التحميل إذا لم يكن هناك منتجات معروضة
             if (productsGrid.children.length === 0) {
                 productsLoader.style.display = 'block';
                 productsGrid.style.display = 'none';
@@ -1954,12 +2082,10 @@
                 productsLoader.style.display = 'none';
                 productsGrid.style.display = 'grid';
                 
-                // التحقق من عمر الكاش: إذا كان قارب على الانتهاء (أقل من ساعتين متبقية)، قم بتحديثه في الخلفية
                 const cacheData = JSON.parse(localStorage.getItem('futureStoreProducts'));
                 if (cacheData) {
                     const cacheAge = now - cacheData.timestamp;
                     if (cacheAge > REFRESH_THRESHOLD) {
-                        // تحديث في الخلفية بدون انتظار
                         refreshProductsInBackground();
                     }
                 }
@@ -1970,7 +2096,6 @@
             }
         }
 
-        // تحديث المنتجات في الخلفية
         async function refreshProductsInBackground() {
             try {
                 const query = db.collection('users').orderBy('created_at', 'desc').limit(20);
@@ -1979,14 +2104,13 @@
                     const newProducts = processProductsSnapshot(snapshot);
                     products = newProducts;
                     cacheProducts(products);
-                    displayProducts(); // تحديث العرض
+                    displayProducts();
                 }
             } catch (error) {
                 console.error('خطأ في التحديث الخلفي:', error);
             }
         }
 
-        // معالجة بيانات المنتجات من السناب شوت
         function processProductsSnapshot(snapshot) {
             return snapshot.docs.map(doc => {
                 const productData = doc.data();
@@ -2004,13 +2128,11 @@
             });
         }
 
-        // تحميل المنتجات من Firestore مع Pagination (باستخدام مجموعة users)
         async function loadProductsFromFirestore(replace = false) {
             if (loadingMore) return;
             loadingMore = true;
             isLoading = true;
 
-            // تفعيل حالة التحميل في الزر
             if (!replace) {
                 loadMoreBtn.disabled = true;
                 loadMoreBtn.classList.add('loading');
@@ -2038,13 +2160,9 @@
                         products = [...products, ...newProducts];
                     }
                     
-                    // تحديث الكاش بالمنتجات الجديدة
                     cacheProducts(products);
-                    
-                    // عرض المنتجات حسب الفئة الحالية
                     displayProducts();
                     
-                    // إظهار أو إخفاء زر تحميل المزيد
                     if (hasMore) {
                         loadMoreBtn.style.display = 'inline-block';
                     } else {
@@ -2069,22 +2187,18 @@
             } finally {
                 loadingMore = false;
                 isLoading = false;
-                // إعادة الزر إلى حالته الطبيعية
                 loadMoreBtn.disabled = false;
                 loadMoreBtn.classList.remove('loading');
                 loadMoreSpinner.style.display = 'none';
             }
         }
 
-        // دالة تحميل المزيد
         async function loadMoreProducts() {
             if (!hasMore || loadingMore) return;
             await loadProductsFromFirestore(false);
         }
 
-        // دالة عرض المنتجات
         function displayProducts() {
-            // تصفية المنتجات حسب الفئة الحالية
             const filteredProducts = currentCategory === "الكل" 
                 ? products 
                 : products.filter(product => product.category === currentCategory);
@@ -2102,7 +2216,6 @@
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 
-                // إنشاء نجوم التقييم
                 const ratingValue = parseFloat(product.rating) || 0;
                 const fullStars = Math.floor(ratingValue);
                 const halfStar = ratingValue % 1 >= 0.5;
@@ -2201,7 +2314,7 @@
         document.addEventListener('DOMContentLoaded', startLoading);
     </script>
 
-    <!-- حماية الكود -->
+    <!-- حماية الكود (اختياري) -->
     <script>
         (() => {
             document.addEventListener("keydown", (e) => {
