@@ -1493,6 +1493,60 @@
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         const loadMoreSpinner = loadMoreBtn.querySelector('i');
 
+        // ==================== إعداد تثبيت PWA ====================
+        function setupPwaInstallation() {
+            let deferredPrompt;
+
+            // التحقق من تثبيت التطبيق مسبقاً
+            function isAppInstalled() {
+                if (localStorage.getItem('futureStoreAppInstalled') === 'true') {
+                    return true;
+                }
+                if (window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true) {
+                    return true;
+                }
+                return false;
+            }
+
+            // إخفاء الزر إذا كان التطبيق مثبتاً بالفعل
+            if (isAppInstalled()) {
+                installBtn.hidden = true;
+            } else {
+                // الاستماع لحدث beforeinstallprompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installBtn.hidden = false;
+                });
+            }
+
+            // الاستماع لحدث تثبيت التطبيق
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('futureStoreAppInstalled', 'true');
+                installBtn.hidden = true;
+                deferredPrompt = null;
+                showToast('تم تثبيت التطبيق بنجاح!');
+            });
+
+            // معالجة النقر على زر التثبيت
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    installBtn.hidden = true;
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        localStorage.setItem('futureStoreAppInstalled', 'true');
+                        showToast('تم تثبيت التطبيق بنجاح!');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // استدعاء إعداد PWA فوراً (قبل بدء التحميل) لضمان التقاط حدث beforeinstallprompt
+        setupPwaInstallation();
+
         // بدء التحميل
         function startLoading() {
             setTimeout(() => {
@@ -2140,23 +2194,6 @@
                 toast.classList.remove('show');
             }, 3000);
         }
-
-        // PWA Installation
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.hidden = false;
-        });
-
-        installBtn.addEventListener('click', async () => {
-            installBtn.hidden = true;
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            }
-        });
 
         // بدء التحميل عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', startLoading);
