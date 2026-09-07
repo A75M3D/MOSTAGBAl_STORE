@@ -9,12 +9,12 @@
   "scope": "/",
   "icons": [
   {
-    "src":"file_000000008eb082109362b91504c76c2c.png",
+    "src":"file_0000000071c48210a0f724f16c168a7c.png",
     "sizes": "192x192",
     "type": "image/png"
   },
   {
-    "src": "file_000000008eb082109362b91504c76c2c.png",
+    "src": "file_0000000071c48210a0f724f16c168a7c.png",
     "sizes": "512x512",
     "type": "image/png"
   }
